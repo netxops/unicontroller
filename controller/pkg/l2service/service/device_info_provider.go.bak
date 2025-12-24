@@ -1,0 +1,404 @@
+package service
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/influxdata/telegraf/controller/pkg/structs"
+	"github.com/netxops/log"
+	clitask "github.com/netxops/utils/task"
+	"go.uber.org/zap"
+)
+
+type DeviceInfoProvider interface {
+	GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error)
+	GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error)
+}
+
+type DeviceInfoCollecter struct {
+	DeviceInfoCollecter DeviceInfoProvider
+}
+
+func (s *DeviceInfoCollecter) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+
+	return s.DeviceInfoCollecter.GetVersion(arg, remoteInfo)
+}
+func (s *DeviceInfoCollecter) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return s.DeviceInfoCollecter.GetChildVersion(arg, remoteInfo)
+}
+
+type RuiJieInfo struct{}
+
+func NewRuiJieInfo() *RuiJieInfo {
+	d := &RuiJieInfo{}
+	return d
+}
+
+func (s *RuiJieInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	logger := log.NewLogger(nil, true).Logger
+	if remoteInfo == nil {
+		logger.Error("remoteInfo is nil")
+		return "", fmt.Errorf("remoteInfo is nil")
+	}
+	logger = logger.With(zap.String("function", "GetVersion"), zap.String("ip", remoteInfo.Ip), zap.String("platform", remoteInfo.Platform))
+	var rs *clitask.Table
+	var ok bool
+	rs, _, err = checkRuijieVersionSSH(arg.Ip, remoteInfo, logger)
+	if rs == nil {
+		err = fmt.Errorf("解析版本错误")
+		return
+	}
+	version, ok = rs.IndexToValue("version", "0")
+	if !ok {
+		err = fmt.Errorf("解析版本错误")
+	}
+	return version, err
+
+}
+func (s *RuiJieInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+
+type FortiGateInfo struct{}
+
+func NewFortiGateInfo() *FortiGateInfo {
+	d := &FortiGateInfo{}
+	return d
+}
+
+func (s *FortiGateInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	logger := log.NewLogger(nil, true).Logger
+	if remoteInfo == nil {
+		logger.Error("remoteInfo is nil")
+		return "", fmt.Errorf("remoteInfo is nil")
+	}
+	logger = logger.With(zap.String("function", "GetVersion"), zap.String("ip", remoteInfo.Ip), zap.String("platform", remoteInfo.Platform))
+
+	var rs *clitask.Table
+	var ok bool
+	rs, _, err = checkFortiGateVersionSSH(arg.Ip, arg.Remote, logger)
+	if rs == nil {
+		err = fmt.Errorf("解析版本错误")
+		return
+	}
+	version, ok = rs.IndexToValue("version", "0")
+	if !ok {
+		err = fmt.Errorf("解析版本错误")
+	}
+	return version, err
+}
+
+func (s *FortiGateInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+
+type HuaweiInfo struct{}
+
+func NewHuaweiInfo() *HuaweiInfo {
+	d := &HuaweiInfo{}
+	return d
+}
+func (s *HuaweiInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	logger := log.NewLogger(nil, true).Logger
+	if remoteInfo == nil {
+		logger.Error("remoteInfo is nil")
+		return "", fmt.Errorf("remoteInfo is nil")
+	}
+	logger = logger.With(zap.String("function", "GetVersion"), zap.String("ip", remoteInfo.Ip), zap.String("platform", remoteInfo.Platform))
+
+	var rs *clitask.Table
+	var ok bool
+	rs, _, err = checkHuaWeiVersionSSH(arg.Ip, remoteInfo, logger)
+	if rs == nil {
+		err = fmt.Errorf("解析版本错误")
+		return
+	}
+	version, ok = rs.IndexToValue("version", "0")
+	if !ok {
+		err = fmt.Errorf("解析版本错误")
+	}
+	return version, err
+
+}
+
+func (s *HuaweiInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	logger := log.NewLogger(nil, true).Logger
+	if remoteInfo == nil {
+		logger.Error("remoteInfo is nil")
+		return "", fmt.Errorf("remoteInfo is nil")
+	}
+	logger = logger.With(zap.String("function", "GetVersion"), zap.String("ip", remoteInfo.Ip), zap.String("platform", remoteInfo.Platform))
+
+	var rs *clitask.Table
+	var ok bool
+	rs, _, err = checkHuaWeiVersionSSH(arg.Ip, remoteInfo, logger)
+	if rs == nil {
+		err = fmt.Errorf("解析版本错误")
+		return
+	}
+	version, ok = rs.IndexToValue("patchVersion", "0")
+	if !ok {
+		err = fmt.Errorf("解析版本错误")
+	}
+	return version, err
+
+}
+
+type SwitchInfo struct{}
+
+func NewSwitchInfo() *SwitchInfo {
+	d := &SwitchInfo{}
+	return d
+}
+func (s *SwitchInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	logger := log.NewLogger(nil, true).Logger
+	if remoteInfo == nil {
+		logger.Error("remoteInfo is nil")
+		return "", fmt.Errorf("remoteInfo is nil")
+	}
+	logger = logger.With(zap.String("function", "GetVersion"), zap.String("ip", remoteInfo.Ip), zap.String("platform", remoteInfo.Platform))
+
+	var rs *clitask.Table
+	var ok bool
+	rs, err = CheckNetworkDeviceVersion(arg.Ip, arg.Remote.Community[0], arg.Platform, logger)
+	if rs == nil {
+		err = fmt.Errorf("解析版本错误")
+		return
+	}
+	version, ok = rs.IndexToValue("version", "0")
+	if !ok {
+		err = fmt.Errorf("解析版本错误")
+	}
+	return version, err
+
+}
+func (s *SwitchInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+
+	logger := log.NewLogger(nil, true).Logger
+	if remoteInfo == nil {
+		logger.Error("remoteInfo is nil")
+		return "", fmt.Errorf("remoteInfo is nil")
+	}
+	logger = logger.With(zap.String("function", "GetVersion"), zap.String("ip", remoteInfo.Ip), zap.String("platform", remoteInfo.Platform))
+
+	var rs *clitask.Table
+	var ok bool
+	rs, err = CheckNetworkDeviceVersion(arg.Ip, arg.Remote.Community[0], arg.Platform, logger)
+	if rs == nil {
+		err = fmt.Errorf("解析版本错误")
+		return
+	}
+	version, ok = rs.IndexToValue("patch_version", "0")
+	if !ok {
+		err = fmt.Errorf("解析版本错误")
+	}
+	return version, err
+}
+
+type AsaInfo struct{}
+
+func NewAsaInfo() *AsaInfo {
+	d := &AsaInfo{}
+	return d
+}
+func (s *AsaInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	_, version, err = checkASAVersionSSH(arg.Ip, remoteInfo)
+	// version, ok = rs.IndexToValue("version", "0")
+	return version, err
+
+}
+func (s *AsaInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+
+type F5Info struct{}
+
+func NewF5Info() *F5Info {
+	d := &F5Info{}
+	return d
+}
+func (s *F5Info) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	logger := log.NewLogger(nil, true).Logger
+	if remoteInfo == nil {
+		logger.Error("remoteInfo is nil")
+		return "", fmt.Errorf("remoteInfo is nil")
+	}
+	logger = logger.With(zap.String("function", "GetVersion"), zap.String("ip", remoteInfo.Ip), zap.String("platform", remoteInfo.Platform))
+
+	_, f5Info, err := checkF5InfoWeb(arg.Ip, remoteInfo, logger)
+	version = f5Info.Version
+	return version, err
+}
+func (s *F5Info) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+
+type CentosInfo struct{}
+
+func NewCentosInfo() *CentosInfo {
+	d := &CentosInfo{}
+	return d
+}
+func (s *CentosInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	version, err = checkCentosVersionSSH(arg.Ip, remoteInfo)
+	return version, err
+
+}
+func (s *CentosInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+
+type RedhatInfo struct{}
+
+func NewRedhatInfo() *RedhatInfo {
+	d := &RedhatInfo{}
+	return d
+}
+func (s *RedhatInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	version, err = checkRedhatVersionSSH(arg.Ip, remoteInfo)
+	return version, err
+
+}
+func (s *RedhatInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+
+type AciInfo struct{}
+
+func NewAciInfo() *AciInfo {
+	d := &AciInfo{}
+	return d
+}
+func (s *AciInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	version, err = checkAciVersion(arg.Ip, arg.Remote)
+	return version, err
+
+}
+func (s *AciInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+
+type UbuntuInfo struct{}
+
+func NewUbuntuInfo() *UbuntuInfo {
+	d := &UbuntuInfo{}
+	return d
+}
+func (s *UbuntuInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	version, err = checkServerVersionSSH(arg.Ip, remoteInfo)
+	return version, err
+
+}
+func (s *UbuntuInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+
+type DebianInfo struct{}
+
+func NewDebianInfo() *DebianInfo {
+	d := &DebianInfo{}
+	return d
+}
+func (s *DebianInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	version, err = checkServerVersionSSH(arg.Ip, remoteInfo)
+	return version, err
+
+}
+func (s *DebianInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+
+type AlmaLinuxInfo struct{}
+
+func NewAlmaLinuxInfo() *AlmaLinuxInfo {
+	d := &AlmaLinuxInfo{}
+	return d
+}
+func (s *AlmaLinuxInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	version, err = checkAlmaLinuxVersionSSH(arg.Ip, remoteInfo)
+	return version, err
+
+}
+func (s *AlmaLinuxInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+
+type MlnXOSInfo struct{}
+
+func NewMlnXOSInfo() *MlnXOSInfo {
+	d := &MlnXOSInfo{}
+	return d
+}
+func (s *MlnXOSInfo) GetChildVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	return version, err
+}
+func (s *MlnXOSInfo) GetVersion(arg *structs.Args, remoteInfo *structs.L2DeviceRemoteInfo) (version string, err error) {
+	logger := log.NewLogger(nil, true).Logger
+	if remoteInfo == nil {
+		logger.Error("remoteInfo is nil")
+		return "", fmt.Errorf("remoteInfo is nil")
+	}
+	logger = logger.With(zap.String("function", "GetVersion"), zap.String("ip", remoteInfo.Ip), zap.String("platform", remoteInfo.Platform))
+
+	var rs *clitask.Table
+	var ok bool
+	rs, err = CheckNetworkDeviceVersion(arg.Ip, arg.Remote.Community[0], arg.Platform, logger)
+	if err == nil {
+		version, ok = rs.IndexToValue("version", "0")
+		if !ok {
+			err = fmt.Errorf("updateRemoteInfo: IndexToValue return is empty,snmpwalk -c %s -v2c -O n %s 1.3.6.1.2.1.1", arg.Remote.Community[0], arg.Ip)
+		}
+	}
+	return version, err
+
+}
+
+func NewDeviceInfoProvider(remoteInfo *structs.L2DeviceRemoteInfo) (*DeviceInfoCollecter, error) {
+	var d DeviceInfoProvider
+	if remoteInfo.Catalog == CATALOG_SWITCH || remoteInfo.Catalog == CATALOG_ROUTER {
+		switch strings.ToUpper(remoteInfo.Platform) {
+		case "RUIJIE":
+			d = NewRuiJieInfo()
+		case "HUAWEI":
+			d = NewHuaweiInfo()
+		default:
+			d = NewSwitchInfo()
+		}
+		return &DeviceInfoCollecter{d}, nil
+	} else if remoteInfo.Catalog == CATALOG_FIREWALL {
+		switch strings.ToUpper(remoteInfo.Platform) {
+		case "ASA":
+			d = NewAsaInfo()
+		case "FORTIGATE":
+			d = NewFortiGateInfo()
+		case "F5":
+			d = NewF5Info()
+		default:
+			return nil, fmt.Errorf("未知Platform:%s", remoteInfo.Platform)
+		}
+		return &DeviceInfoCollecter{d}, nil
+	} else {
+		switch strings.ToUpper(remoteInfo.Platform) {
+		case "CENTOS":
+			d = NewCentosInfo()
+		case "REDHAT":
+			d = NewRedhatInfo()
+		case "ACI":
+			d = NewAciInfo()
+
+		case "UBUNTU":
+			d = NewUbuntuInfo()
+
+		case "DEBIAN":
+			d = NewDebianInfo()
+
+		case "ALMALINUX":
+			d = NewAlmaLinuxInfo()
+		case "MLNXOS":
+			d = NewMlnXOSInfo()
+		default:
+			return nil, fmt.Errorf("未知Platform:%s", remoteInfo.Platform)
+		}
+		return &DeviceInfoCollecter{d}, nil
+	}
+}

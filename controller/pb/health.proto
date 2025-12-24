@@ -1,0 +1,89 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package pb;
+option go_package = "github.com/influxdata/telegraf/controller/pb";
+
+// HealthStatus 健康状态枚举
+enum HealthStatus {
+  HEALTH_STATUS_UNKNOWN = 0;
+  HEALTH_STATUS_HEALTHY = 1;
+  HEALTH_STATUS_UNHEALTHY = 2;
+  HEALTH_STATUS_DEGRADED = 3;
+}
+
+// HealthStatusDetail 健康状态详情
+message HealthStatusDetail {
+  HealthStatus status = 1;
+  string message = 2;
+  google.protobuf.Timestamp last_check = 3;
+  string check_type = 4;
+  int64 response_time_ms = 5;
+  string error = 6;
+}
+
+// ServiceHealth 服务健康状态
+message ServiceHealth {
+  string package = 1;
+  HealthStatus status = 2;
+  google.protobuf.Timestamp last_check = 3;
+  string message = 4;
+  repeated HealthStatusDetail details = 5;
+}
+
+// GetHealthStatusReq 获取健康状态请求
+message GetHealthStatusReq {
+  string package = 1;
+}
+
+// GetHealthStatusResp 获取健康状态响应
+message GetHealthStatusResp {
+  ServiceHealth health = 1;
+}
+
+// ListHealthStatusesReq 列出所有健康状态请求
+message ListHealthStatusesReq {
+  // 可选：只返回指定状态的服务
+  repeated HealthStatus filter_status = 1;
+}
+
+// ListHealthStatusesResp 列出所有健康状态响应
+message ListHealthStatusesResp {
+  repeated ServiceHealth health_statuses = 1;
+}
+
+// GetHealthHistoryReq 获取健康检查历史请求
+message GetHealthHistoryReq {
+  string package = 1;
+  int32 limit = 2;  // 返回的记录数限制，默认 100
+}
+
+// HealthHistoryEntry 健康检查历史记录
+message HealthHistoryEntry {
+  HealthStatus status = 1;
+  string message = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  string check_type = 4;
+  int64 response_time_ms = 5;
+  string error = 6;
+}
+
+// GetHealthHistoryResp 获取健康检查历史响应
+message GetHealthHistoryResp {
+  string package = 1;
+  repeated HealthHistoryEntry entries = 2;
+}
+
+// Health 服务定义
+service Health {
+  // GetHealthStatus 获取指定服务的健康状态
+  rpc GetHealthStatus(GetHealthStatusReq) returns (GetHealthStatusResp);
+  
+  // ListHealthStatuses 列出所有服务的健康状态
+  rpc ListHealthStatuses(ListHealthStatusesReq) returns (ListHealthStatusesResp);
+  
+  // GetHealthHistory 获取服务的健康检查历史
+  rpc GetHealthHistory(GetHealthHistoryReq) returns (GetHealthHistoryResp);
+}
+

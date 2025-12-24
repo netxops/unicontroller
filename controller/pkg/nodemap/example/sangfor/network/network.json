@@ -1,0 +1,679 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "chapters": [
+            "对象",
+            "网络对象"
+        ],
+        "apiname": "getNetobjs",
+        "title": "获取网络对象",
+        "inputSamples": {
+            "request": "GET https://192.168.1.1/api/v1/namespaces/public/ipgroups",
+            "description": "获取网络对象列表,默认查询条件：起始位置为0，最多展示200条"
+        },
+        "position": "5.1.1",
+        "inputParams": {
+            "uri": [
+                {
+                    "relationshipKey": "excludeAll",
+                    "extra": {
+                        "enums": [
+                            {
+                                "value": "TRUE",
+                                "description": "过滤名字为全部的IP组"
+                            },
+                            {
+                                "value": "FALSE",
+                                "description": "不过滤名字为全部的IP组"
+                            }
+                        ]
+                    },
+                    "description": "过滤参数：是否过滤名字为全部的IP组",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "excludeAll"
+                },
+                {
+                    "relationshipKey": "__nameprefix",
+                    "extra": {
+                        "minLength": 1,
+                        "maxLength": 95
+                    },
+                    "description": "网络对象组名字前缀过滤",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "__nameprefix"
+                },
+                {
+                    "relationshipKey": "hasSensitiveData",
+                    "extra": {
+                        "enums": [
+                            {
+                                "value": "TRUE",
+                                "description": "过滤敏感数据业务"
+                            },
+                            {
+                                "value": "FALSE",
+                                "description": "过滤非敏感数据业务"
+                            },
+                            {
+                                "value": "ALL",
+                                "description": "不过滤敏感数据业务"
+                            }
+                        ]
+                    },
+                    "description": "过滤参数：是否过滤敏感数据业务",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "hasSensitiveData"
+                },
+                {
+                    "relationshipKey": "_search",
+                    "extra": {
+                        "maxLength": 95
+                    },
+                    "description": "模糊搜索关键字",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "_search"
+                },
+                {
+                    "relationshipKey": "getRefBy",
+                    "extra": {
+                        "minLength": 32,
+                        "maxLength": 32
+                    },
+                    "description": "过滤参数：传入一个网络对象的uuid，查找指定网络对象被哪些地址组引用",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "getRefBy"
+                },
+                {
+                    "relationshipKey": "addressType",
+                    "extra": {
+                        "enums": [
+                            {
+                                "value": "IPV4",
+                                "description": "ip协议版本为ipv4"
+                            },
+                            {
+                                "value": "IPV6",
+                                "description": "ip协议版本为ipv6"
+                            },
+                            {
+                                "value": "ALL",
+                                "description": "不过滤ip协议版本"
+                            }
+                        ]
+                    },
+                    "description": "过滤参数：ip协议版本",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "addressType"
+                },
+                {
+                    "relationshipKey": "hasref",
+                    "extra": {
+                        "enums": [
+                            {
+                                "value": "TRUE",
+                                "description": "过滤被引用的网络对象"
+                            },
+                            {
+                                "value": "FALSE",
+                                "description": "过滤没有被引用的网络对象"
+                            }
+                        ]
+                    },
+                    "description": "过滤参数：是否过滤被引用的IP组",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "hasref"
+                },
+                {
+                    "relationshipKey": "_length",
+                    "extra": {
+                        "minimum": 1,
+                        "default": 100,
+                        "maximum": 200
+                    },
+                    "description": "获取最大长度，限制最大值，如果数据不够可能返回小于 length",
+                    "type": "int32",
+                    "docrequired": "否",
+                    "name": "_length"
+                },
+                {
+                    "relationshipKey": "important",
+                    "extra": {
+                        "enums": [
+                            {
+                                "value": "COMMON",
+                                "description": "重要级别为普通"
+                            },
+                            {
+                                "value": "CORE",
+                                "description": "重要级别为核心"
+                            },
+                            {
+                                "value": "ALL",
+                                "description": "不过滤重要级别"
+                            }
+                        ]
+                    },
+                    "description": "过滤参数：重要级别",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "important"
+                },
+                {
+                    "relationshipKey": "_sortby",
+                    "extra": {
+                        "maxLength": 100
+                    },
+                    "description": "指定排序字段",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "_sortby"
+                },
+                {
+                    "relationshipKey": "businessType",
+                    "extra": {
+                        "enums": [
+                            {
+                                "value": "ADDRGROUP",
+                                "description": "业务类型为地址组"
+                            },
+                            {
+                                "value": "IP",
+                                "description": "业务类型是IP地址"
+                            },
+                            {
+                                "value": "USER",
+                                "description": "业务类型是用户地址"
+                            },
+                            {
+                                "value": "BUSINESS",
+                                "description": "业务类型是业务地址"
+                            },
+                            {
+                                "value": "DOMAINS",
+                                "description": "业务类型是域名网络对象"
+                            },
+                            {
+                                "value": "OTHERTHANDOMAINS",
+                                "description": "业务类型不是域名网络对象"
+                            },
+                            {
+                                "value": "ALL",
+                                "description": "不过滤业务类型"
+                            }
+                        ]
+                    },
+                    "description": "过滤参数：业务类型过滤",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "businessType"
+                },
+                {
+                    "relationshipKey": "_order",
+                    "extra": {
+                        "default": "asc",
+                        "enums": [
+                            {
+                                "value": "asc",
+                                "description": "按升序排列"
+                            },
+                            {
+                                "value": "desc",
+                                "description": "按降序排列"
+                            }
+                        ]
+                    },
+                    "description": "指定排序方式（正序/倒序）",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "_order"
+                },
+                {
+                    "relationshipKey": "_start",
+                    "extra": {
+                        "minimum": 0,
+                        "default": 0,
+                        "maximum": 2000000
+                    },
+                    "description": "起始位置，从 0 开始",
+                    "type": "int32",
+                    "docrequired": "否",
+                    "name": "_start"
+                },
+                {
+                    "relationshipKey": "_select",
+                    "extra": {
+                        "maxLength": 1000
+                    },
+                    "description": "选择字段，字段用逗号分隔",
+                    "type": "string",
+                    "docrequired": "否",
+                    "name": "_select"
+                }
+            ],
+            "cookies": [
+                {
+                    "relationshipKey": "token",
+                    "extra": "{\"maxLength\":64}",
+                    "description": "认证令牌",
+                    "type": "string",
+                    "docrequired": "是",
+                    "name": "token"
+                },
+                {
+                    "relationshipKey": "SESSID",
+                    "extra": "{\"maxLength\":256}",
+                    "description": "认证会话",
+                    "type": "string",
+                    "docrequired": "是",
+                    "name": "SESSID"
+                }
+            ],
+            "headers": []
+        },
+        "description": "通过此接口，可以获得符合条件的全部网络对象",
+        "api": {
+            "url": "https://{host}/api/v1/namespaces/@namespace/ipgroups",
+            "method": "GET"
+        },
+        "chapter": "网络对象",
+        "outputSamples": {
+            "correct": {
+                "message": "成功",
+                "data": {
+                    "itemsOffset": 0,
+                    "itemLength": 2,
+                    "pageSize": 100,
+                    "items": [
+                        {
+                            "ipRanges": [
+                                {
+                                    "start": "0.0.0.0",
+                                    "end": "255.255.255.255"
+                                }
+                            ],
+                            "important": "COMMON",
+                            "isdefault": true,
+                            "uuid": "5FE8FDA10D8343CB9310E8B252E94C74",
+                            "description": "所有IP地址",
+                            "businessType": "IP",
+                            "addressType": "IPV4",
+                            "hasref": true,
+                            "name": "全部"
+                        },
+                        {
+                            "ipRanges": [
+                                {
+                                    "start": "10.0.0.0",
+                                    "end": "10.255.255.255"
+                                },
+                                {
+                                    "start": "172.16.0.0",
+                                    "end": "172.31.255.255"
+                                },
+                                {
+                                    "start": "192.168.0.0",
+                                    "end": "192.168.255.255"
+                                }
+                            ],
+                            "important": "COMMON",
+                            "isdefault": true,
+                            "uuid": "22A180730D98436DB4FD54BBB1674137",
+                            "description": "私有IP地址",
+                            "businessType": "IP",
+                            "addressType": "IPV4",
+                            "hasref": false,
+                            "name": "私有网段"
+                        }
+                    ],
+                    "totalPages": 1,
+                    "pageNumber": 1,
+                    "totalItems": 2
+                },
+                "code": 0
+            },
+            "incorrect": {
+                "message": "无效参数",
+                "data": "",
+                "code": 22
+            }
+        },
+        "outputParams": [
+            {
+                "relationshipKey": "code",
+                "description": "错误码",
+                "type": "int",
+                "docrequired": "否",
+                "name": "code"
+            },
+            {
+                "relationshipKey": "message",
+                "description": "错误信息",
+                "type": "string",
+                "docrequired": "否",
+                "name": "message"
+            },
+            {
+                "relationshipKey": "data",
+                "description": "分页数据",
+                "type": "object",
+                "docrequired": "是",
+                "name": "data"
+            },
+            {
+                "relationshipKey": "data.totalItems",
+                "extra": [],
+                "description": "总共多少项目",
+                "type": "int32",
+                "docrequired": "--",
+                "name": "totalItems"
+            },
+            {
+                "relationshipKey": "data.totalPages",
+                "extra": [],
+                "description": "总共多少页",
+                "type": "int32",
+                "docrequired": "--",
+                "name": "totalPages"
+            },
+            {
+                "relationshipKey": "data.pageNumber",
+                "extra": [],
+                "description": "当前页码，从 1 开始",
+                "type": "int32",
+                "docrequired": "--",
+                "name": "pageNumber"
+            },
+            {
+                "relationshipKey": "data.pageSize",
+                "extra": [],
+                "description": "每页多大",
+                "type": "int32",
+                "docrequired": "--",
+                "name": "pageSize"
+            },
+            {
+                "relationshipKey": "data.itemsOffset",
+                "extra": [],
+                "description": "当前条目偏移，从 0 开始",
+                "type": "int32",
+                "docrequired": "--",
+                "name": "itemsOffset"
+            },
+            {
+                "relationshipKey": "data.itemLength",
+                "extra": [],
+                "description": "数据列表长度",
+                "type": "int32",
+                "docrequired": "--",
+                "name": "itemLength"
+            },
+            {
+                "relationshipKey": "data.privateOffset",
+                "extra": [],
+                "description": "内部偏移",
+                "type": "uint64",
+                "docrequired": "--",
+                "name": "privateOffset"
+            },
+            {
+                "relationshipKey": "data.items",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "description": "有效数据列表",
+                "type": "object[]",
+                "docrequired": "--",
+                "name": "items"
+            },
+            {
+                "relationshipKey": "data.items.uuid",
+                "extra": [],
+                "description": "资源唯一ID",
+                "type": "string",
+                "docrequired": "--",
+                "name": "uuid"
+            },
+            {
+                "relationshipKey": "data.items.name",
+                "extra": {
+                    "minLength": 1,
+                    "pattern desc": "名称字段不能包含 `~!#$%^&*+|{};:\\\"',<>? 特殊字符",
+                    "maxLength": 95
+                },
+                "description": "网络对象组名字",
+                "type": "string",
+                "docrequired": "是",
+                "name": "name"
+            },
+            {
+                "relationshipKey": "data.items.id",
+                "extra": [],
+                "description": "autoid",
+                "type": "uint16",
+                "docrequired": "--",
+                "name": "id"
+            },
+            {
+                "relationshipKey": "data.items.businessType",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "IP",
+                            "description": "ip组类型"
+                        },
+                        {
+                            "value": "BUSINESS",
+                            "description": "业务组类型"
+                        },
+                        {
+                            "value": "USER",
+                            "description": "用户组类型"
+                        },
+                        {
+                            "value": "ADDRGROUP",
+                            "description": "地址组类型"
+                        },
+                        {
+                            "value": "DOMAINS",
+                            "description": "域名类型"
+                        }
+                    ]
+                },
+                "description": "网络对象组类型",
+                "type": "string",
+                "docrequired": "是",
+                "name": "businessType"
+            },
+            {
+                "relationshipKey": "data.items.description",
+                "extra": {
+                    "minLength": 0,
+                    "pattern desc": "描述字段不能包含`~!#$%^&*+\\|{};:\"'/<>? 特殊字符",
+                    "maxLength": 95
+                },
+                "description": "描述字段",
+                "type": "string",
+                "docrequired": "否",
+                "name": "description"
+            },
+            {
+                "relationshipKey": "data.items.addressType",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "IPV4",
+                            "description": "IPv4类型"
+                        },
+                        {
+                            "value": "IPV6",
+                            "description": "IPv6类型"
+                        }
+                    ]
+                },
+                "description": "地址类型",
+                "type": "string",
+                "docrequired": "否",
+                "name": "addressType"
+            },
+            {
+                "relationshipKey": "data.items.domains",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "description": "域名对象",
+                "type": "string[]",
+                "docrequired": "--",
+                "name": "domains"
+            },
+            {
+                "relationshipKey": "data.items.domainsDetectMode",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "ACTIVE",
+                            "description": "主动探测"
+                        },
+                        {
+                            "value": "PASSIVE",
+                            "description": "被动学习"
+                        }
+                    ]
+                },
+                "description": "域名对象探测模式",
+                "type": "string",
+                "docrequired": "--",
+                "name": "domainsDetectMode"
+            },
+            {
+                "relationshipKey": "data.items.ipRanges",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "description": "ip表项组 -- 请求时该参数和参数refIpGroup二选一",
+                "type": "object[]",
+                "docrequired": "按条件选择",
+                "name": "ipRanges"
+            },
+            {
+                "relationshipKey": "data.items.ipRanges.start",
+                "extra": {
+                    "format": "ip-address"
+                },
+                "description": "ip范围的起始位置",
+                "type": "string",
+                "docrequired": "是",
+                "name": "start"
+            },
+            {
+                "relationshipKey": "data.items.ipRanges.end",
+                "extra": {
+                    "format": "ip-address"
+                },
+                "description": "ip范围的终止位置",
+                "type": "string",
+                "docrequired": "否",
+                "name": "end"
+            },
+            {
+                "relationshipKey": "data.items.ipRanges.bits",
+                "extra": [],
+                "description": "ip掩码简写",
+                "type": "uint8",
+                "docrequired": "否",
+                "name": "bits"
+            },
+            {
+                "relationshipKey": "data.items.important",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "COMMON",
+                            "description": "普通用户或普通业务"
+                        },
+                        {
+                            "value": "CORE",
+                            "description": "核心用户或核心业务"
+                        }
+                    ]
+                },
+                "description": "标识核心业务/普通业务或者标识普通用户/核心用户",
+                "type": "string",
+                "docrequired": "否",
+                "name": "important"
+            },
+            {
+                "relationshipKey": "data.items.refIpGroup",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "description": "地址组引用的IP组对象列表 -- 请求时该参数和参数ipRanges二选一",
+                "type": "string[]",
+                "docrequired": "按条件选择",
+                "name": "refIpGroup"
+            },
+            {
+                "relationshipKey": "data.items.dataStatus",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "AUTO",
+                            "description": "系统自动识别"
+                        },
+                        {
+                            "value": "EXIST",
+                            "description": "存在"
+                        },
+                        {
+                            "value": "NOT-EXIST",
+                            "description": "不存在"
+                        }
+                    ]
+                },
+                "description": "标识敏感数据识别方式是自动识别或者存在或者不存在",
+                "type": "string",
+                "docrequired": "否",
+                "name": "dataStatus"
+            },
+            {
+                "relationshipKey": "data.items.hasref",
+                "extra": [],
+                "description": "标识是否被引用",
+                "type": "bool",
+                "docrequired": "--",
+                "name": "hasref"
+            },
+            {
+                "relationshipKey": "data.items.isdefault",
+                "extra": [],
+                "description": "标识是否是默认配置",
+                "type": "bool",
+                "docrequired": "--",
+                "name": "isdefault"
+            },
+            {
+                "relationshipKey": "data.items.showname",
+                "extra": [],
+                "description": "标识默认配置的名字",
+                "type": "string",
+                "docrequired": "--",
+                "name": "showname"
+            },
+            {
+                "relationshipKey": "data.items.pageNum",
+                "extra": [],
+                "description": "敏感数据页面数",
+                "type": "int32",
+                "docrequired": "--",
+                "name": "pageNum"
+            }
+        ]
+    }
+}

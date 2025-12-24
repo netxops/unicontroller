@@ -1,0 +1,11 @@
+base_mode_config: mode_config/base_mode_config.yaml
+base_templates:
+  - collect/base/ssh_version.yaml
+  - collect/base/ssh_os_info.yaml
+  - collect/base/ssh_hostname.yaml
+  - collect/base/ssh_ip_a.yaml
+  - parse/base/version_extract.yaml
+  - parse/base/hostname_extract.yaml
+  - alive/base/ssh_alive_check.yaml
+  - transform/base/alive_check_transform.yaml
+

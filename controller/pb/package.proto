@@ -1,0 +1,128 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+package pb;
+option go_package = "github.com/influxdata/telegraf/controller/pb";
+
+enum OutputFormat {
+  JSON = 0;
+  YAML = 1;
+  TOML = 2;
+}
+
+message StartReq {
+  string package = 1;
+}
+
+message StopReq {
+  string package = 1;
+}
+
+message RestartReq {
+  string package = 1;
+}
+
+message PackItem {
+  string package = 1;
+  bool isRunning = 2;
+  string schema = 3;
+  string version = 4;
+  int64 running_duration = 5;
+}
+
+message PackageListResp {
+  string agentCode = 1;
+  repeated PackItem packages = 2;
+}
+
+message ListConfigReq {
+  string package = 1;     // 服务包名称
+  string confName = 2;    // 配置文件名称
+  OutputFormat format = 3; // 输出格式
+}
+
+// GetConfigReq 用于请求获取配置
+message GetConfigsReq {
+  string package = 1;  // 包名
+}
+
+// GetConfigResp 用于返回配置信息
+message GetConfigsResp {
+  repeated ConfigItem configs = 1;
+}
+
+// ConfigItem 表示一个配置项
+message ConfigItem {
+  string file_name = 1;      // 配置键
+  string content = 2;  // 配置内容
+}
+
+// ApplyConfigsReq 用于请求应用配置
+message ApplyConfigsReq {
+  string package = 1;              // 包名
+  repeated ConfigItem configs = 2; // 要应用的配置项列表
+}
+
+message UpdatedFileDetail {
+  string file_name = 1;
+  int32 byte_count = 2;
+}
+
+// ApplyConfigsResp 用于应用配置的响应
+message ApplyConfigsResp {
+  bool success = 1;
+  string message = 2;
+  repeated UpdatedFileDetail updated_files = 3;
+}
+
+message GetRecentLogsReq {
+    string package = 1;
+    int32 count = 2;
+}
+
+message GetRecentLogsResp {
+    repeated string logs = 1;
+}
+
+message StreamLogsReq {
+    string package = 1;
+    int32 tail_lines = 2;  // 初始返回的行数，0 表示不返回历史日志
+    bool follow = 3;        // 是否持续跟踪新日志
+}
+
+message StreamLogsResp {
+    string log_line = 1;
+    bool is_eof = 2;        // 是否到达文件末尾（仅在 follow=false 时使用）
+}
+
+message QueryLogsReq {
+    string package = 1;
+    string keyword = 2;      // 搜索关键词（可选）
+    string level = 3;         // 日志级别过滤（可选，如 "error", "warn", "info"）
+    int64 start_time = 4;    // 开始时间戳（Unix 时间戳，秒）
+    int64 end_time = 5;      // 结束时间戳（Unix 时间戳，秒）
+    int32 limit = 6;         // 返回的最大行数
+    int32 offset = 7;        // 偏移量（用于分页）
+    bool reverse = 8;        // 是否反向排序（true 表示从新到旧）
+}
+
+message QueryLogsResp {
+    repeated string logs = 1;
+    int32 total = 2;         // 总行数（匹配条件的）
+    bool has_more = 3;        // 是否还有更多结果
+}
+
+
+// 服务定义
+service Package {
+  rpc Start (StartReq) returns (google.protobuf.Empty);
+  rpc Stop (StopReq) returns (google.protobuf.Empty);
+  rpc Restart (RestartReq) returns (google.protobuf.Empty);
+  rpc PackageList (google.protobuf.Empty) returns (PackageListResp);
+  rpc GetConfigs(GetConfigsReq) returns (GetConfigsResp);
+  rpc ApplyConfigs(ApplyConfigsReq) returns (ApplyConfigsResp);
+  rpc GetRecentLogs(GetRecentLogsReq) returns (GetRecentLogsResp) {}
+  rpc StreamLogs(StreamLogsReq) returns (stream StreamLogsResp) {}
+  rpc QueryLogs(QueryLogsReq) returns (QueryLogsResp) {}
+
+}

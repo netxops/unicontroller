@@ -1,0 +1,3010 @@
+﻿NJ2FB-N03-07-07-ASA5585-001# show run
+: Saved
+: 
+: Serial Number: JAD200100WK
+: Hardware:   ASA5585-SSP-60, 24576 MB RAM, CPU Xeon 5600 series 2399 MHz, 2 CPUs (24 cores)
+:
+ASA Version 9.2(4)14 
+!
+hostname NJ2FB-N03-07-07-ASA5585-001
+enable password GHwxTTA.bfiT1sEf encrypted
+names
+!
+interface GigabitEthernet0/0
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet0/1
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet0/2
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet0/3
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet0/4
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet0/5
+ description LAN Failover Interface
+!
+interface Management0/0
+ management-only
+ nameif management
+ security-level 100
+ ip address 172.24.9.19 255.255.255.0 standby 172.24.9.20 
+!
+interface Management0/1
+ management-only
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface TenGigabitEthernet0/6
+ description uT NJ2FB-N04-03-46-C9372PX-001  E1/1
+ channel-group 1 mode active
+ no nameif
+ no security-level
+ no ip address
+!
+interface TenGigabitEthernet0/7
+ description uT NJ2FB-N04-04-46-C9372PX-002 E1/1
+ channel-group 1 mode active
+ no nameif
+ no security-level
+ no ip address
+!
+interface TenGigabitEthernet0/8
+ description dT NJ2FB-N04-03-46-C9372PX-001  E1/2
+ channel-group 2 mode active
+ no nameif
+ no security-level
+ no ip address
+!
+interface TenGigabitEthernet0/9
+ description dT NJ2FB-N04-04-46-C9372PX-002 E1/2
+ channel-group 2 mode active
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/0
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/1
+ no nameif
+ security-level 100
+ no ip address
+!
+interface GigabitEthernet1/2
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!             
+interface GigabitEthernet1/3
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/4
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/5
+ description STATE Failover Interface
+!
+interface GigabitEthernet1/6
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/7
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/8
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/9
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/10
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/11
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/12
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/13
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/14
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/15
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!             
+interface GigabitEthernet1/16
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/17
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/18
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface GigabitEthernet1/19
+ shutdown
+ no nameif
+ no security-level
+ no ip address
+!
+interface Port-channel1
+ description uT NJ2FB-N04-03-46-C9372PX(NJ2FB-N04-04-46)
+ lacp max-bundle 8
+ no nameif
+ security-level 0
+ no ip address
+!
+interface Port-channel1.1101
+ vlan 1101
+ nameif outside
+ security-level 0
+ ip address 172.16.129.4 255.255.255.248 standby 172.16.129.5 
+!
+interface Port-channel2
+ description dT NJ2FB-N04-03-46-C9372PX(NJ2FB-N04-04-46)
+ lacp max-bundle 8
+ no nameif
+ no security-level
+ no ip address
+!
+interface Port-channel2.1102
+ vlan 1102
+ nameif inside
+ security-level 100
+ ip address 172.16.129.17 255.255.255.248 standby 172.16.129.18 
+!             
+boot system disk0:/asa924-14-smp-k8.bin
+ftp mode passive
+clock timezone CST 8
+object network inside-to-internet
+ subnet 172.16.0.0 255.240.0.0
+object network APP-009-credit_EPG
+ subnet 172.28.148.0 255.255.255.0
+object network APP-025-user-touch_EPG
+ subnet 172.28.184.0 255.255.255.0
+object network APP-022-service-output_EPG
+ subnet 172.28.161.0 255.255.255.0
+object network APP-008-personal-loan_EPG
+ subnet 172.28.147.0 255.255.255.0
+object network BeiJingBanGong
+ host 106.38.57.146
+object service TCP_80
+ service tcp destination eq www 
+object service TCP_20000
+ service tcp destination eq 20000 
+object-group network dip
+ network-object host 58.213.97.1
+object-group network nonat
+ network-object host 172.28.28.188
+ network-object host 172.28.28.189
+ network-object host 172.28.28.190
+ network-object host 172.28.28.191
+ network-object host 172.28.28.192
+ network-object host 172.28.28.193
+ network-object host 172.28.28.194
+ network-object host 172.28.28.195
+ network-object host 172.28.28.196
+ network-object host 172.28.28.197
+ network-object host 172.28.28.11
+ network-object host 172.28.28.198
+ network-object host 172.28.28.199
+ network-object host 172.28.28.200
+ network-object host 172.28.28.201
+ network-object host 172.28.28.202
+ network-object host 172.28.28.203
+ network-object host 172.28.25.27
+ network-object host 172.28.25.28
+ network-object host 172.28.25.29
+ network-object host 172.28.25.30
+object-group network testcenter
+ network-object host 172.16.129.58
+ network-object host 172.16.129.57
+ network-object 172.16.129.128 255.255.255.240
+ network-object host 172.16.128.1
+ network-object host 172.16.128.2
+object-group network BanGong
+ network-object host 202.105.41.196
+ network-object host 202.105.41.197
+ network-object host 101.95.128.234
+ network-object host 101.95.128.138
+ network-object host 124.74.76.126
+ network-object host 219.145.62.74
+ network-object host 116.247.86.98
+object-group network ntp-server
+ network-object host 172.28.25.27
+ network-object host 172.28.25.28
+ network-object host 172.28.25.29
+ network-object host 172.28.25.30
+object-group network dns-server
+ network-object host 172.28.25.31
+ network-object host 172.28.25.32
+ network-object host 172.28.25.33
+object-group network mail-server
+ network-object host 172.28.25.41
+ network-object host 172.28.25.42
+ network-object host 172.28.25.235
+object-group network BanGongWang
+ network-object host 101.95.128.138
+ network-object host 116.228.55.217
+ network-object host 116.228.55.237
+ network-object host 124.74.76.126
+ network-object host 124.74.76.38
+ network-object host 180.168.123.252
+ network-object host 180.168.194.202
+ network-object host 219.142.42.9
+ network-object host 222.66.102.162
+ network-object host 58.63.47.115
+ network-object host 14.23.58.90
+ network-object host 202.105.41.192
+ network-object host 101.95.128.234
+ network-object host 202.105.41.196
+ network-object host 202.105.41.194
+ network-object host 202.105.41.195
+ network-object host 202.105.41.197
+ network-object host 202.105.41.198
+ network-object host 202.105.41.193
+ network-object host 219.145.62.74
+ network-object host 116.247.86.98
+ network-object host 183.63.191.1
+ network-object host 183.63.191.2
+ network-object host 183.63.191.3
+ network-object host 183.63.191.4
+ network-object host 183.63.191.5
+ network-object host 116.228.151.1
+ network-object host 106.38.57.146
+ network-object host 219.145.62.75
+ network-object host 219.145.62.76
+ network-object host 219.145.62.77
+ network-object host 219.145.62.78
+ network-object host 58.37.77.200
+ network-object host 124.74.76.37
+ network-object host 106.38.57.147
+ network-object host 113.140.93.162
+ network-object host 113.140.93.163
+ network-object host 113.140.93.164
+ network-object host 113.140.93.165
+ network-object host 113.140.93.166
+ network-object host 101.231.155.38
+ network-object 117.35.158.64 255.255.255.248
+ network-object host 58.40.127.162
+ network-object host 101.95.110.106
+ network-object host 114.222.101.93
+ network-object host 58.213.73.14
+ network-object host 58.213.99.1
+ network-object host 58.213.99.2
+ network-object host 58.213.99.3
+ network-object host 58.213.99.4
+ network-object host 58.213.99.5
+ network-object host 58.213.99.6
+ network-object host 58.213.99.7
+ network-object host 58.213.99.8
+ network-object host 58.213.99.9
+ network-object host 58.213.99.10
+ network-object host 58.213.99.11
+ network-object host 58.213.99.12
+ network-object host 58.213.99.13
+ network-object host 58.213.99.14
+ network-object host 113.140.94.126
+ network-object host 219.137.167.180
+ network-object host 14.23.70.210
+ network-object host 58.246.144.98
+ network-object host 58.247.84.18
+ network-object host 116.228.55.248
+ network-object host 116.228.55.220
+ network-object host 116.228.55.126
+ network-object host 180.168.249.94
+ network-object host 116.228.40.2
+ network-object host 116.228.40.5
+ network-object host 180.166.55.158
+ network-object host 203.110.166.65
+ network-object host 203.156.206.146
+ network-object host 118.85.193.207
+ network-object host 42.99.17.12
+ network-object host 116.228.55.253
+ network-object host 101.95.108.210
+object-group network mail-server-out
+ network-object host 58.213.97.130
+ network-object host 58.213.97.131
+object-group service mail-server-out-service
+ service-object 25 
+ service-object 110 
+ service-object 143 
+object-group network dns-server-out
+ network-object host 58.213.97.128
+ network-object host 58.213.97.129
+object-group network BigData-server
+ network-object host 172.28.61.55
+ network-object host 172.28.61.56
+object-group service BigData-services tcp
+ port-object eq ssh
+ port-object eq telnet
+ port-object eq www
+ port-object eq https
+ port-object range 4621 4631
+object-group network GIT-Server
+ network-object host 172.28.25.59
+ network-object host 172.28.25.60
+object-group network gitlab
+ network-object host 172.28.25.59
+ network-object host 172.28.25.60
+object-group network nexus
+ network-object host 172.28.25.61
+ network-object host 172.28.25.62
+object-group network map
+ network-object 115.239.210.0 255.255.255.0
+ network-object 140.205.174.0 255.255.255.0
+ network-object 182.92.251.0 255.255.255.0
+ network-object 101.201.173.0 255.255.255.0
+ network-object host 140.205.34.39
+object-group network minsheng-bill
+ network-object host 172.28.159.58
+ network-object host 172.28.159.59
+ network-object host 172.28.159.60
+ network-object host 172.28.159.61
+ network-object host 172.28.159.62
+ network-object host 172.28.159.63
+object-group network financing-ws
+ network-object host 172.28.152.50
+ network-object host 172.28.152.51
+ network-object host 172.28.152.52
+object-group network ecurrency-sgwcallback
+ network-object host 172.28.150.107
+object-group network payassistant-core
+ network-object host 172.28.158.28
+ network-object host 172.28.158.29
+ network-object host 172.28.158.30
+ network-object host 172.28.158.31
+ network-object host 172.28.158.32
+ network-object host 172.28.158.33
+object-group network oics
+ network-object host 172.28.143.19
+ network-object host 172.28.143.20
+object-group network mbp-weixin
+ network-object host 172.28.164.116
+ network-object host 172.28.164.117
+ network-object host 172.28.164.118
+object-group network financing-activity-core
+ network-object host 172.28.152.64
+ network-object host 172.28.152.65
+ network-object host 172.28.152.66
+object-group network ecurrency-flowpackage
+ network-object host 172.28.150.182
+ network-object host 172.28.150.89
+ network-object host 172.28.150.90
+ network-object host 172.28.150.91
+ network-object host 172.28.150.92
+ network-object host 172.28.150.93
+object-group network cf-credit-core-web
+ network-object host 172.28.147.15
+ network-object host 172.28.147.16
+ network-object host 172.28.147.17
+ network-object host 172.28.147.18
+object-group network minsheng-livelihood-payment-gate
+ network-object host 172.28.159.72
+ network-object host 172.28.159.73
+object-group network minsheng-unionwriteoff-bestpay-dubbo
+ network-object host 172.28.141.33
+ network-object host 172.28.141.34
+object-group network mbp-launch
+ network-object host 172.28.164.30
+ network-object host 172.28.164.31
+ network-object host 172.28.164.32
+ network-object host 172.28.164.33
+ network-object host 172.28.164.34
+ network-object host 172.28.164.35
+ network-object host 172.28.164.36
+ network-object host 172.28.164.37
+ network-object host 172.28.164.38
+ network-object host 172.28.164.39
+ network-object host 172.28.164.40
+ network-object host 172.28.164.41
+object-group network financing-chinainsurance-core
+ network-object host 172.28.152.82
+ network-object host 172.28.152.83
+ network-object host 172.28.152.84
+ network-object host 172.28.152.85
+ network-object host 172.28.152.86
+object-group network payassistant-bindcard
+ network-object host 172.28.158.15
+ network-object host 172.28.158.16
+ network-object host 172.28.158.17
+object-group network payassistant-bizhallcheck
+ network-object host 172.28.158.18
+ network-object host 172.28.158.19
+ network-object host 172.28.158.20
+object-group network front-smshttp
+ network-object host 172.28.143.191
+ network-object host 172.28.141.19
+ network-object host 172.28.141.20
+ network-object host 172.28.141.21
+object-group network insurance-restful
+ network-object host 172.28.153.11
+ network-object host 172.28.153.12
+ network-object host 172.28.153.13
+object-group network ecurrency-sgwmobilerecharge
+ network-object host 172.28.150.111
+ network-object host 172.28.150.112
+ network-object host 172.28.150.113
+ network-object host 172.28.150.114
+ network-object host 172.28.150.115
+object-group network otafront
+ network-object host 172.28.184.127
+ network-object host 172.28.184.128
+object-group network mbp-support
+object-group network financing-ticket-core
+ network-object host 172.28.164.106
+ network-object host 172.28.164.107
+ network-object host 172.28.164.108
+ network-object host 172.28.164.109
+ network-object host 172.28.164.110
+ network-object host 172.28.152.27
+ network-object host 172.28.164.111
+ network-object host 172.28.152.28
+ network-object host 172.28.152.29
+ network-object host 172.28.152.30
+ network-object host 172.28.152.31
+object-group network mbp-message
+ network-object host 172.28.141.30
+ network-object host 172.28.141.31
+ network-object host 172.28.141.32
+object-group network financing-independent-front
+ network-object host 172.28.152.57
+ network-object host 172.28.152.58
+object-group network financing-fund-mect
+object-group network bboss-oms-gz
+ network-object host 172.28.154.11
+ network-object host 172.28.154.12
+object-group network bpep-fas-inf
+ network-object host 172.28.145.55
+ network-object host 172.28.145.56
+ network-object host 172.28.145.57
+object-group network bpep-cashier-web
+ network-object host 172.28.145.35
+ network-object host 172.28.145.36
+ network-object host 172.28.145.37
+object-group network bpep-cashier-service
+ network-object host 172.28.145.32
+ network-object host 172.28.145.33
+ network-object host 172.28.145.34
+object-group network bppf-pos
+ network-object host 172.28.145.145
+ network-object host 172.28.145.146
+ network-object host 172.28.145.147
+ network-object host 172.28.145.148
+object-group network bppf-bestpay-pos
+ network-object host 172.28.145.143
+ network-object host 172.28.145.144
+object-group network bpbp-bgw-service
+ network-object host 172.28.159.21
+ network-object host 172.28.159.22
+ network-object host 172.28.159.23
+ network-object host 172.28.159.24
+object-group network bpbp-gateway-bus
+ network-object host 172.28.159.13
+ network-object host 172.28.159.14
+object-group network bppf-trp
+ network-object host 172.28.159.17
+ network-object host 172.28.159.81
+object-group network bpecl-gateway
+ network-object host 172.28.144.27
+ network-object host 172.28.144.28
+object-group network bpecl-tasks
+ network-object host 172.28.144.54
+ network-object host 172.28.144.55
+ network-object host 172.28.144.56
+object-group network bpecl-service
+ network-object host 172.28.144.42
+ network-object host 172.28.144.43
+ network-object host 172.28.144.44
+object-group network bpecl-order
+ network-object host 172.28.144.48
+ network-object host 172.28.144.49
+ network-object host 172.28.144.50
+object-group network bppe-cps
+ network-object host 172.28.146.78
+ network-object host 172.28.146.79
+ network-object host 172.28.146.80
+ network-object host 172.28.146.81
+object-group network bppe-portal-site
+ network-object host 172.28.146.72
+ network-object host 172.28.146.73
+ network-object host 172.28.146.74
+ network-object host 172.28.146.75
+ network-object host 172.28.146.76
+ network-object host 172.28.146.77
+object-group network bppe-cms
+ network-object host 172.28.146.82
+ network-object host 172.28.146.83
+ network-object host 172.28.146.84
+ network-object host 172.28.146.85
+object-group network bppe-mgs
+ network-object host 172.28.146.20
+ network-object host 172.28.146.21
+object-group network bppe-ooms
+ network-object host 172.28.146.96
+ network-object host 172.28.146.97
+object-group network bpposp-pabs-web
+ network-object host 172.28.142.53
+ network-object host 172.28.142.54
+ network-object host 172.28.142.55
+object-group network bpmt-billpay
+ network-object host 172.28.145.154
+ network-object host 172.28.145.155
+ network-object host 172.28.145.156
+object-group network bpep-portal-web
+ network-object host 172.28.145.97
+ network-object host 172.28.145.98
+ network-object host 172.28.145.99
+object-group network bpep-testPage
+ network-object host 172.28.145.115
+ network-object host 172.28.145.116
+ network-object host 172.28.145.117
+object-group network be-mepf-infdl
+ network-object host 172.28.154.15
+ network-object host 172.28.154.16
+ network-object host 172.28.154.17
+ network-object host 172.28.154.18
+object-group network be-mcms
+ network-object host 172.28.154.13
+ network-object host 172.28.154.14
+object-group network bppe-ap
+ network-object host 172.28.146.24
+ network-object host 172.28.146.25
+ network-object host 172.28.146.26
+ network-object host 172.28.146.27
+object-group network bpecl-credit-product
+ network-object host 172.28.144.73
+ network-object host 172.28.144.74
+ network-object host 172.28.144.75
+object-group network bppf-inf
+ network-object host 172.28.146.115
+ network-object host 172.28.146.116
+ network-object host 172.28.146.117
+ network-object host 172.28.146.118
+object-group network bpep-barcodefront
+ network-object host 172.28.184.181
+ network-object host 172.28.184.191
+ network-object host 172.28.184.201
+ network-object host 172.28.184.124
+object-group network bpcs-web
+ network-object host 172.28.184.22
+ network-object host 172.28.184.125
+ network-object host 172.28.184.126
+object-group network bpep-batchpay-inf
+ network-object host 172.28.145.28
+ network-object host 172.28.145.29
+object-group network cif-basic-service
+object-group network bpcs-filepush
+object-group network bpbp-settle-chk
+object-group network bpcs-inf
+ network-object host 172.28.161.17
+ network-object host 172.28.161.18
+object-group network bpcs-transfer
+ network-object host 172.28.161.19
+object-group network gw-manager
+ network-object host 172.28.163.101
+ network-object host 172.28.163.102
+ network-object host 172.28.163.103
+ network-object host 172.28.163.104
+ network-object host 172.28.163.105
+ network-object host 172.28.163.106
+ network-object host 172.28.163.107
+object-group network uc-trade
+ network-object host 172.28.163.108
+ network-object host 172.28.163.109
+ network-object host 172.28.163.110
+ network-object host 172.28.163.111
+ network-object host 172.28.163.112
+ network-object host 172.28.163.113
+ network-object host 172.28.157.64
+ network-object host 172.28.157.65
+ network-object host 172.28.157.66
+object-group network uc-statement
+object-group network uc-oms
+object-group network gw-outerbank
+ network-object host 172.28.160.34
+ network-object host 172.28.160.35
+ network-object host 172.28.160.36
+object-group network Deny_FTP
+ network-object host 61.160.190.34
+ network-object host 180.153.47.138
+ network-object host 202.105.41.199
+ network-object host 210.51.244.175
+ network-object host 106.37.196.54
+object-group network TuNiu
+ network-object host 180.97.2.17
+ network-object host 58.240.20.7
+object-group service http-https tcp
+ port-object eq www
+ port-object eq https
+object-group network temp-any
+ network-object host 172.28.29.111
+ network-object host 172.28.29.112
+ network-object host 172.28.29.113
+ network-object host 172.28.29.114
+ network-object host 172.28.29.109
+ network-object host 172.28.29.110
+ network-object host 172.28.29.140
+ network-object host 172.28.29.141
+ network-object host 172.28.29.142
+ network-object host 172.28.29.143
+ network-object host 172.28.29.144
+ network-object host 172.28.29.145
+ network-object host 172.28.29.146
+ network-object host 172.28.29.147
+ network-object host 172.28.29.119
+ network-object host 172.28.29.105
+ network-object host 172.28.29.106
+ network-object host 172.28.29.137
+ network-object host 172.28.29.222
+ network-object host 172.28.29.133
+ network-object host 172.28.29.125
+ network-object host 172.28.29.135
+ network-object host 172.28.29.131
+ network-object host 172.28.29.129
+ network-object host 172.28.29.132
+ network-object host 172.28.29.134
+ network-object host 172.28.29.117
+ network-object host 172.28.29.200
+ network-object host 172.28.29.126
+ network-object host 172.28.29.108
+ network-object host 172.28.29.107
+object-group network internet-any
+ network-object host 58.213.97.18
+ network-object host 58.213.97.19
+ network-object host 58.213.97.20
+ network-object host 58.213.97.21
+ network-object host 58.213.97.22
+ network-object host 58.213.97.24
+ network-object host 58.213.97.25
+ network-object host 58.213.97.27
+ network-object host 58.213.97.31
+ network-object host 58.213.97.32
+ network-object host 58.213.97.33
+ network-object host 58.213.97.34
+ network-object host 58.213.97.35
+ network-object host 58.213.97.36
+ network-object host 58.213.97.38
+ network-object host 58.213.97.39
+ network-object host 58.213.97.40
+ network-object host 58.213.97.41
+ network-object host 58.213.97.42
+ network-object host 58.213.97.43
+ network-object host 58.213.97.44
+ network-object host 58.213.97.46
+ network-object host 58.213.97.47
+ network-object host 58.213.97.78
+ network-object host 58.213.97.79
+ network-object host 58.213.97.80
+ network-object host 58.213.97.81
+ network-object host 58.213.97.83
+ network-object host 58.213.97.86
+ network-object host 58.213.97.87
+ network-object host 58.213.97.88
+ network-object host 58.213.97.91
+ network-object host 58.213.97.101
+ network-object host 58.213.97.102
+ network-object host 58.213.97.223
+ network-object host 58.213.97.30
+ network-object host 58.213.97.54
+object-group network GuangZhouShangHu1
+ network-object host 58.213.97.18
+ network-object host 223.202.102.186
+ network-object host 183.232.90.53
+ network-object host 183.232.84.103
+ network-object host 183.232.90.42
+ network-object host 113.106.73.254
+ network-object host 132.129.39.10
+ network-object host 116.228.151.1
+ network-object host 222.211.83.206
+ network-object host 116.228.151.8
+ network-object host 117.78.3.117
+ network-object host 120.24.217.33
+ network-object host 121.14.17.76
+ network-object host 121.41.91.170
+ network-object host 122.112.220.46
+ network-object host 122.112.220.47
+ network-object host 219.133.170.82
+ network-object host 222.211.83.208
+ network-object host 14.23.58.90
+ network-object host 202.105.41.194
+ network-object host 202.105.41.195
+ network-object host 202.105.41.196
+ network-object host 202.105.41.197
+ network-object host 202.105.41.198
+ network-object host 112.80.23.163
+ network-object host 112.80.23.166
+ network-object host 123.151.31.100
+ network-object host 123.151.31.200
+ network-object host 123.151.31.235
+ network-object host 123.151.31.236
+ network-object host 123.151.31.237
+ network-object host 123.151.31.238
+ network-object host 125.39.36.100
+ network-object host 125.39.36.200
+ network-object host 125.39.36.235
+ network-object host 125.39.36.236
+ network-object host 125.39.36.237
+ network-object host 125.39.36.238
+ network-object host 61.155.183.163
+ network-object host 61.155.183.166
+ network-object host 117.78.51.254
+ network-object host 117.78.51.246
+ network-object host 114.55.251.138
+ network-object host 59.151.30.148
+object-group network GuangZhouShangHu2
+ network-object host 58.213.97.18
+ network-object host 120.24.91.211
+ network-object host 182.147.243.67
+ network-object host 211.151.81.100
+ network-object host 120.204.70.119
+ network-object host 27.115.105.178
+ network-object host 180.166.18.178
+ network-object host 219.137.167.246
+ network-object host 61.145.117.183
+ network-object host 219.136.252.38
+ network-object host 115.236.20.168
+ network-object host 115.236.20.169
+ network-object host 115.236.20.170
+ network-object host 115.236.20.171
+ network-object host 115.236.20.172
+ network-object host 115.236.20.173
+ network-object host 115.236.20.174
+ network-object host 115.236.20.175
+ network-object host 115.236.77.92
+ network-object host 123.157.215.251
+ network-object host 182.147.243.56
+ network-object host 220.166.180.156
+ network-object host 182.140.132.164
+object-group network GuangZhouShangHu3
+ network-object host 101.231.155.38
+ network-object host 101.95.128.138
+ network-object host 106.38.57.146
+ network-object host 106.38.57.147
+ network-object host 116.228.151.1
+ network-object host 116.228.55.217
+ network-object host 116.228.55.237
+ network-object host 124.74.76.126
+ network-object host 124.74.76.37
+ network-object host 124.74.76.38
+ network-object host 14.23.58.90
+ network-object host 180.168.123.252
+ network-object host 180.168.194.202
+ network-object host 202.105.41.194
+ network-object host 202.105.41.195
+ network-object host 202.105.41.196
+ network-object host 202.105.41.197
+ network-object host 202.105.41.198
+ network-object host 219.142.42.9
+ network-object host 219.145.62.74
+ network-object host 219.145.62.75
+ network-object host 219.145.62.76
+ network-object host 219.145.62.77
+ network-object host 219.145.62.78
+ network-object host 222.66.102.162
+ network-object host 58.40.127.162
+ network-object host 58.63.47.115
+ network-object host 58.37.77.200
+ network-object host 116.247.86.98
+ network-object host 101.95.128.234
+ network-object host 113.140.93.162
+ network-object host 113.140.93.163
+ network-object host 113.140.93.164
+ network-object host 113.140.93.165
+ network-object host 113.140.93.166
+ network-object 117.35.158.64 255.255.255.248
+object-group network GuangZhouShangHu4
+ network-object host 101.81.66.12
+ network-object host 116.226.155.219
+ network-object host 183.6.190.179
+ network-object host 14.23.58.90
+ network-object host 202.105.41.196
+ network-object host 202.105.41.197
+ network-object host 121.14.17.135
+ network-object host 121.14.17.136
+ network-object host 116.226.154.243
+ network-object host 116.226.176.47
+ network-object host 180.168.209.154
+ network-object host 116.226.179.111
+ network-object host 58.248.240.18
+ network-object 219.141.157.32 255.255.255.224
+object-group network DianZiHuoBi
+ network-object host 42.123.76.4
+ network-object host 182.140.241.10
+ network-object host 182.140.241.34
+ network-object host 121.40.48.6
+ network-object host 121.41.18.87
+ network-object host 121.196.224.154
+ network-object host 101.201.198.147
+ network-object host 182.147.243.56
+ network-object host 182.147.243.69
+ network-object host 182.147.243.68
+ network-object host 182.147.243.67
+ network-object host 182.147.243.73
+ network-object host 182.147.243.77
+ network-object host 182.147.243.78
+ network-object host 125.71.214.80
+object-group network ShengGongSi
+ network-object host 202.104.55.55
+ network-object host 222.171.49.237
+ network-object host 115.205.56.230
+ network-object host 219.149.138.134
+ network-object host 218.70.164.12
+ network-object host 218.95.253.66
+ network-object host 124.115.22.14
+ network-object host 221.238.82.33
+ network-object host 202.103.45.130
+ network-object host 222.223.186.70
+ network-object host 202.103.233.104
+ network-object host 202.102.121.69
+ network-object host 171.217.95.14
+ network-object host 219.149.193.180
+ network-object host 59.52.255.96
+ network-object host 219.148.168.208
+ network-object host 222.247.37.166
+ network-object host 202.102.194.78
+ network-object host 61.138.255.132
+ network-object host 202.100.89.192
+ network-object host 219.148.206.138
+ network-object host 219.143.212.53
+ network-object host 61.131.4.8
+ network-object host 61.189.159.182
+ network-object host 219.146.4.79
+ network-object host 123.161.200.9
+ network-object host 222.221.19.0
+ network-object host 202.100.109.83
+ network-object host 218.80.213.51
+ network-object host 202.100.109.118
+ network-object host 101.81.228.248
+ network-object host 218.80.213.28
+ network-object host 218.80.213.48
+object-group network KeFu-system
+ network-object host 58.213.99.4
+ network-object host 58.213.99.7
+ network-object host 58.213.99.8
+ network-object host 58.213.99.9
+ network-object host 58.213.99.10
+ network-object host 58.213.99.11
+ network-object host 58.213.99.12
+ network-object host 58.213.99.13
+ network-object host 58.213.99.14
+ network-object host 61.149.180.102
+object-group network BaXianWan
+ network-object host 59.42.254.209
+ network-object host 219.137.167.250
+object-group network Shenggongsi
+ network-object host 123.161.200.0
+ network-object host 219.150.171.96
+ network-object host 219.150.172.24
+ network-object host 222.85.87.232
+ network-object 222.85.93.0 255.255.255.0
+object-group network To_message-center
+ network-object host 202.173.255.122
+ network-object 218.202.226.0 255.255.255.0
+ network-object 180.169.33.0 255.255.255.0
+ network-object 27.115.100.0 255.255.255.0
+ network-object host 36.110.168.35
+ network-object host 202.108.253.227
+ network-object host 111.13.124.226
+ network-object host 111.13.124.230
+ network-object host 210.14.134.81
+ network-object host 114.113.154.5
+ network-object host 139.196.250.20
+ network-object host 123.126.133.162
+ network-object host 221.179.180.156
+ network-object host 211.99.191.141
+ network-object host 124.126.119.17
+ network-object host 114.113.154.86
+ network-object host 118.178.35.87
+ network-object host 221.179.180.158
+ network-object host 211.100.62.140
+ network-object host 123.126.133.188
+object-group network APP-002-technology_EPG
+ network-object 172.28.141.0 255.255.255.0
+object-group network blacklist
+ network-object host 49.82.124.216
+ network-object host 106.111.194.233
+ network-object host 110.184.36.20
+ network-object host 110.184.36.188
+ network-object host 110.184.36.120
+ network-object host 110.184.36.182
+ network-object host 110.184.36.149
+ network-object host 120.76.188.45
+ network-object host 110.184.32.158
+ network-object host 110.184.35.79
+ network-object host 110.184.35.77
+ network-object host 110.184.32.209
+ network-object host 110.184.32.208
+ network-object host 110.184.39.75
+ network-object host 110.184.32.198
+ network-object host 110.184.32.212
+ network-object host 110.184.35.150
+ network-object host 110.184.35.212
+ network-object host 110.184.32.216
+ network-object host 195.154.111.217
+ network-object host 115.159.214.237
+ network-object host 144.123.9.94
+ network-object host 71.19.248.201
+ network-object host 115.28.135.130
+ network-object host 121.42.13.121
+ network-object host 218.16.143.237
+ network-object host 47.94.17.6
+ network-object host 47.93.240.231
+ network-object host 47.94.21.103
+ network-object host 47.94.8.202
+ network-object host 47.94.16.31
+ network-object host 123.56.13.184
+ network-object host 113.92.93.4
+ network-object host 50.117.69.203
+ network-object host 63.141.227.226
+ network-object host 111.205.62.5
+ network-object host 63.141.246.75
+ network-object host 59.110.62.194
+ network-object host 115.28.212.89
+ network-object host 66.240.205.34
+ network-object host 156.67.106.245
+ network-object host 195.62.52.235
+ network-object host 45.79.71.81
+ network-object host 46.166.185.140
+ network-object host 218.249.201.130
+ network-object host 123.207.235.68
+object-group network FengKong_25.148-149
+ network-object host 172.28.25.148
+ network-object host 172.28.25.149
+object-group network ALI
+ network-object 140.205.144.0 255.255.255.0
+ network-object 140.205.145.0 255.255.255.0
+ network-object 140.205.146.0 255.255.255.0
+ network-object 100.68.4.0 255.255.255.0
+ network-object 140.205.128.0 255.255.255.0
+ network-object 100.68.13.0 255.255.255.0
+ network-object 100.68.30.0 255.255.255.0
+ network-object 100.68.31.0 255.255.255.0
+ network-object 106.11.63.0 255.255.255.0
+ network-object 140.205.134.0 255.255.255.0
+ network-object 140.205.40.0 255.255.255.0
+ network-object 140.205.39.0 255.255.255.0
+ network-object 100.68.18.0 255.255.255.0
+ network-object 140.205.51.0 255.255.255.0
+ network-object 140.205.56.0 255.255.255.0
+object-group network YiXin
+ network-object host 106.3.156.69
+object-group network ZhengXinShangHu
+ network-object host 121.41.4.112
+ network-object host 61.172.238.240
+ network-object host 180.153.42.142
+ network-object host 111.13.102.30
+ network-object host 111.13.102.167
+ network-object host 111.13.102.38
+ network-object host 111.13.102.159
+ network-object host 116.228.240.210
+ network-object host 114.113.67.61
+ network-object host 122.115.48.61
+ network-object host 119.254.122.56
+ network-object host 119.254.122.57
+ network-object host 122.115.42.51
+ network-object host 123.125.97.71
+ network-object host 101.95.113.22
+ network-object host 120.27.194.34
+ network-object host 183.63.191.1
+ network-object host 183.63.191.2
+ network-object host 183.63.191.3
+ network-object host 183.63.191.4
+ network-object host 183.63.191.5
+ network-object host 132.35.74.79
+ network-object host 101.227.69.226
+ network-object host 101.227.69.220
+ network-object host 101.227.69.162
+ network-object host 61.152.114.145
+ network-object host 61.152.114.140
+ network-object host 61.152.114.134
+ network-object host 61.152.114.162
+ network-object host 61.152.114.170
+ network-object host 211.144.223.196
+ network-object host 211.144.210.78
+ network-object host 211.144.210.82
+ network-object host 59.151.127.165
+ network-object host 59.151.120.114
+ network-object host 59.151.120.118
+ network-object host 120.136.160.62
+ network-object host 120.134.34.1
+ network-object host 120.134.34.2
+ network-object host 120.134.34.3
+ network-object host 120.134.34.4
+ network-object host 120.134.34.5
+ network-object host 120.134.34.6
+ network-object host 42.62.103.1
+ network-object host 42.62.103.2
+ network-object host 42.62.103.3
+ network-object host 42.62.103.4
+ network-object host 42.62.103.5
+ network-object host 42.62.103.6
+ network-object host 101.95.129.85
+ network-object host 101.95.129.77
+ network-object host 112.64.144.109
+ network-object host 103.250.194.133
+ network-object host 101.95.128.138
+ network-object host 101.95.128.234
+ network-object host 222.66.102.162
+ network-object host 124.74.76.126
+ network-object host 222.73.110.131
+ network-object host 103.47.136.99
+ network-object host 120.24.179.67
+ network-object host 124.251.29.76
+ network-object host 124.251.29.77
+ network-object host 124.251.29.78
+ network-object host 120.131.75.147
+ network-object host 120.131.75.148
+ network-object host 120.131.75.149
+ network-object host 106.39.51.22
+ network-object host 111.203.51.22
+ network-object host 123.58.34.157
+ network-object host 210.74.40.41
+ network-object host 117.78.47.184
+ network-object host 120.55.215.171
+ network-object host 117.78.31.67
+ network-object host 114.55.183.133
+ network-object host 115.29.181.206
+ network-object host 121.41.124.171
+ network-object host 58.246.145.226
+ network-object host 36.110.218.201
+ network-object host 36.110.218.202
+ network-object host 106.75.8.39
+ network-object host 123.124.21.210
+ network-object host 120.132.95.190
+ network-object host 61.135.232.133
+ network-object host 103.235.230.237
+ network-object host 116.226.100.154
+ network-object host 180.153.51.205
+ network-object host 114.55.226.230
+ network-object host 120.55.73.98
+ network-object host 121.41.109.218
+ network-object host 116.228.171.46
+ network-object host 202.109.116.131
+ network-object host 106.3.35.78
+ network-object host 36.110.136.70
+ network-object host 106.3.156.69
+ network-object host 122.13.162.98
+ network-object host 14.152.90.98
+ network-object host 101.254.100.37
+ network-object host 120.131.83.66
+ network-object host 117.122.213.136
+ network-object host 116.236.217.150
+ network-object host 106.75.23.96
+ network-object host 106.75.23.27
+ network-object host 106.75.23.128
+ network-object host 106.75.23.25
+ network-object host 123.59.153.128
+ network-object host 123.59.153.27
+ network-object host 180.166.55.26
+ network-object host 58.246.46.154
+ network-object host 180.168.249.94
+ network-object host 116.228.40.2
+ network-object host 116.228.40.5
+ network-object host 180.166.55.158
+ network-object host 203.110.166.65
+ network-object host 203.156.206.146
+ network-object host 118.85.193.207
+ network-object host 42.99.17.12
+ network-object host 211.152.37.236
+ network-object host 119.29.83.149
+ network-object host 119.29.5.217
+ network-object host 112.124.34.44
+ network-object host 139.217.14.172
+ network-object host 180.149.133.47
+ network-object host 180.149.133.6
+ network-object host 180.149.133.7
+ network-object host 180.149.133.48
+ network-object host 101.95.162.38
+ network-object host 112.65.144.34
+ network-object host 116.228.55.248
+ network-object host 116.228.55.220
+ network-object host 116.228.55.126
+ network-object host 114.55.35.107
+ network-object host 118.178.135.208
+ network-object host 114.55.36.16
+ network-object host 114.113.68.232
+ network-object host 43.227.141.232
+ network-object host 114.113.68.231
+ network-object host 43.227.141.231
+ network-object host 43.227.141.61
+object-group service CTB-tcp tcp
+ port-object eq 445
+ port-object eq 137
+ port-object eq 138
+ port-object eq netbios-ssn
+object-group service CTB-udp udp
+ port-object eq netbios-ns
+ port-object eq netbios-dgm
+ port-object eq 139
+object-group network jiao
+ network-object host 114.113.231.232
+ network-object host 114.113.231.233
+ network-object host 114.113.231.234
+ network-object host 114.113.231.235
+ network-object host 114.113.231.236
+ network-object host 114.113.231.237
+ network-object host 124.42.101.174
+ network-object host 122.115.40.241
+access-list sec extended permit tcp host 47.93.112.111 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 47.93.112.111 host 58.213.97.45 eq www 
+access-list sec extended deny tcp any any object-group CTB-tcp 
+access-list sec extended deny udp any any object-group CTB-udp 
+access-list sec extended permit tcp host 61.135.232.133 host 58.213.97.45 eq www 
+access-list sec extended permit ip host 121.33.197.198 any 
+access-list sec extended deny ip object-group blacklist 58.213.97.0 255.255.255.0 
+access-list sec extended deny ip object-group blacklist 58.213.98.0 255.255.255.0 
+access-list sec extended deny ip host 110.184.32.55 any 
+access-list sec extended deny ip host 110.184.32.81 any 
+access-list sec extended deny ip host 110.184.35.152 any 
+access-list sec extended deny ip host 110.184.35.149 any 
+access-list sec extended deny ip object-group blacklist host 58.213.97.101 
+access-list sec extended deny ip object-group blacklist host 58.213.97.78 
+access-list sec extended deny tcp host 61.153.54.165 host 58.213.97.86 eq https 
+access-list sec extended deny tcp host 61.153.54.165 host 58.213.97.86 eq www 
+access-list sec extended deny tcp host 61.153.54.164 host 58.213.97.86 eq https 
+access-list sec extended deny tcp host 61.153.54.164 host 58.213.97.86 eq www 
+access-list sec extended permit icmp any any 
+access-list sec extended permit ip object-group BanGong host 58.213.97.222 
+access-list sec extended permit ip host 218.94.158.244 host 58.213.97.222 
+access-list sec extended permit ip host 49.77.131.80 host 58.213.97.222 
+access-list sec extended permit ip host 180.166.180.137 host 58.213.97.222 
+access-list sec extended permit tcp any host 58.213.97.20 eq www 
+access-list sec extended permit ip host 46.19.160.46 host 58.213.97.222 
+access-list sec extended permit tcp any host 58.213.97.222 eq 1443 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.98.100 eq ssh 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.98.100 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.98.100 eq https 
+access-list sec extended permit ip host 183.63.191.96 host 58.213.97.201 
+access-list sec extended permit ip host 116.228.151.1 host 58.213.97.201 
+access-list sec extended permit ip host 116.228.151.1 host 58.213.97.202 
+access-list sec extended permit ip host 116.228.151.1 host 58.213.97.200 
+access-list sec extended permit ip host 116.228.151.1 host 58.213.97.189 
+access-list sec extended permit ip host 116.228.151.1 host 58.213.97.190 
+access-list sec extended permit ip host 183.63.191.96 host 58.213.97.200 
+access-list sec extended permit ip host 218.94.158.244 host 58.213.97.200 
+access-list sec extended permit ip host 116.228.55.217 host 58.213.97.200 
+access-list sec extended permit ip host 163.53.90.110 host 58.213.97.200 
+access-list sec extended permit ip 172.16.0.0 255.255.0.0 host 58.213.97.200 
+access-list sec extended permit ip 172.16.128.0 255.255.255.0 172.28.25.0 255.255.255.0 
+access-list sec extended permit ip host 114.86.98.251 host 58.213.97.222 
+access-list sec extended permit ip host 221.228.17.240 host 58.213.97.222 
+access-list sec extended permit ip host 58.213.141.194 host 58.213.97.222 
+access-list sec extended permit tcp host 101.95.128.138 host 58.213.97.223 eq www 
+access-list sec extended permit tcp host 101.95.128.234 host 58.213.97.223 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp any object-group mail-server-out eq smtp 
+access-list sec extended permit tcp any object-group mail-server-out eq pop3 
+access-list sec extended permit tcp any object-group mail-server-out eq imap4 
+access-list sec extended permit tcp any object-group dns-server-out eq domain 
+access-list sec extended permit udp any object-group dns-server-out eq domain 
+access-list sec extended permit ip host 223.68.252.76 host 58.213.97.222 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.22 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.22 eq https 
+access-list sec extended permit ip host 116.234.37.65 host 58.213.97.222 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.25 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.25 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.24 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.24 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.35 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.35 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.36 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.36 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.33 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.33 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.19 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.19 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.32 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.32 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.18 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.18 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.27 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.27 eq https 
+access-list sec extended permit tcp host 59.151.39.84 host 58.213.97.28 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.20 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.20 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.21 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.21 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.34 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.34 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.31 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.31 eq https 
+access-list sec extended permit tcp host 118.85.207.2 host 58.213.97.17 eq www 
+access-list sec extended permit tcp host 118.85.207.2 host 58.213.97.17 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.17 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.17 eq https 
+access-list sec extended permit tcp host 111.1.56.134 host 58.213.97.17 eq www 
+access-list sec extended permit tcp host 111.1.56.134 host 58.213.97.17 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.26 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.26 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.30 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.30 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.28 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.28 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.29 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.29 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.37 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.37 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.78 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.78 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.81 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.81 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.80 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.80 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.79 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.79 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.86 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.86 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.102 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.102 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.85 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.85 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.104 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.104 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.105 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.105 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.106 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.106 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.83 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.83 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.101 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.101 eq https 
+access-list sec extended permit tcp host 124.74.76.126 host 58.213.97.223 eq www 
+access-list sec extended permit tcp any host 58.213.97.61 eq 10086 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.88 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.88 eq https 
+access-list sec extended permit ip object-group BanGongWang host 58.213.97.77 
+access-list sec extended permit tcp any host 58.213.97.244 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.38 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.38 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.39 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.39 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.40 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.40 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.62 eq 10901 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.62 eq 10902 
+access-list sec extended permit ip host 221.216.161.100 host 58.213.97.222 
+access-list sec extended permit tcp host 183.62.49.170 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 116.228.151.1 host 58.213.98.100 eq ssh 
+access-list sec extended permit tcp host 116.228.151.1 host 58.213.98.100 eq https 
+access-list sec extended permit tcp host 116.228.151.1 host 58.213.98.100 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.42 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.42 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.43 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.43 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.44 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.44 eq https 
+access-list sec extended permit ip host 116.228.151.1 host 58.213.97.224 
+access-list sec extended permit ip host 14.23.58.90 host 58.213.97.222 
+access-list sec extended permit tcp host 183.62.49.170 host 58.213.98.100 eq ssh 
+access-list sec extended permit tcp host 183.62.49.170 host 58.213.98.100 eq https 
+access-list sec extended permit tcp host 183.62.49.170 host 58.213.98.100 eq www 
+access-list sec extended permit ip host 58.213.87.35 host 58.213.98.100 
+access-list sec extended permit ip host 180.166.180.138 host 58.213.97.222 
+access-list sec extended permit ip host 122.235.242.203 host 58.213.97.222 
+access-list sec extended permit tcp any host 58.213.97.41 eq www 
+access-list sec extended permit tcp any host 58.213.97.41 eq https 
+access-list sec extended permit ip host 122.235.136.167 host 58.213.97.222 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.223 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.223 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.91 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.91 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.62 eq 10903 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.87 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.87 eq www 
+access-list sec extended permit ip host 220.184.254.152 host 58.213.97.222 
+access-list sec extended permit ip 36.110.51.0 255.255.255.0 host 58.213.97.222 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.45 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.45 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.46 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.46 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.47 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.47 eq https 
+access-list sec extended permit tcp host 116.228.151.1 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 116.228.151.1 host 58.213.97.22 eq https 
+access-list sec extended permit tcp object-group TuNiu host 58.213.97.83 eq www 
+access-list sec extended permit tcp object-group TuNiu host 58.213.97.83 eq https 
+access-list sec extended permit tcp host 121.41.91.170 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.41.91.170 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.41.73.198 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.41.73.198 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 120.24.91.211 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 182.147.243.67 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 120.24.91.211 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 182.147.243.67 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 211.151.81.100 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 120.204.70.119 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 27.115.105.178 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 180.166.18.178 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 219.137.167.246 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 61.145.117.183 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 219.136.252.38 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 115.236.20.168 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 115.236.20.169 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 115.236.20.170 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 115.236.20.171 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 115.236.20.172 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 115.236.20.173 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 115.236.20.174 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 115.236.20.175 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 115.236.77.92 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 123.157.215.251 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 182.147.243.56 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 220.166.180.156 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 182.140.132.164 host 58.213.97.106 object-group http-https 
+access-list sec extended permit tcp host 58.246.176.10 host 58.213.97.33 object-group http-https 
+access-list sec extended permit tcp host 112.65.246.194 host 58.213.97.33 object-group http-https 
+access-list sec extended permit tcp host 112.65.247.64 host 58.213.97.33 object-group http-https 
+access-list sec extended permit tcp host 112.65.246.213 host 58.213.97.33 object-group http-https 
+access-list sec extended permit ip host 223.252.209.4 host 58.213.97.222 
+access-list sec extended permit tcp host 58.211.5.133 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 58.211.5.133 host 58.213.97.22 eq https 
+access-list sec extended permit tcp host 61.183.0.31 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 61.183.0.31 host 58.213.97.22 eq https 
+access-list sec extended permit tcp host 218.23.142.36 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 218.23.142.36 host 58.213.97.22 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.222 eq www 
+access-list sec extended permit tcp host 60.173.195.120 host 58.213.97.47 eq www 
+access-list sec extended permit tcp host 60.173.195.120 host 58.213.97.47 eq https 
+access-list sec extended permit tcp host 219.142.42.9 host 58.213.97.49 eq 18030 
+access-list sec extended permit tcp host 219.142.42.9 host 58.213.97.49 eq 10881 
+access-list sec extended permit tcp host 219.142.42.9 host 58.213.97.49 eq 18031 
+access-list sec extended permit tcp host 219.142.42.9 host 58.213.97.49 eq 10882 
+access-list sec extended permit tcp host 106.38.57.146 host 58.213.97.49 eq 18030 
+access-list sec extended permit tcp host 106.38.57.146 host 58.213.97.49 eq 10881 
+access-list sec extended permit tcp host 106.38.57.146 host 58.213.97.49 eq 18031 
+access-list sec extended permit tcp host 106.38.57.146 host 58.213.97.49 eq 10882 
+access-list sec extended permit tcp host 106.38.57.147 host 58.213.97.49 eq 18030 
+access-list sec extended permit tcp host 106.38.57.147 host 58.213.97.49 eq 10881 
+access-list sec extended permit tcp host 106.38.57.147 host 58.213.97.49 eq 18031 
+access-list sec extended permit tcp host 106.38.57.147 host 58.213.97.49 eq 10882 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.112 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.112 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.48 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.48 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.138 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.138 eq www 
+access-list sec extended permit ip object-group BanGongWang host 58.213.97.222 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.88 eq 1080 
+access-list sec extended permit ip host 101.95.110.106 host 58.213.97.222 
+access-list sec extended permit ip host 58.213.73.10 host 58.213.97.222 
+access-list sec extended permit ip host 114.222.100.229 host 58.213.97.222 
+access-list sec extended permit ip host 58.213.73.14 host 58.213.97.222 
+access-list sec extended permit ip host 58.213.73.10 host 58.213.98.100 
+access-list sec extended permit ip host 58.213.87.34 host 58.213.98.100 
+access-list sec extended permit tcp host 114.222.100.229 host 58.213.98.100 eq https 
+access-list sec extended permit tcp host 114.222.100.229 host 58.213.98.100 eq www 
+access-list sec extended permit tcp host 114.222.100.229 host 58.213.98.100 eq ssh 
+access-list sec extended permit ip host 49.77.47.67 host 58.213.98.100 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.76 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.76 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.50 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.50 eq https 
+access-list sec extended permit tcp 58.213.99.0 255.255.255.240 host 58.213.97.50 eq www 
+access-list sec extended permit tcp 58.213.99.0 255.255.255.240 host 58.213.97.50 eq https 
+access-list sec extended permit tcp host 58.213.99.1 host 58.213.97.50 eq www 
+access-list sec extended permit tcp host 58.213.99.1 host 58.213.97.50 eq https 
+access-list sec extended permit tcp host 58.213.99.7 host 58.213.97.50 eq www 
+access-list sec extended permit tcp host 58.213.99.7 host 58.213.97.50 eq https 
+access-list sec extended permit tcp any object-group internet-any eq www 
+access-list sec extended permit tcp any object-group internet-any eq https 
+access-list sec extended permit tcp object-group GuangZhouShangHu1 host 58.213.97.104 eq www 
+access-list sec extended permit tcp object-group GuangZhouShangHu1 host 58.213.97.104 eq https 
+access-list sec extended permit tcp object-group GuangZhouShangHu2 host 58.213.97.106 eq www 
+access-list sec extended permit tcp object-group GuangZhouShangHu2 host 58.213.97.106 eq https 
+access-list sec extended permit tcp object-group ALI host 58.213.97.45 eq www 
+access-list sec extended permit tcp object-group ALI host 58.213.97.45 eq https 
+access-list sec extended permit tcp object-group YiXin host 58.213.97.45 eq www 
+access-list sec extended permit tcp object-group YiXin host 58.213.97.45 eq https 
+access-list sec extended permit tcp object-group GuangZhouShangHu3 host 58.213.97.112 eq www 
+access-list sec extended permit tcp object-group GuangZhouShangHu3 host 58.213.97.112 eq https 
+access-list sec extended permit tcp object-group GuangZhouShangHu4 host 58.213.97.62 eq 10903 
+access-list sec extended permit ip host 114.222.101.205 host 58.213.97.222 
+access-list sec extended permit tcp host 120.39.63.57 host 58.213.97.48 eq https 
+access-list sec extended permit tcp host 120.39.63.57 host 58.213.97.48 eq www 
+access-list sec extended permit tcp host 124.205.147.174 host 58.213.97.48 eq www 
+access-list sec extended permit tcp host 124.205.147.174 host 58.213.97.48 eq https 
+access-list sec extended permit tcp host 124.202.212.146 host 58.213.97.48 eq www 
+access-list sec extended permit tcp host 124.202.212.146 host 58.213.97.48 eq https 
+access-list sec extended permit tcp host 118.244.190.35 host 58.213.97.48 eq www 
+access-list sec extended permit tcp host 118.244.190.35 host 58.213.97.48 eq https 
+access-list sec extended permit tcp host 101.81.25.32 host 58.213.97.48 eq www 
+access-list sec extended permit tcp host 101.81.25.32 host 58.213.97.48 eq https 
+access-list sec extended permit tcp object-group DianZiHuoBi host 58.213.97.31 eq www 
+access-list sec extended permit tcp object-group DianZiHuoBi host 58.213.97.31 eq https 
+access-list sec extended permit tcp any host 58.213.97.88 eq 1080 
+access-list sec extended permit ip host 114.222.101.191 host 58.213.97.222 
+access-list sec extended permit ip host 114.222.101.191 host 58.213.98.100 
+access-list sec extended permit tcp any host 58.213.97.29 eq www 
+access-list sec extended permit tcp any host 58.213.97.29 eq https 
+access-list sec extended permit ip host 221.226.48.86 host 58.213.98.100 
+access-list sec extended permit ip host 101.227.171.205 host 58.213.98.11 
+access-list sec extended permit tcp host 106.3.35.78 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 106.3.35.78 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 112.64.130.142 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 112.64.130.142 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.26.64.231 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.26.64.231 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 115.28.77.76 host 58.213.97.22 eq www 
+access-list sec extended permit ip host 183.129.154.138 host 58.213.97.222 
+access-list sec extended permit tcp host 182.92.213.41 host 58.213.97.27 eq www 
+access-list sec extended permit tcp host 182.92.213.41 host 58.213.97.27 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.125 eq https 
+access-list sec extended permit tcp host 121.69.50.14 host 58.213.97.48 eq www 
+access-list sec extended permit tcp host 121.69.50.14 host 58.213.97.48 eq https 
+access-list sec extended permit tcp host 221.228.17.104 host 58.213.97.26 eq www 
+access-list sec extended permit tcp host 221.228.17.104 host 58.213.97.26 eq https 
+access-list sec extended permit tcp host 139.217.26.253 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 139.217.26.253 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 139.217.15.186 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 139.217.15.186 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.56.205.118 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.56.205.118 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 223.255.252.39 host 58.213.97.17 eq www 
+access-list sec extended permit tcp host 223.255.252.39 host 58.213.97.17 eq https 
+access-list sec extended permit tcp host 220.181.165.22 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 220.181.165.22 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 220.181.165.23 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 220.181.165.23 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 220.181.165.150 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 220.181.165.150 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 220.181.165.151 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 220.181.165.151 host 58.213.97.45 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.52 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 58.213.99.4 host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp host 58.213.99.7 host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp host 58.213.99.8 host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp host 58.213.99.9 host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp host 58.213.99.10 host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp host 58.213.99.11 host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp host 58.213.99.12 host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp host 58.213.99.13 host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp host 58.213.99.14 host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp host 61.149.180.102 host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp host 210.74.41.40 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 210.74.41.40 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 210.74.42.41 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 210.74.42.41 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 219.143.18.210 host 58.213.97.49 eq 18030 
+access-list sec extended permit tcp host 219.143.18.210 host 58.213.97.49 eq 18031 
+access-list sec extended permit tcp host 123.125.97.228 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.125.97.228 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 180.153.42.143 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 180.153.42.143 host 58.213.97.45 eq https 
+access-list sec extended permit tcp object-group ShengGongSi host 58.213.97.76 eq https 
+access-list sec extended permit tcp object-group ShengGongSi host 58.213.97.50 eq https 
+access-list sec extended permit tcp host 43.243.130.43 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 43.243.130.43 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 122.13.162.98 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 122.13.162.98 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 14.152.90.98 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 14.152.90.98 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.254.100.37 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.254.100.37 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.131.83.66 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.131.83.66 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 117.122.213.136 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 117.122.213.136 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 36.110.136.70 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 36.110.136.70 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 106.120.129.11 host 58.213.97.47 eq www 
+access-list sec extended permit tcp host 106.120.129.11 host 58.213.97.47 eq https 
+access-list sec extended permit tcp host 114.251.242.240 host 58.213.97.47 eq www 
+access-list sec extended permit tcp host 114.251.242.240 host 58.213.97.47 eq https 
+access-list sec extended permit tcp host 211.152.37.236 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 211.152.37.236 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 203.166.187.164 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 203.166.187.164 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 43.243.130.44 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 43.243.130.44 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 117.139.18.82 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 117.139.18.83 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 117.139.18.84 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 117.139.18.82 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 117.139.18.83 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 117.139.18.84 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.251.108.150 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.251.108.146 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.251.108.155 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.251.108.150 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.251.108.146 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.251.108.155 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 218.6.173.59 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 218.6.173.59 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 222.81.175.135 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 222.81.175.135 host 58.213.97.22 eq https 
+access-list sec extended permit tcp host 180.97.2.17 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 180.97.2.17 host 58.213.97.106 eq https 
+access-list sec extended permit tcp object-group KeFu-system host 58.213.97.177 eq 1022 
+access-list sec extended permit tcp object-group BaXianWan host 58.213.97.51 eq www 
+access-list sec extended permit tcp object-group BaXianWan host 58.213.97.51 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.51 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.51 eq https 
+access-list sec extended permit tcp host 101.251.251.2 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.251.251.2 host 58.213.97.45 eq https 
+access-list sec extended permit tcp 182.147.243.0 255.255.255.0 host 58.213.97.47 eq www 
+access-list sec extended permit tcp 182.147.243.0 255.255.255.0 host 58.213.97.47 eq https 
+access-list sec extended permit tcp 220.166.180.128 255.255.255.192 host 58.213.97.47 eq www 
+access-list sec extended permit tcp 220.166.180.128 255.255.255.192 host 58.213.97.47 eq https 
+access-list sec extended permit tcp host 43.254.2.91 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 43.254.2.93 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 43.254.2.94 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 43.254.2.95 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 117.78.51.244 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 117.78.51.252 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 116.228.151.1 host 58.213.97.21 eq www 
+access-list sec extended permit tcp host 116.228.151.1 host 58.213.97.21 eq https 
+access-list sec extended permit tcp object-group Shenggongsi host 58.213.97.52 eq www 
+access-list sec extended permit tcp object-group Shenggongsi host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 123.161.200.9 host 58.213.97.52 eq www 
+access-list sec extended permit tcp 219.146.4.64 255.255.255.224 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 219.146.4.95 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 219.148.168.208 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 219.148.168.209 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 123.161.200.9 host 58.213.97.52 eq https 
+access-list sec extended permit tcp 219.146.4.64 255.255.255.224 host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 219.146.4.95 host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 219.148.168.208 host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 219.148.168.209 host 58.213.97.52 eq whois 
+access-list sec extended permit tcp object-group To_message-center host 58.213.97.53 eq https 
+access-list sec extended permit tcp object-group To_message-center host 58.213.97.53 eq www 
+access-list sec extended permit tcp host 114.55.225.181 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 114.55.225.181 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 123.58.34.208 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.58.34.208 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.58.34.209 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.58.34.209 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.58.34.210 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.58.34.210 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 118.178.192.55 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 118.178.192.55 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 106.14.32.251 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 106.14.32.251 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 182.106.140.45 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 182.106.140.45 host 58.213.97.22 eq https 
+access-list sec extended permit tcp host 182.106.140.46 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 182.106.140.46 host 58.213.97.22 eq https 
+access-list sec extended permit tcp host 14.23.156.163 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 14.23.156.163 host 58.213.97.22 eq https 
+access-list sec extended permit tcp host 14.23.156.164 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 14.23.156.164 host 58.213.97.22 eq https 
+access-list sec extended permit tcp host 121.41.31.9 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 121.41.31.9 host 58.213.97.22 eq https 
+access-list sec extended deny ip host 202.102.126.202 any 
+access-list sec extended permit tcp host 61.138.255.132 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 61.138.255.132 host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 220.171.37.250 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 220.171.37.250 host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 220.171.37.254 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 220.171.37.254 host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 219.149.193.177 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 219.149.193.177 host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 219.149.193.178 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 219.149.193.178 host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 219.149.193.179 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 219.149.193.179 host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 219.149.193.180 host 58.213.97.52 eq www 
+access-list sec extended permit tcp host 219.149.193.180 host 58.213.97.52 eq https 
+access-list sec extended permit tcp host 182.92.238.50 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 182.92.238.50 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 59.42.254.209 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 219.137.167.250 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 114.55.124.172 host 58.213.97.53 eq www 
+access-list sec extended permit tcp host 114.55.124.172 host 58.213.97.53 eq https 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.55 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.55 eq https 
+access-list sec extended permit tcp host 120.24.88.216 host 58.213.97.26 eq www 
+access-list sec extended permit tcp host 120.24.88.216 host 58.213.97.26 eq https 
+access-list sec extended permit tcp host 1.119.48.42 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 1.119.48.42 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 139.217.15.142 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 139.217.15.142 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 119.254.100.98 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 119.254.100.98 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 116.226.97.160 host 58.213.97.48 eq https 
+access-list sec extended permit tcp host 116.226.97.160 host 58.213.97.48 eq www 
+access-list sec extended permit tcp host 123.56.168.248 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.56.168.248 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 110.84.128.253 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 110.84.128.253 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 223.255.252.39 host 58.213.97.26 eq www 
+access-list sec extended permit tcp host 223.255.252.39 host 58.213.97.26 eq https 
+access-list sec extended permit tcp host 222.180.220.99 host 58.213.97.26 eq www 
+access-list sec extended permit tcp host 222.180.220.99 host 58.213.97.26 eq https 
+access-list sec extended permit tcp host 120.55.74.206 host 58.213.97.26 eq www 
+access-list sec extended permit tcp host 120.55.74.206 host 58.213.97.26 eq https 
+access-list sec extended permit tcp host 120.76.26.203 host 58.213.97.26 eq www 
+access-list sec extended permit tcp host 120.76.26.203 host 58.213.97.26 eq https 
+access-list sec extended permit tcp host 180.167.25.178 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 218.66.47.218 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 218.66.47.194 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 58.22.7.219 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 121.43.200.22 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.43.200.22 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.26.222.251 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.26.222.251 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.196.227.23 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.196.227.23 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.196.227.233 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.196.227.233 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.196.227.135 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.196.227.135 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.196.245.68 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.196.245.68 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 180.167.25.178 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 218.66.47.218 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 218.66.47.194 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 58.22.7.219 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 183.15.18.34 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 183.15.18.34 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.201.72.212 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.201.72.212 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 119.136.179.171 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 119.136.179.171 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 123.57.237.88 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 123.57.237.88 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 123.57.213.193 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 123.57.213.193 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 211.140.27.195 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 211.140.27.195 host 58.213.97.106 eq https 
+access-list sec extended permit tcp host 183.129.169.172 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 183.129.169.172 host 58.213.97.106 eq https 
+access-list sec extended permit tcp host 123.157.222.169 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 123.157.222.169 host 58.213.97.106 eq https 
+access-list sec extended permit tcp 218.66.47.192 255.255.255.192 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp 125.77.73.192 255.255.255.192 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp 58.22.7.192 255.255.255.192 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp 183.252.22.128 255.255.255.128 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp 222.47.40.0 255.255.255.128 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp 58.22.60.192 255.255.255.192 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 116.58.221.30 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 111.206.169.81 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 111.206.169.81 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 111.206.169.66 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 111.206.169.66 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 111.206.169.98 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 111.206.169.98 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.201.72.238 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.201.72.238 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 218.17.106.50 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 218.17.106.50 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.201.16.218 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 121.201.16.218 host 58.213.97.106 eq https 
+access-list sec extended permit tcp host 210.51.244.184 host 58.213.97.28 eq www 
+access-list sec extended permit tcp host 210.51.244.184 host 58.213.97.28 eq https 
+access-list sec extended permit tcp host 220.189.211.24 host 58.213.97.28 eq www 
+access-list sec extended permit tcp host 220.189.211.24 host 58.213.97.28 eq https 
+access-list sec extended permit tcp host 101.71.41.248 host 58.213.97.28 eq www 
+access-list sec extended permit tcp host 101.71.41.248 host 58.213.97.28 eq https 
+access-list sec extended permit tcp host 121.41.43.10 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.41.43.10 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 27.115.87.242 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 27.115.87.242 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 116.231.148.24 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.231.148.24 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 113.57.194.174 host 58.213.97.106 eq https 
+access-list sec extended permit tcp host 113.57.194.174 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 113.57.194.172 host 58.213.97.106 eq https 
+access-list sec extended permit tcp host 113.57.194.172 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 219.139.240.63 host 58.213.97.106 eq https 
+access-list sec extended permit tcp host 219.139.240.63 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 121.201.72.226 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.201.72.226 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.14.17.32 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.14.17.32 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.9.242.104 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.9.242.104 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.9.242.33 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.9.242.33 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 61.161.127.191 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 61.161.127.191 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.76.222.205 host 58.213.97.22 eq www 
+access-list sec extended permit tcp host 42.62.3.200 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 42.62.3.200 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 139.129.110.114 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 139.129.110.114 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 59.151.30.148 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 59.151.30.148 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 58.246.133.98 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 58.246.133.98 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 116.62.57.73 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.62.57.73 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 121.196.192.249 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.196.192.249 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 116.62.59.248 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.62.59.248 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 116.62.56.221 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.62.56.221 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 116.62.60.191 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.62.60.191 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.27.213.188 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.27.213.188 host 58.213.97.45 eq https 
+access-list sec extended permit tcp 59.36.102.0 255.255.255.0 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp 121.14.129.0 255.255.255.0 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp 121.14.133.0 255.255.255.0 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp host 101.201.38.182 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp host 101.201.39.12 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp host 221.12.175.66 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp host 182.147.243.67 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp host 182.140.132.188 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp host 192.168.15.147 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp host 114.80.106.82 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp host 140.206.213.66 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp host 116.228.55.237 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp host 124.74.76.126 host 58.213.98.11 eq ftp 
+access-list sec extended permit ip host 172.16.133.6 any 
+access-list sec extended permit tcp host 42.159.24.56 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 42.159.24.56 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 139.224.36.194 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 139.224.36.194 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 45.122.0.249 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 45.122.0.249 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.57.35.10 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.57.35.10 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 202.85.213.154 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 202.85.213.154 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.77.236.70 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.77.236.70 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.77.236.18 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.77.236.18 host 58.213.97.45 eq www 
+access-list sec extended permit tcp object-group ZhengXinShangHu host 58.213.97.45 eq www 
+access-list sec extended permit tcp object-group ZhengXinShangHu host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.27.154.102 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 120.27.154.102 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 114.215.241.155 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 114.215.241.155 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 114.55.176.181 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 114.55.176.181 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 121.41.124.100 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.41.124.100 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.251.193.41 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.251.193.41 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 124.65.161.34 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 124.65.161.34 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 58.213.99.7 host 58.213.97.53 eq www 
+access-list sec extended permit tcp host 58.213.99.7 host 58.213.97.53 eq https 
+access-list sec extended permit tcp host 119.147.171.116 host 58.213.97.42 eq www 
+access-list sec extended permit tcp host 119.147.171.116 host 58.213.97.42 eq https 
+access-list sec extended permit tcp host 101.200.42.134 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 60.205.176.74 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.56.17.96 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.57.28.91 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 124.207.177.146 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 47.93.117.92 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.200.42.134 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 60.205.176.74 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.56.17.96 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.57.28.91 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 124.207.177.146 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 47.93.117.92 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 112.74.93.5 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 112.74.93.5 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 106.15.44.127 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 106.15.44.127 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 61.135.232.133 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 219.141.230.2 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 219.141.230.2 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.95.110.106 host 58.213.98.11 eq ftp 
+access-list sec extended permit tcp any host 58.213.97.222 eq 2443 
+access-list sec extended permit tcp host 106.122.176.20 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 60.205.182.170 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 60.205.182.170 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.56.11.233 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.56.11.233 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 119.254.20.10 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 119.254.20.10 host 58.213.97.106 eq https 
+access-list sec extended permit tcp host 119.254.28.171 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 119.254.28.171 host 58.213.97.106 eq https 
+access-list sec extended permit tcp host 54.223.88.170 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 54.223.88.170 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.56.253.161 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.56.253.161 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 139.217.15.110 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 139.217.15.110 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 119.253.81.252 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 218.241.136.86 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 218.241.136.86 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 202.108.36.125 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 202.108.36.125 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 202.108.36.107 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 202.108.36.107 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 211.154.165.248 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 211.154.165.248 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 115.182.20.198 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 115.182.20.198 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 115.182.20.199 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 115.182.20.199 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 115.182.20.200 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 115.182.20.200 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 115.182.20.232 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 115.182.20.232 host 58.213.97.104 eq https 
+access-list sec extended permit tcp 123.151.148.32 255.255.255.224 host 58.213.97.17 eq https 
+access-list sec extended permit tcp 111.30.136.128 255.255.255.128 host 58.213.97.17 eq https 
+access-list sec extended permit tcp 61.135.157.128 255.255.255.128 host 58.213.97.17 eq https 
+access-list sec extended permit tcp 123.207.208.128 255.255.255.128 host 58.213.97.17 eq https 
+access-list sec extended permit tcp host 58.246.40.70 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 58.246.40.70 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 122.114.37.73 host 58.213.97.53 eq www 
+access-list sec extended permit tcp host 122.114.39.163 host 58.213.97.53 eq https 
+access-list sec extended permit tcp host 122.114.39.163 host 58.213.97.53 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.53 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.53 eq https 
+access-list sec extended permit tcp host 101.52.132.18 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.52.132.18 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 222.129.11.72 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 222.129.11.72 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 113.207.25.49 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 113.207.25.49 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 113.207.41.11 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 113.207.41.11 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 58.246.40.68 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 58.246.40.68 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 180.166.55.21 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 180.166.55.21 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 180.166.55.18 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 180.166.55.18 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.231.138.36 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.231.138.36 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 219.233.72.7 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 219.233.72.7 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 60.247.93.190 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 60.247.93.190 host 58.213.97.45 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.98.18 eq www 
+access-list sec extended permit tcp object-group jiao host 58.213.97.45 eq www 
+access-list sec extended permit tcp object-group jiao host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 115.29.182.223 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 115.29.182.223 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 120.55.109.42 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 120.55.109.42 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 183.129.255.76 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 183.129.255.76 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 61.164.51.194 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 61.164.51.194 host 58.213.97.77 eq ssh 
+access-list sec extended permit ip host 42.123.112.1 host 58.213.97.222 
+access-list sec extended permit tcp host 104.199.154.200 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 222.73.121.21 host 58.213.97.53 eq www 
+access-list sec extended permit tcp host 222.73.121.21 host 58.213.97.53 eq https 
+access-list sec extended permit tcp host 124.251.7.68 host 58.213.97.53 eq www 
+access-list sec extended permit tcp host 124.251.7.68 host 58.213.97.53 eq https 
+access-list sec extended permit tcp host 125.71.216.10 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 125.71.216.10 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 182.140.241.10 host 58.213.97.17 eq www 
+access-list sec extended permit tcp host 182.140.241.10 host 58.213.97.17 eq https 
+access-list sec extended permit tcp host 42.123.76.4 host 58.213.97.17 eq www 
+access-list sec extended permit tcp host 42.123.76.4 host 58.213.97.17 eq https 
+access-list sec extended permit tcp host 183.131.19.110 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 183.131.19.110 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.52.130.98 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.52.130.98 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 183.129.232.234 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 183.129.232.234 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 114.80.240.184 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 114.80.240.184 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.157.153.130 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.157.153.130 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 117.30.147.208 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 116.228.151.1 host 58.213.97.222 eq 20080 
+access-list sec extended permit tcp host 101.231.206.125 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.231.206.125 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.24.58.243 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.24.58.243 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.76.203.67 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.76.203.67 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.76.203.102 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.76.203.102 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 119.23.145.27 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 119.23.145.27 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 218.17.105.254 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 218.17.105.254 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 218.17.81.211 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 218.17.81.211 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 114.80.241.150 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 114.80.241.150 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 210.13.40.224 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 210.13.40.224 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 210.13.40.225 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 210.13.40.225 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 210.13.40.226 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 210.13.40.226 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 211.152.44.186 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 211.152.44.186 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 202.105.41.196 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 202.109.211.162 host 58.213.97.76 eq www 
+access-list sec extended permit tcp host 202.109.211.162 host 58.213.97.76 eq https 
+access-list sec extended permit tcp host 202.102.121.14 host 58.213.97.76 eq www 
+access-list sec extended permit tcp host 202.102.121.14 host 58.213.97.76 eq https 
+access-list sec extended permit tcp host 116.62.136.161 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.62.158.186 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.62.202.196 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.62.136.161 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 116.62.158.186 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 116.62.202.196 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 211.201.249.29 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 112.175.138.62 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 117.131.32.206 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 117.131.32.206 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 121.40.100.34 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 121.40.100.34 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 202.85.218.140 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 202.85.218.140 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 58.83.200.65 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 58.83.200.66 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 58.83.200.67 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 58.83.200.68 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 58.83.200.69 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 58.83.200.70 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 11.235.156.36 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 11.235.156.36 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 95.130.192.10 host 58.213.97.104 eq ftp 
+access-list sec extended permit tcp host 221.226.175.82 host 58.213.97.104 eq ftp 
+access-list sec extended permit tcp host 95.130.192.10 host 58.213.97.77 eq www 
+access-list sec extended permit tcp host 95.130.192.10 host 58.213.97.77 eq https 
+access-list sec extended permit tcp host 221.226.175.82 host 58.213.97.77 eq www 
+access-list sec extended permit tcp host 221.226.175.82 host 58.213.97.77 eq https 
+access-list sec extended permit tcp host 117.30.140.72 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 111.231.15.102 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 111.231.15.102 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 111.231.10.215 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 111.231.10.215 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 114.215.27.57 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 114.215.27.57 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 202.103.124.254 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 202.103.124.254 host 58.213.97.45 eq https 
+access-list sec extended permit ip host 42.123.112.1 host 58.213.98.100 
+access-list sec extended permit tcp host 119.29.83.149 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 119.29.83.149 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 119.29.5.217 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 119.29.5.217 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 203.194.128.84 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 101.200.144.28 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.200.144.28 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 115.29.180.136 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 115.29.180.136 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 121.41.126.168 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 121.41.126.168 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 115.182.230.25 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 115.182.230.25 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 203.194.128.86 host 58.213.97.77 eq www 
+access-list sec extended permit tcp host 203.194.128.86 host 58.213.97.77 eq https 
+access-list sec extended permit tcp host 203.194.128.87 host 58.213.97.77 eq www 
+access-list sec extended permit tcp host 203.194.128.87 host 58.213.97.77 eq https 
+access-list sec extended permit tcp host 203.194.128.88 host 58.213.97.77 eq www 
+access-list sec extended permit tcp host 203.194.128.88 host 58.213.97.77 eq https 
+access-list sec extended permit tcp host 203.194.128.89 host 58.213.97.77 eq www 
+access-list sec extended permit tcp host 203.194.128.89 host 58.213.97.77 eq https 
+access-list sec extended permit tcp host 203.194.128.90 host 58.213.97.77 eq www 
+access-list sec extended permit tcp host 203.194.128.90 host 58.213.97.77 eq https 
+access-list sec extended permit tcp host 203.194.128.91 host 58.213.97.77 eq www 
+access-list sec extended permit tcp host 203.194.128.91 host 58.213.97.77 eq https 
+access-list sec extended permit tcp host 203.194.128.92 host 58.213.97.77 eq www 
+access-list sec extended permit tcp host 203.194.128.92 host 58.213.97.77 eq https 
+access-list sec extended permit tcp host 120.76.128.223 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.76.128.223 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 111.200.229.218 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 111.200.229.218 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 119.23.149.170 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 119.23.149.170 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.228.151.1 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 59.52.255.77 host 58.213.97.76 eq https 
+access-list sec extended permit tcp host 220.168.248.144 host 58.213.97.76 eq https 
+access-list sec extended permit tcp host 59.52.255.77 host 58.213.97.50 eq https 
+access-list sec extended permit tcp host 220.168.248.144 host 58.213.97.50 eq https 
+access-list sec extended permit tcp host 120.76.154.245 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 120.76.154.245 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 112.80.23.161 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 112.80.23.161 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 61.155.183.161 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 61.155.183.161 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 39.108.192.169 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 150.138.236.5 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 150.138.236.5 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 27.221.116.5 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 27.221.116.5 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 150.138.236.10 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 150.138.236.10 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 27.221.116.10 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 27.221.116.10 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 119.4.115.130 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 119.4.115.130 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 61.129.84.154 host 58.213.97.28 eq https 
+access-list sec extended permit tcp host 61.129.84.154 host 58.213.97.28 eq www 
+access-list sec extended permit tcp host 61.129.84.8 host 58.213.97.28 eq https 
+access-list sec extended permit tcp host 61.129.84.8 host 58.213.97.28 eq www 
+access-list sec extended permit tcp host 118.190.113.137 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 118.190.113.137 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 118.190.99.221 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 118.190.99.221 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 139.217.17.25 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 139.217.17.25 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 112.80.23.163 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 112.80.23.163 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 61.155.183.163 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 61.155.183.163 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 139.199.148.161 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 139.199.148.161 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 118.89.64.85 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 118.89.64.85 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 118.89.65.179 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 118.89.65.179 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 203.156.232.19 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 203.156.232.19 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 180.173.254.31 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 180.173.254.31 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 180.173.111.135 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 180.173.111.135 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 61.48.40.26 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 61.48.40.26 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 124.207.115.68 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 124.207.115.68 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 124.204.43.26 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 124.204.43.26 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 220.166.180.187 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 220.166.180.187 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 220.166.180.188 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 220.166.180.188 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 111.235.156.36 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 111.235.156.36 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 114.247.60.82 host 58.213.97.53 eq www 
+access-list sec extended permit tcp host 114.247.60.82 host 58.213.97.53 eq https 
+access-list sec extended permit tcp host 61.148.102.198 host 58.213.97.53 eq www 
+access-list sec extended permit tcp host 61.148.102.198 host 58.213.97.53 eq https 
+access-list sec extended permit tcp host 114.247.60.71 host 58.213.97.53 eq www 
+access-list sec extended permit tcp host 114.247.60.71 host 58.213.97.53 eq https 
+access-list sec extended permit tcp host 124.65.161.34 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp 101.251.193.32 255.255.255.240 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp 101.251.249.152 255.255.255.248 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 101.251.193.41 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 183.14.173.7 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp any host 58.213.97.56 eq www 
+access-list sec extended permit tcp any host 58.213.97.56 eq https 
+access-list sec extended permit tcp host 106.38.61.39 host 58.213.97.49 eq 18030 
+access-list sec extended permit tcp host 106.38.61.39 host 58.213.97.49 eq 18031 
+access-list sec extended permit tcp host 106.38.61.39 host 58.213.97.49 eq 10882 
+access-list sec extended permit tcp host 106.38.61.39 host 58.213.97.49 eq 10881 
+access-list sec extended permit tcp host 117.184.125.241 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 211.95.40.78 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 210.13.121.74 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 101.95.175.62 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 54.223.51.223 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 54.223.51.223 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.56.79.228 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 123.56.79.228 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 123.58.248.147 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.58.248.147 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.251.193.41 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 101.251.193.41 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 101.251.251.2 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 101.251.251.2 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 60.191.73.11 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 60.191.73.11 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 122.224.178.4 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 122.224.178.4 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 124.160.238.111 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 124.160.238.111 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 117.71.39.170 host 58.213.97.21 eq www 
+access-list sec extended permit tcp host 117.71.39.170 host 58.213.97.21 eq https 
+access-list sec extended permit tcp host 14.177.64.231 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 219.135.197.135 host 58.213.97.55 eq www 
+access-list sec extended permit tcp host 219.135.197.135 host 58.213.97.55 eq https 
+access-list sec extended permit tcp host 116.62.0.106 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.62.0.106 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.27.236.153 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.27.236.153 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 116.62.159.221 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.62.159.221 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.52.96.37 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.52.96.37 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 211.99.189.68 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 211.99.189.68 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 117.131.32.202 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 117.131.32.202 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.37.149.78 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.37.149.78 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 219.135.197.163 host 58.213.97.55 eq https 
+access-list sec extended permit tcp host 219.135.197.163 host 58.213.97.55 eq www 
+access-list sec extended permit tcp host 14.152.49.250 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 14.152.49.250 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 47.93.213.232 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 61.148.201.154 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 103.235.229.154 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 103.235.229.155 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.56.222.172 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 47.93.213.232 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 61.148.201.154 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 103.235.229.154 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 103.235.229.155 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.56.222.172 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 218.244.131.158 host 58.213.97.31 eq https 
+access-list sec extended permit tcp 58.251.75.192 255.255.255.192 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp 61.144.167.64 255.255.255.192 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 119.28.77.214 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 117.184.207.162 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 140.206.99.242 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 101.230.219.146 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 119.23.212.146 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 58.246.136.58 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 58.246.136.58 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 116.228.52.155 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 116.228.52.155 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.201.18.230 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 121.201.18.230 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.201.18.231 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 121.201.18.231 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 222.211.83.206 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 222.211.83.206 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 120.76.228.175 host 58.213.97.26 eq https 
+access-list sec extended permit tcp host 120.76.228.175 host 58.213.97.26 eq www 
+access-list sec extended permit tcp host 120.27.162.171 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.27.162.171 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.52.96.39 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.52.96.39 host 58.213.97.45 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.57 eq www 
+access-list sec extended permit tcp object-group BanGongWang host 58.213.97.57 eq https 
+access-list sec extended permit tcp host 58.240.77.169 host 58.213.97.57 eq www 
+access-list sec extended permit tcp host 58.240.77.169 host 58.213.97.57 eq https 
+access-list sec extended permit tcp host 61.132.59.130 host 58.213.97.57 eq www 
+access-list sec extended permit tcp host 61.132.59.130 host 58.213.97.57 eq https 
+access-list sec extended permit tcp host 221.226.46.169 host 58.213.97.57 eq www 
+access-list sec extended permit tcp host 221.226.46.169 host 58.213.97.57 eq https 
+access-list sec extended permit tcp host 119.23.147.83 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 119.23.147.83 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.77.60.119 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.77.60.119 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 119.23.148.27 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 119.23.148.27 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.55.241.117 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.55.241.117 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.55.243.131 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.55.243.131 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 120.55.242.243 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.55.242.243 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 183.230.169.156 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 183.230.169.156 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 106.120.15.190 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 106.120.15.190 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 222.128.114.6 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 222.128.114.6 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 45.122.0.227 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 45.122.0.227 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 124.239.146.129 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 124.239.146.129 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 113.31.25.56 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 113.31.25.56 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 113.31.25.47 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 113.31.25.47 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 113.31.25.48 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 113.31.25.48 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 113.31.25.49 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 113.31.25.49 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 119.28.2.218 host 58.213.97.77 eq ftp 
+access-list sec extended permit tcp host 101.226.15.170 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.226.15.170 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 45.122.0.225 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 45.122.0.225 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 120.26.240.24 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 120.26.240.24 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 121.199.51.178 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 121.199.51.178 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 121.199.1.161 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 121.199.1.161 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 120.26.201.248 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 120.26.201.248 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 121.40.156.41 host 58.213.97.25 eq www 
+access-list sec extended permit tcp host 120.40.156.41 host 58.213.97.25 eq https 
+access-list sec extended permit tcp host 47.94.36.179 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 47.94.36.179 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 59.110.112.162 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 59.110.112.162 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.37.15.4 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.37.15.4 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 118.31.169.137 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 118.31.169.137 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.37.117.31 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.37.117.31 host 58.213.97.45 eq www 
+access-list sec extended permit tcp 219.146.4.0 255.255.255.0 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp 208.70.164.0 255.255.255.0 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp 202.100.109.64 255.255.255.192 host 58.213.97.77 eq ssh 
+access-list sec extended permit tcp host 121.40.31.18 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 121.40.31.18 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.40.64.214 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.40.64.214 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 121.40.212.236 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.40.212.236 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 211.148.18.168 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 211.148.18.168 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 211.148.18.169 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 211.148.18.169 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 211.148.18.173 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 211.148.18.173 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 121.43.60.123 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 121.43.60.123 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 218.4.65.86 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 218.4.65.86 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 202.85.213.155 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 202.85.213.155 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 22.85.213.15 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 22.85.213.15 host 58.213.97.45 eq www 
+access-list sec extended permit tcp any host 58.213.97.221 eq www 
+access-list sec extended permit tcp any host 58.213.97.221 eq https 
+access-list sec extended permit tcp host 119.23.200.224 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 119.23.200.224 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 183.61.244.197 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 183.61.244.197 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 114.113.231.233 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 114.113.231.233 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 43.227.140.129 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 43.227.140.129 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 114.113.66.43 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 114.113.66.43 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.56.64.251 host 58.213.97.104 eq www 
+access-list sec extended permit tcp host 123.56.64.251 host 58.213.97.104 eq https 
+access-list sec extended permit tcp host 220.166.180.172 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 220.166.180.189 host 58.213.97.106 eq www 
+access-list sec extended permit tcp host 219.148.1.208 host 58.213.97.76 eq https 
+access-list sec extended permit tcp host 219.148.1.209 host 58.213.97.76 eq https 
+access-list sec extended permit tcp host 116.231.119.65 host 58.213.97.76 eq https 
+access-list sec extended permit tcp host 219.148.1.208 host 58.213.97.50 eq https 
+access-list sec extended permit tcp host 219.148.1.209 host 58.213.97.50 eq https 
+access-list sec extended permit tcp host 116.231.119.65 host 58.213.97.50 eq https 
+access-list sec extended permit tcp host 118.186.3.52 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 118.186.3.52 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 101.200.188.76 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 101.200.188.76 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.56.206.176 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.56.206.176 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 123.57.240.66 host 58.213.97.45 eq www 
+access-list sec extended permit tcp host 123.57.240.66 host 58.213.97.45 eq https 
+access-list sec extended permit tcp host 110.84.128.253 host 58.213.97.77 eq ssh 
+access-list outbound extended permit ip host 172.28.25.84 any 
+access-list outbound extended permit ip host 172.28.26.71 any 
+access-list outbound extended permit udp 172.28.0.0 255.255.0.0 any eq domain 
+access-list outbound extended permit tcp 172.28.0.0 255.255.0.0 any eq domain 
+access-list outbound extended permit ip host 172.28.25.37 any 
+access-list outbound extended permit ip host 172.28.57.38 host 116.228.151.200 
+access-list outbound extended permit ip host 172.28.60.89 host 116.228.151.200 
+access-list outbound extended permit ip host 172.28.60.90 host 116.228.151.200 
+access-list outbound extended permit ip host 172.28.60.55 host 116.228.151.200 
+access-list outbound extended permit udp object-group mail-server any eq domain 
+access-list outbound extended permit tcp object-group mail-server host 116.228.151.188 eq smtp 
+access-list outbound extended permit tcp object-group mail-server host 116.228.151.188 eq pop3 
+access-list outbound extended permit tcp host 172.28.25.47 host 116.228.151.221 eq 20022 
+access-list outbound extended permit tcp host 172.28.25.48 host 116.228.151.221 eq 20022 
+access-list outbound extended permit tcp object-group GIT-Server host 116.228.151.221 eq 20022 
+access-list outbound extended permit tcp object-group GIT-Server host 116.228.151.221 eq www 
+access-list outbound extended permit tcp object-group GIT-Server host 116.228.151.188 eq smtp 
+access-list outbound extended permit tcp object-group BigData-server host 113.59.227.103 object-group BigData-services 
+access-list outbound extended permit tcp object-group BigData-server host 113.59.224.116 object-group BigData-services 
+access-list outbound extended permit udp object-group ntp-server any eq ntp 
+access-list outbound extended permit udp object-group dns-server any eq domain 
+access-list outbound extended permit ip 172.16.128.0 255.255.255.0 172.28.25.0 255.255.255.0 
+access-list outbound extended permit ip host 172.28.25.33 any 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.96 eq ftp 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.96 eq ssh 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.96 eq sqlnet 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.96 eq 1540 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.98 eq ftp 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.98 eq ssh 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.98 eq sqlnet 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.98 eq 1540 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.99 eq ftp 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.99 eq ssh 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.99 eq sqlnet 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.99 eq 1540 
+access-list outbound extended permit tcp host 172.28.57.38 host 116.228.151.42 eq sqlnet 
+access-list outbound extended permit tcp host 172.28.57.38 host 116.228.151.42 eq ssh 
+access-list outbound extended permit ip host 172.28.25.56 any 
+access-list outbound extended permit tcp host 172.28.141.14 host 116.228.151.160 eq 7090 
+access-list outbound extended permit ip host 172.28.141.14 any 
+access-list outbound extended permit ip host 172.28.141.28 any 
+access-list outbound extended permit ip host 172.28.25.59 any 
+access-list outbound extended permit ip host 172.28.25.60 any 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 222.77.183.88 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 124.74.242.102 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 124.74.242.102 eq domain 
+access-list outbound extended permit udp 172.28.162.0 255.255.255.0 host 124.74.242.102 eq domain 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 193.1.1.36 eq 7461 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 125.71.214.47 eq 31580 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 117.21.236.5 eq 7788 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 110.84.128.56 eq 8001 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 59.37.55.51 eq 9076 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 221.236.13.15 eq 8099 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 221.236.13.16 eq 8098 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 221.236.13.17 eq 8098 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 221.236.13.17 eq 8099 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 110.190.90.109 eq 15376 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 221.236.13.15 eq 9901 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 113.106.89.189 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 113.106.89.189 eq domain 
+access-list outbound extended permit udp 172.28.162.0 255.255.255.0 host 113.106.89.189 eq domain 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 182.140.241.47 eq 8080 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 118.123.170.184 eq 8080 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 119.254.110.168 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 121.41.101.141 eq 8888 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 183.129.178.131 eq 17001 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 182.147.243.189 eq 85 
+access-list outbound extended permit ip host 172.28.27.50 any 
+access-list outbound extended permit tcp host 172.28.61.111 host 116.228.151.32 eq 8080 
+access-list outbound extended permit ip host 172.28.26.22 host 101.226.68.47 
+access-list outbound extended permit ip host 172.28.25.88 host 101.226.68.47 
+access-list outbound extended permit ip host 172.28.26.67 host 101.226.68.47 
+access-list outbound extended permit ip host 172.28.26.69 any 
+access-list outbound extended permit ip object-group nexus any 
+access-list outbound extended permit ip host 172.28.61.55 object-group map 
+access-list outbound extended permit tcp host 172.28.27.32 host 42.123.111.1 eq 28082 
+access-list outbound extended permit tcp host 172.28.25.131 any eq domain 
+access-list outbound extended permit udp host 172.28.25.131 any eq domain 
+access-list outbound extended permit ip 172.28.159.0 255.255.255.0 any 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp 172.28.158.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp 172.28.143.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp 172.28.157.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp 172.28.128.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit ip 172.28.164.0 255.255.255.0 any 
+access-list outbound extended permit ip 172.28.133.0 255.255.255.0 any 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 any eq 11336 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 any eq 9080 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 any eq 8080 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 any eq 8091 
+access-list outbound extended permit tcp 172.28.143.0 255.255.255.0 any eq 8088 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 any eq 8010 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.164.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.164.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 223.255.252.38 eq 10001 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 202.100.219.182 eq 19001 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 223.255.252.38 eq 15022 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 222.68.185.242 eq 9081 
+access-list outbound extended permit tcp 172.28.158.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.158.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.158.0 255.255.255.0 host 111.1.56.134 eq 8080 
+access-list outbound extended permit tcp 172.28.153.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.153.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.153.0 255.255.255.0 host 120.76.130.124 eq 89 
+access-list outbound extended permit tcp 172.28.143.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.143.0 255.255.255.0 any eq https 
+access-list outbound extended permit ip 172.28.143.0 255.255.255.0 host 114.55.153.148 
+access-list outbound extended permit ip 172.28.143.0 255.255.255.0 host 58.213.99.7 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 host 121.41.101.141 eq 8888 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 host 183.129.178.131 eq 17001 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 host 182.147.243.189 eq 85 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 any eq https 
+access-list outbound extended permit ip 172.28.184.0 255.255.255.0 any 
+access-list outbound extended permit ip 172.28.131.0 255.255.255.0 any 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 125.71.214.47 eq 31580 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 117.21.236.5 eq 7788 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 110.84.128.56 eq 8001 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 59.37.55.51 eq 9076 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 221.236.13.15 eq 9901 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 221.236.13.17 eq 8098 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 221.236.13.16 eq 8098 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 221.236.13.17 eq 8099 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 110.190.90.109 eq 15376 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 117.21.236.5 eq 17788 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 221.236.13.15 eq 8099 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 125.71.214.47 eq 31580 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 117.21.236.5 eq 7788 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 110.84.128.56 eq 8001 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 59.37.55.51 eq 9076 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 221.236.13.15 eq 9901 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 221.236.13.17 eq 8098 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 221.236.13.16 eq 8098 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 221.236.13.17 eq 8099 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 110.190.90.109 eq 15376 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 221.236.13.15 eq 8099 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 117.21.236.5 eq 17788 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 202.100.110.219 eq 8070 
+access-list outbound extended permit tcp 172.28.164.0 255.255.255.0 host 180.153.41.140 eq 19090 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 123.57.60.56 eq 10080 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 182.92.31.55 eq https 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 180.153.41.140 eq 19090 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 120.26.215.133 eq www 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 123.150.92.7 eq 7020 
+access-list outbound extended permit ip 172.28.154.0 255.255.255.0 host 180.153.47.138 
+access-list outbound extended permit ip 172.28.145.0 255.255.255.0 any 
+access-list outbound extended permit tcp 172.28.145.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.145.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.144.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.144.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.142.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.142.0 255.255.255.0 any eq https 
+access-list outbound extended permit ip 172.28.159.0 255.255.255.0 host 116.113.178.90 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 116.113.178.90 eq 36000 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 222.221.11.118 eq 28080 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 120.25.196.198 eq 18080 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 any eq 9998 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 219.151.45.7 eq 9991 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 112.74.17.135 eq 9800 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 120.197.88.91 eq 9090 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 any eq 9008 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 218.107.6.142 eq 9002 
+access-list outbound extended permit tcp 172.28.145.0 255.255.255.0 host 222.211.83.209 eq 9000 
+access-list outbound extended permit tcp 172.28.145.0 255.255.255.0 host 120.24.217.33 eq 8988 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 120.24.91.211 eq 8888 
+access-list outbound extended permit tcp 172.28.144.0 255.255.255.0 host 112.65.246.213 eq 8888 
+access-list outbound extended permit tcp 172.28.144.0 255.255.255.0 any eq 8629 
+access-list outbound extended permit tcp 172.28.144.0 255.255.255.0 any eq 8181 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 any eq 8120 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 any eq 8112 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 219.148.201.4 eq 8100 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 101.200.165.248 eq 8096 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 121.40.160.248 eq 8092 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 211.151.81.102 eq 8091 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 130.51.11.76 eq 8083 
+access-list outbound extended permit tcp 172.28.144.0 255.255.255.0 host 112.65.246.219 eq 8080 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 any eq 8080 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 211.151.81.101 eq 8071 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 121.40.122.252 eq 8068 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 114.55.251.52 eq 8053 
+access-list outbound extended permit ip 172.28.159.0 255.255.255.0 host 113.105.7.10 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 any eq 8629 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 any eq 8181 
+access-list outbound extended permit tcp 172.28.145.0 255.255.255.0 host 222.211.83.208 eq 6010 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 any eq 6000 
+access-list outbound extended permit tcp 172.28.142.0 255.255.255.0 host 121.14.17.136 eq 4122 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 219.137.167.231 eq 2705 
+access-list outbound extended permit tcp 172.28.184.0 255.255.255.0 host 116.228.151.106 eq www 
+access-list outbound extended permit tcp 172.28.145.0 255.255.255.0 host 106.37.196.54 eq ftp 
+access-list outbound extended permit tcp 172.28.145.0 255.255.255.0 host 210.51.244.175 eq ftp 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp 172.28.142.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 any eq ftp 
+access-list outbound extended permit tcp 172.28.145.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp object-group bpposp-pabs-web host 121.10.174.136 eq ssh 
+access-list outbound extended permit tcp 172.28.142.0 255.255.255.0 host 121.10.174.136 eq ssh 
+access-list outbound extended permit tcp 172.28.140.0 255.255.255.0 host 202.105.41.199 eq ftp 
+access-list outbound extended permit tcp 172.28.133.0 255.255.255.0 host 202.105.41.199 eq ftp 
+access-list outbound extended permit tcp 172.28.142.0 255.255.255.0 host 219.141.159.177 eq ssh 
+access-list outbound extended permit tcp object-group bpposp-pabs-web host 219.141.159.177 eq ssh 
+access-list outbound extended permit tcp 172.28.142.0 255.255.255.0 host 110.190.90.109 eq 15378 
+access-list outbound extended permit tcp 172.28.142.0 255.255.255.0 host 221.236.13.15 eq 9901 
+access-list outbound extended permit tcp object-group bpbp-gateway-bus host 61.160.190.34 eq ftp 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 180.153.47.138 eq ftp 
+access-list outbound extended permit tcp object-group bpcs-inf host 202.105.41.199 eq ftp 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 202.105.41.199 eq ftp 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 61.160.190.34 eq ftp 
+access-list outbound extended permit tcp object-group bppf-trp host 61.160.190.34 eq ftp 
+access-list outbound extended permit tcp object-group bppe-ap host 180.153.47.138 eq ftp 
+access-list outbound extended permit tcp object-group bpcs-transfer host 202.105.41.199 eq ftp 
+access-list outbound extended permit tcp object-group gw-manager host 88.50.32.137 eq 8842 
+access-list outbound extended permit tcp object-group uc-trade any eq www 
+access-list outbound extended permit tcp object-group uc-trade any eq https 
+access-list outbound extended permit tcp 172.28.128.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.157.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.128.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.157.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.128.0 255.255.255.0 any eq ssh 
+access-list outbound extended permit tcp 172.28.157.0 255.255.255.0 any eq ssh 
+access-list outbound extended permit tcp object-group gw-manager host 88.50.32.22 eq 10080 
+access-list outbound extended permit tcp object-group gw-outerbank any eq www 
+access-list outbound extended permit tcp object-group gw-outerbank any eq https 
+access-list outbound extended permit tcp 172.28.160.0 255.255.255.0 host 88.50.32.137 eq 8842 
+access-list outbound extended permit tcp 172.28.160.0 255.255.255.0 host 88.50.32.22 eq 10080 
+access-list outbound extended permit tcp 172.28.160.0 255.255.255.0 host 107.2.50.108 eq 8008 
+access-list outbound extended permit tcp object-group gw-manager host 107.2.50.108 eq 8008 
+access-list outbound extended permit ip 172.28.163.0 255.255.255.0 any 
+access-list outbound extended permit ip 172.28.132.0 255.255.255.0 any 
+access-list outbound extended permit ip 172.28.162.0 255.255.255.0 host 210.21.48.7 
+access-list outbound extended permit ip 172.28.162.0 255.255.255.0 host 121.33.205.117 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 120.36.0.52 eq www 
+access-list outbound extended permit tcp 172.28.160.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.160.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.160.0 255.255.255.0 host 202.99.22.26 eq 8002 
+access-list outbound extended permit tcp 172.28.184.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.184.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 any eq www 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 any eq https 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 host 112.65.246.213 eq 8888 
+access-list outbound extended permit ip 172.28.147.0 255.255.255.0 host 112.65.246.213 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 host 112.124.211.70 eq 47722 
+access-list outbound extended permit tcp 172.28.148.0 255.255.255.0 any 
+access-list outbound extended permit ip 172.28.152.0 255.255.255.0 any 
+access-list outbound extended permit tcp 172.28.149.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp 172.28.129.0 255.255.255.0 116.228.151.0 255.255.255.0 eq smtp 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 14.29.53.130 eq 9000 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 14.29.53.130 eq 9000 
+access-list outbound extended permit ip 172.28.159.0 255.255.255.0 host 183.63.191.45 
+access-list outbound extended permit ip 172.28.159.0 255.255.255.0 host 134.98.84.196 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 any eq 8085 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 116.228.151.0 255.255.255.0 eq pop3 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 218.23.142.36 eq www 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 121.41.31.9 eq www 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 14.146.225.221 eq 9022 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 120.76.204.34 eq www 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 61.183.0.31 eq 9120 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 58.211.5.133 eq 8777 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 114.55.251.70 eq 8068 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 117.21.210.151 eq 8003 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 110.190.90.109 eq 15378 
+access-list outbound extended permit icmp 172.28.0.0 255.255.0.0 any 
+access-list outbound extended permit ip object-group temp-any any 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 59.151.39.87 eq 8022 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 123.150.92.7 eq 22122 
+access-list outbound extended permit tcp 172.28.153.0 255.255.255.0 any eq 8022 
+access-list outbound extended permit tcp 172.28.153.0 255.255.255.0 host 112.124.211.70 eq 47722 
+access-list outbound extended permit tcp 172.28.153.0 255.255.255.0 host 120.76.130.124 eq ftp 
+access-list outbound extended permit tcp 172.28.155.0 255.255.255.0 any 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 any 
+access-list outbound extended permit tcp 172.28.130.0 255.255.255.0 any 
+access-list outbound extended permit tcp 172.28.164.0 255.255.255.0 any 
+access-list outbound extended permit tcp 172.28.128.0 255.255.255.0 host 61.160.128.97 eq 8222 
+access-list outbound extended permit tcp 172.28.157.0 255.255.255.0 host 61.160.128.97 eq 8222 
+access-list outbound extended permit tcp 172.28.158.0 255.255.255.0 host 111.1.56.134 eq ftp 
+access-list outbound extended permit tcp 172.28.158.0 255.255.255.0 host 60.191.25.130 eq ftp 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 219.141.157.30 eq www 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 116.228.151.0 255.255.255.0 eq www 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 116.228.151.0 255.255.255.0 eq https 
+access-list outbound extended permit tcp 172.28.158.0 255.255.255.0 116.228.151.0 255.255.255.0 eq www 
+access-list outbound extended permit tcp 172.28.158.0 255.255.255.0 116.228.151.0 255.255.255.0 eq https 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 116.228.151.0 255.255.255.0 eq www 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 116.228.151.0 255.255.255.0 eq https 
+access-list outbound extended permit tcp 172.28.164.0 255.255.255.0 116.228.151.0 255.255.255.0 eq www 
+access-list outbound extended permit tcp 172.28.164.0 255.255.255.0 116.228.151.0 255.255.255.0 eq https 
+access-list outbound extended permit tcp 172.28.184.0 255.255.255.0 116.228.151.0 255.255.255.0 eq www 
+access-list outbound extended permit tcp 172.28.184.0 255.255.255.0 116.228.151.0 255.255.255.0 eq https 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 116.228.151.0 255.255.255.0 eq www 
+access-list outbound extended permit tcp 172.28.150.0 255.255.255.0 116.228.151.0 255.255.255.0 eq https 
+access-list outbound extended permit ip host 172.28.29.116 any 
+access-list outbound extended permit ip host 172.28.29.118 any 
+access-list outbound extended permit ip host 172.28.29.130 any 
+access-list outbound extended permit ip 172.28.143.0 255.255.255.0 any 
+access-list outbound extended permit ip object-group oics any 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 42.99.16.32 eq 9001 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 123.178.217.1 eq 8090 
+access-list outbound extended permit tcp host 172.28.146.78 host 123.178.217.1 eq 8090 
+access-list outbound extended permit tcp host 172.28.146.79 host 123.178.217.1 eq 8090 
+access-list outbound extended permit tcp host 172.28.146.80 host 123.178.217.1 eq 8090 
+access-list outbound extended permit tcp host 172.28.146.81 host 123.178.217.1 eq 8090 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 115.28.77.76 eq 9069 
+access-list outbound extended permit tcp 172.28.158.0 255.255.255.0 host 116.228.232.138 eq 17004 
+access-list outbound extended permit tcp 172.28.158.0 255.255.255.0 host 116.228.232.141 eq 8800 
+access-list outbound extended permit tcp host 172.28.157.67 any eq ssh 
+access-list outbound extended permit tcp host 172.28.157.68 any eq ssh 
+access-list outbound extended permit tcp host 172.28.157.71 any eq ssh 
+access-list outbound extended permit tcp host 172.28.157.72 any eq ssh 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 113.108.214.51 eq 22222 
+access-list outbound extended permit ip 172.28.162.0 255.255.255.0 host 211.155.17.197 
+access-list outbound extended permit ip 172.28.162.0 255.255.255.0 host 121.8.227.248 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 113.108.214.51 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 host 123.150.92.7 eq 22122 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 100.65.248.113 eq 15016 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 116.228.151.12 eq ftp 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 host 101.251.193.36 eq ftp 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 host 101.251.193.36 eq ssh 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 182.140.221.225 eq ftp 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 106.120.129.11 eq 7020 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 114.251.242.240 eq 7020 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 219.233.72.19 eq 21016 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 116.228.192.172 eq 30011 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 119.97.159.229 eq www 
+access-list outbound extended permit tcp 172.28.146.0 255.255.255.0 host 120.26.9.154 eq 8053 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 222.81.175.122 eq 11001 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 222.81.175.135 eq 11001 
+access-list outbound extended permit tcp host 172.28.159.38 host 59.49.21.228 eq ftp 
+access-list outbound extended permit tcp host 172.28.159.39 host 59.49.21.228 eq ftp 
+access-list outbound extended permit tcp host 172.28.159.40 host 59.49.21.228 eq ftp 
+access-list outbound extended permit tcp host 172.28.159.80 host 59.49.21.228 eq ftp 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 101.231.112.5 eq 9080 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 121.201.17.243 eq 19001 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 59.42.254.238 eq www 
+access-list outbound extended permit ip host 172.28.161.23 any 
+access-list outbound extended permit ip host 172.28.161.24 any 
+access-list outbound extended permit ip 172.28.150.0 255.255.255.0 182.147.243.0 255.255.255.0 
+access-list outbound extended permit ip 172.28.150.0 255.255.255.0 220.166.180.128 255.255.255.192 
+access-list outbound extended permit tcp 172.28.153.0 255.255.255.0 host 114.55.69.177 eq 9999 
+access-list outbound extended permit tcp 172.28.48.0 255.255.255.0 host 116.228.151.174 eq www 
+access-list outbound extended permit tcp 172.28.48.0 255.255.255.0 host 116.228.151.174 eq https 
+access-list outbound extended permit tcp object-group APP-002-technology_EPG object-group To_message-center 
+access-list outbound extended permit ip host 172.28.25.46 any 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 58.20.238.97 eq 19288 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 183.63.191.45 eq ftp 
+access-list outbound extended permit tcp 172.28.61.0 255.255.255.0 host 113.59.224.116 eq 4621 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 182.106.140.45 eq 8083 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 182.106.140.46 eq 8083 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 14.23.156.163 eq 9220 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 14.23.156.163 eq 9221 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 14.23.156.163 eq 9222 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 14.23.156.164 eq 9220 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 14.23.156.164 eq 9221 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 14.23.156.164 eq 9222 
+access-list outbound extended permit ip host 172.28.25.148 host 106.38.57.146 
+access-list outbound extended permit ip host 172.28.25.149 host 106.38.57.146 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 101.251.193.32 255.255.255.240 eq ftp 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 101.251.251.0 255.255.255.224 eq ftp 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 101.251.249.152 255.255.255.248 eq ftp 
+access-list outbound extended permit ip 172.28.159.0 255.255.255.0 host 59.49.21.228 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 202.38.64.96 eq ftp 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 218.22.71.211 eq 12308 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 211.145.51.136 eq 29103 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 222.173.121.30 eq 20198 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 59.42.254.238 eq https 
+access-list outbound extended permit ip host 172.28.25.121 any 
+access-list outbound extended permit ip 172.28.165.0 255.255.255.0 any 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 host 116.228.151.188 eq pop3 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 host 116.228.151.188 eq smtp 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 218.22.71.212 eq ftp 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 host 123.57.60.56 eq 10080 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.101 eq sqlnet 
+access-list outbound extended permit tcp host 172.28.57.38 host 183.63.191.102 eq sqlnet 
+access-list outbound extended permit ip 172.28.146.0 255.255.255.0 host 203.195.191.114 
+access-list outbound extended permit ip 172.28.159.0 255.255.255.0 host 222.173.121.30 
+access-list outbound extended permit ip 172.28.161.0 255.255.255.0 host 218.244.145.110 
+access-list outbound extended permit ip 172.28.161.0 255.255.255.0 host 202.102.221.75 
+access-list outbound extended permit ip 172.28.159.0 255.255.255.0 host 222.171.135.93 
+access-list outbound extended permit ip 172.28.159.0 255.255.255.0 host 125.223.98.82 
+access-list outbound extended permit ip 172.28.159.0 255.255.255.0 host 59.48.60.218 
+access-list outbound extended permit tcp host 172.28.61.11 host 101.95.110.106 eq 1433 
+access-list outbound extended permit tcp host 172.28.61.12 host 101.95.110.106 eq 1433 
+access-list outbound extended permit tcp host 172.28.61.13 host 101.95.110.106 eq 1433 
+access-list outbound extended permit tcp host 172.28.61.14 host 101.95.110.106 eq 1433 
+access-list outbound extended permit tcp host 172.28.61.15 host 101.95.110.106 eq 1433 
+access-list outbound extended permit tcp host 172.28.61.16 host 101.95.110.106 eq 1433 
+access-list outbound extended permit tcp host 172.28.61.109 host 140.205.230.66 eq www 
+access-list outbound extended permit tcp host 172.28.61.109 host 140.205.172.75 eq www 
+access-list outbound extended permit ip host 172.28.25.235 any 
+access-list outbound extended permit tcp object-group mail-server any eq smtp 
+access-list outbound extended permit tcp object-group mail-server any eq imap4 
+access-list outbound extended permit ip host 172.28.27.67 any 
+access-list outbound extended permit ip host 172.28.27.69 any 
+access-list outbound extended permit tcp 172.28.159.0 255.255.255.0 host 123.207.209.55 eq www 
+access-list outbound extended permit ip 172.28.161.0 255.255.255.0 host 120.76.222.205 
+access-list outbound extended permit tcp 172.28.152.0 255.255.255.0 host 112.74.22.44 eq ftp 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 host 119.57.154.171 
+access-list outbound extended permit tcp host 172.28.61.109 host 140.205.34.39 eq www 
+access-list outbound extended permit tcp host 172.28.61.109 host 106.11.93.18 eq www 
+access-list outbound extended permit ip 172.28.161.0 255.255.255.0 host 120.26.165.134 
+access-list outbound extended permit ip 172.28.141.0 255.255.255.0 host 122.114.37.73 
+access-list outbound extended permit ip 172.28.141.0 255.255.255.0 host 122.114.39.163 
+access-list outbound extended permit tcp 172.28.153.0 255.255.255.0 host 36.111.43.2 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 112.124.116.61 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 104.199.155.228 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 104.199.154.200 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 112.124.116.61 eq https 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 104.199.155.228 eq https 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 104.199.154.200 eq https 
+access-list outbound extended permit tcp 172.28.161.0 255.255.255.0 host 14.146.227.185 eq 8033 
+access-list outbound extended permit tcp host 172.28.26.22 host 116.228.151.161 eq 33306 
+access-list outbound extended permit ip host 172.28.26.22 host 116.228.151.161 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 211.201.249.29 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 211.201.249.29 eq https 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 112.175.138.62 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 112.175.138.62 eq https 
+access-list outbound extended permit ip 172.28.144.0 255.255.255.0 host 116.211.167.144 
+access-list outbound extended permit ip host 172.28.25.47 host 42.123.111.100 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 61.78.61.250 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 61.78.61.250 eq https 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 61.78.61.242 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 61.78.61.242 eq https 
+access-list outbound extended permit tcp 172.28.141.0 255.255.255.0 host 211.142.47.234 eq 8082 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 host 123.207.106.252 eq www 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 host 123.207.106.252 eq https 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 203.194.128.84 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 203.194.128.84 eq https 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 203.194.128.84 eq domain 
+access-list outbound extended permit udp 172.28.162.0 255.255.255.0 host 203.194.128.84 eq domain 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 host 106.11.95.22 eq www 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 host 106.11.95.22 eq https 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 host 112.124.212.145 eq www 
+access-list outbound extended permit tcp 172.28.147.0 255.255.255.0 host 112.124.212.145 eq https 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 39.108.192.169 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 39.108.192.169 eq https 
+access-list outbound extended permit ip 172.28.141.0 255.255.255.0 host 114.55.124.172 
+access-list outbound extended permit ip 172.28.141.0 255.255.255.0 host 118.178.35.87 
+access-list outbound extended permit ip 172.28.141.0 255.255.255.0 host 60.205.91.221 
+access-list outbound extended permit ip 172.28.141.0 255.255.255.0 host 120.76.198.223 
+access-list outbound extended permit ip 172.28.141.0 255.255.255.0 host 139.196.250.20 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 95.130.192.10 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 95.130.192.10 eq https 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 119.57.154.171 
+access-list outbound extended permit ip 172.28.147.0 255.255.255.0 host 101.251.251.4 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 14.177.64.231 eq www 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 14.177.64.231 eq https 
+access-list outbound extended permit ip 172.28.161.0 255.255.255.0 host 218.94.13.98 
+access-list outbound extended permit tcp 172.28.157.0 255.255.255.0 host 124.127.181.115 eq 9020 
+access-list outbound extended permit tcp 172.28.128.0 255.255.255.0 host 124.127.181.115 eq 9020 
+access-list outbound extended permit ip host 172.28.25.55 host 42.123.111.100 
+access-list outbound extended permit ip 172.28.142.0 255.255.255.0 any 
+access-list outbound extended permit ip host 172.28.25.126 any 
+access-list outbound extended permit tcp 172.28.162.0 255.255.255.0 host 119.28.77.214 
+access-list outbound extended permit ip 172.28.161.0 255.255.255.0 host 42.99.17.13 
+access-list outbound extended permit ip host 172.28.56.143 host 116.228.151.252 
+access-list outbound extended permit ip host 172.28.56.53 host 116.228.151.253 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 host 14.17.57.217 eq smtp 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 host 14.17.57.217 eq 56 
+access-list outbound extended permit tcp 172.28.154.0 255.255.255.0 host 14.17.57.217 eq 465 
+access-list outbound extended permit tcp 172.28.153.0 255.255.255.0 host 124.160.43.196 eq ftp 
+access-list outbound extended permit ip 172.28.161.0 255.255.255.0 host 171.14.99.109 
+access-list outbound extended permit ip 172.28.147.0 255.255.255.0 host 101.37.135.188 
+access-list outbound extended permit ip 172.28.147.0 255.255.255.0 host 101.251.251.15 
+access-list outbound extended permit ip 172.28.146.0 255.255.255.0 host 222.221.11.117 
+access-list outbound extended permit ip 172.28.161.0 255.255.255.0 host 120.76.45.115 
+access-list traffic-acl-1 extended permit tcp object-group BigData-server host 113.59.227.103 eq ftp 
+access-list traffic-acl-1 extended permit tcp object-group BigData-server host 113.59.224.116 eq ftp 
+access-list traffic-acl-2 extended permit tcp host 172.28.61.111 host 100.65.248.96 object-group BigData-services 
+access-list traffic-acl-2 extended permit tcp host 172.28.61.111 host 100.65.248.97 object-group BigData-services 
+access-list test extended permit ip host 106.91.178.255 host 58.213.97.22 
+access-list test1 extended permit ip host 124.202.212.146 host 58.213.97.48 
+access-list cap standard permit host 123.81.128.131 
+pager lines 24
+logging enable
+logging timestamp
+logging standby
+logging emblem
+logging buffer-size 409600
+logging buffered errors
+logging trap debugging
+logging facility 19
+logging host management 172.24.27.18
+logging host management 172.24.25.126
+mtu management 1500
+mtu outside 1500
+mtu inside 1500
+failover
+failover lan unit secondary
+failover lan interface folink GigabitEthernet0/5
+failover link statelink GigabitEthernet1/5
+failover interface ip folink 172.16.129.49 255.255.255.252 standby 172.16.129.50
+failover interface ip statelink 172.16.129.53 255.255.255.252 standby 172.16.129.54
+no monitor-interface management
+monitor-interface outside
+monitor-interface inside
+icmp unreachable rate-limit 1 burst-size 1
+icmp permit any outside
+icmp permit any inside
+no asdm history enable
+arp timeout 14400
+no arp permit-nonconnected
+nat (inside,outside) source dynamic FengKong_25.148-149 dip destination static BeiJingBanGong BeiJingBanGong service TCP_80 TCP_20000
+nat (inside,outside) source static nonat nonat destination static testcenter testcenter
+nat (outside,inside) source static testcenter testcenter destination static nonat nonat
+nat (inside,outside) source dynamic inside-to-internet dip
+access-group sec in interface outside
+access-group outbound in interface inside
+route outside 0.0.0.0 0.0.0.0 172.16.129.1 1
+route inside 58.213.97.0 255.255.255.0 172.16.129.19 1
+route inside 58.213.98.0 255.255.255.0 172.16.129.19 1
+route inside 172.16.4.0 255.255.255.0 172.16.129.19 1
+route inside 172.16.129.24 255.255.255.248 172.16.129.19 1
+route outside 172.16.129.56 255.255.255.252 172.16.129.1 1
+route outside 172.16.133.6 255.255.255.255 172.16.129.6 1
+route management 172.24.0.0 255.255.0.0 172.24.9.254 1
+route inside 172.28.0.0 255.255.0.0 172.16.129.19 1
+timeout xlate 3:00:00
+timeout pat-xlate 0:00:30
+timeout conn 1:00:00 half-closed 0:10:00 udp 0:02:00 icmp 0:00:02
+timeout sunrpc 0:10:00 h323 0:05:00 h225 1:00:00 mgcp 0:05:00 mgcp-pat 0:05:00
+timeout sip 0:30:00 sip_media 0:02:00 sip-invite 0:03:00 sip-disconnect 0:02:00
+timeout sip-provisional-media 0:02:00 uauth 0:05:00 absolute
+timeout tcp-proxy-reassembly 0:01:00
+timeout floating-conn 0:00:00
+dynamic-access-policy-record DfltAccessPolicy
+aaa-server ACS protocol tacacs+
+aaa-server ACS (management) host 172.24.26.50
+ key *****
+aaa-server ACS (management) host 172.24.26.51
+ key *****
+user-identity default-domain LOCAL
+aaa authentication http console ACS LOCAL
+aaa authentication ssh console ACS LOCAL
+aaa authorization exec authentication-server auto-enable
+http 192.168.1.0 255.255.255.0 management
+snmp-server group snmpv3 v3 auth 
+snmp-server user u_zabbix snmpv3 v3 encrypted auth md5 f6:9e:1f:30:bb:3b:2f:b1:f4:1c:00:58:ad:2f:af:fe 
+snmp-server host management 172.24.26.68 community ***** version 2c
+snmp-server host management 172.24.27.32 community ***** version 2c
+snmp-server host management 172.24.25.240 version 3 u_zabbix
+snmp-server host management 172.24.25.44 version 3 u_zabbix
+snmp-server host management 172.24.25.45 version 3 u_zabbix
+no snmp-server location
+no snmp-server contact
+snmp-server community *****
+crypto ipsec security-association pmtu-aging infinite
+crypto ca trustpoint _SmartCallHome_ServerCA
+ no validation-usage
+ crl configure
+crypto ca trustpool policy
+crypto ca certificate chain _SmartCallHome_ServerCA
+ certificate ca 6ecc7aa5a7032009b8cebcf4e952d491
+    308205ec 308204d4 a0030201 0202106e cc7aa5a7 032009b8 cebcf4e9 52d49130 
+    0d06092a 864886f7 0d010105 05003081 ca310b30 09060355 04061302 55533117 
+    30150603 55040a13 0e566572 69536967 6e2c2049 6e632e31 1f301d06 0355040b 
+    13165665 72695369 676e2054 72757374 204e6574 776f726b 313a3038 06035504 
+    0b133128 63292032 30303620 56657269 5369676e 2c20496e 632e202d 20466f72 
+    20617574 686f7269 7a656420 75736520 6f6e6c79 31453043 06035504 03133c56 
+    65726953 69676e20 436c6173 73203320 5075626c 69632050 72696d61 72792043 
+    65727469 66696361 74696f6e 20417574 686f7269 7479202d 20473530 1e170d31 
+    30303230 38303030 3030305a 170d3230 30323037 32333539 35395a30 81b5310b 
+    30090603 55040613 02555331 17301506 0355040a 130e5665 72695369 676e2c20 
+    496e632e 311f301d 06035504 0b131656 65726953 69676e20 54727573 74204e65 
+    74776f72 6b313b30 39060355 040b1332 5465726d 73206f66 20757365 20617420 
+    68747470 733a2f2f 7777772e 76657269 7369676e 2e636f6d 2f727061 20286329 
+    3130312f 302d0603 55040313 26566572 69536967 6e20436c 61737320 33205365 
+    63757265 20536572 76657220 4341202d 20473330 82012230 0d06092a 864886f7 
+    0d010101 05000382 010f0030 82010a02 82010100 b187841f c20c45f5 bcab2597 
+    a7ada23e 9cbaf6c1 39b88bca c2ac56c6 e5bb658e 444f4dce 6fed094a d4af4e10 
+    9c688b2e 957b899b 13cae234 34c1f35b f3497b62 83488174 d188786c 0253f9bc 
+    7f432657 5833833b 330a17b0 d04e9124 ad867d64 12dc744a 34a11d0a ea961d0b 
+    15fca34b 3bce6388 d0f82d0c 948610ca b69a3dca eb379c00 48358629 5078e845 
+    63cd1941 4ff595ec 7b98d4c4 71b350be 28b38fa0 b9539cf5 ca2c23a9 fd1406e8 
+    18b49ae8 3c6e81fd e4cd3536 b351d369 ec12ba56 6e6f9b57 c58b14e7 0ec79ced 
+    4a546ac9 4dc5bf11 b1ae1c67 81cb4455 33997f24 9b3f5345 7f861af3 3cfa6d7f 
+    81f5b84a d3f58537 1cb5a6d0 09e4187b 384efa0f 02030100 01a38201 df308201 
+    db303406 082b0601 05050701 01042830 26302406 082b0601 05050730 01861868 
+    7474703a 2f2f6f63 73702e76 65726973 69676e2e 636f6d30 12060355 1d130101 
+    ff040830 060101ff 02010030 70060355 1d200469 30673065 060b6086 480186f8 
+    45010717 03305630 2806082b 06010505 07020116 1c687474 70733a2f 2f777777 
+    2e766572 69736967 6e2e636f 6d2f6370 73302a06 082b0601 05050702 02301e1a 
+    1c687474 70733a2f 2f777777 2e766572 69736967 6e2e636f 6d2f7270 61303406 
+    03551d1f 042d302b 3029a027 a0258623 68747470 3a2f2f63 726c2e76 65726973 
+    69676e2e 636f6d2f 70636133 2d67352e 63726c30 0e060355 1d0f0101 ff040403 
+    02010630 6d06082b 06010505 07010c04 61305fa1 5da05b30 59305730 55160969 
+    6d616765 2f676966 3021301f 30070605 2b0e0302 1a04148f e5d31a86 ac8d8e6b 
+    c3cf806a d448182c 7b192e30 25162368 7474703a 2f2f6c6f 676f2e76 65726973 
+    69676e2e 636f6d2f 76736c6f 676f2e67 69663028 0603551d 11042130 1fa41d30 
+    1b311930 17060355 04031310 56657269 5369676e 4d504b49 2d322d36 301d0603 
+    551d0e04 1604140d 445c1653 44c1827e 1d20ab25 f40163d8 be79a530 1f060355 
+    1d230418 30168014 7fd365a7 c2ddecbb f03009f3 4339fa02 af333133 300d0609 
+    2a864886 f70d0101 05050003 82010100 0c8324ef ddc30cd9 589cfe36 b6eb8a80 
+    4bd1a3f7 9df3cc53 ef829ea3 a1e697c1 589d756c e01d1b4c fad1c12d 05c0ea6e 
+    b2227055 d9203340 3307c265 83fa8f43 379bea0e 9a6c70ee f69c803b d937f47a 
+    6decd018 7d494aca 99c71928 a2bed877 24f78526 866d8705 404167d1 273aeddc 
+    481d22cd 0b0b8bbc f4b17bfd b499a8e9 762ae11a 2d876e74 d388dd1e 22c6df16 
+    b62b8214 0a945cf2 50ecafce ff62370d ad65d306 4153ed02 14c8b558 28a1ace0 
+    5becb37f 954afb03 c8ad26db e6667812 4ad99f42 fbe198e6 42839b8f 8f6724e8 
+    6119b5dd cdb50b26 058ec36e c4c875b8 46cfe218 065ea9ae a8819a47 16de0c28 
+    6c2527b9 deb78458 c61f381e a4c4cb66
+  quit
+telnet timeout 5
+ssh stricthostkeycheck
+ssh 172.24.9.0 255.255.255.0 management
+ssh 172.24.25.0 255.255.255.0 management
+ssh 172.24.27.32 255.255.255.255 management
+ssh 0.0.0.0 0.0.0.0 management
+ssh 0.0.0.0 0.0.0.0 outside
+ssh 0.0.0.0 0.0.0.0 inside
+ssh timeout 3
+ssh version 2 
+ssh key-exchange group dh-group1-sha1
+console timeout 0
+!
+tls-proxy maximum-session 1000
+!
+threat-detection basic-threat
+threat-detection statistics access-list
+no threat-detection statistics tcp-intercept
+ntp server 172.24.25.27 source management prefer
+username rootwannj password GhUUQxrpJvbLOHCU encrypted privilege 15
+!
+class-map inspection_default
+ match default-inspection-traffic
+class-map traffic-class-2
+ match access-list traffic-acl-2
+class-map traffic-class-1
+ match access-list traffic-acl-1
+!
+!
+policy-map type inspect dns preset_dns_map
+ parameters
+  message-length maximum client auto
+  message-length maximum 512
+policy-map police-priority-policy
+ class traffic-class-1
+  police output 200000000
+ class traffic-class-2
+  police output 250000000
+ class class-default
+  police output 1000000000
+policy-map global_policy
+ class inspection_default
+  inspect ftp 
+  inspect h323 h225 
+  inspect h323 ras 
+  inspect rsh 
+  inspect rtsp 
+  inspect esmtp 
+  inspect sqlnet 
+  inspect skinny  
+  inspect sunrpc 
+  inspect xdmcp 
+  inspect sip  
+  inspect netbios 
+  inspect tftp 
+  inspect ip-options 
+  inspect icmp 
+  inspect http 
+!
+service-policy global_policy global
+prompt hostname context 
+call-home reporting anonymous
+Cryptochecksum:0bd4146d9c91a159b2063de92ae70456
+: end
+NJ2FB-N03-07-07-ASA5585-001#                                    
+NJ2FB-N03-07-07-ASA5585-001# 
+NJ2FB-N03-07-07-ASA5585-001# 

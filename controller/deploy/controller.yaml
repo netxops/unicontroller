@@ -1,0 +1,111 @@
+function_area: DefaultArea
+upstream:
+  etcd_addresses: 
+    - 192.168.100.122:2379
+  username: root
+  password: Etcd@Passw0rd
+  watch: agent_config
+uniops:
+  address: http://192.168.100.122:8888
+  password: "!@AsiaLink@2020"
+  account: admin
+git:
+  address: 192.168.100.122:3333
+  username: admin
+  password: admin123
+  branch: master
+base_config:
+  default_port: 8081
+  version: 1.0
+  prometheusLabelKey: "DeviceBase"
+  lokiLabelKey: "DeviceForLoki"
+  resources:
+    vector: test-vector
+    vmagent: test-vmagent
+    minio: test-bucket
+  preferred_networks:
+    - 192.168.100.0/24
+    - 10.0.0.0/8
+  home_path: /home/jacky/project/agent/deploy/templates
+  templates:
+   - /home/jacky/project/agent/deploy/templates
+  ssh_proxy: 50022
+  grpc_proxy: 50051
+  jump_server_idle_timeout: 120  # 120秒空闲超时，0表示禁用
+  deployment:
+    concurrent_deployments: 3  # 最大并发部署数
+  loki_listen_path: /api/v1/loki/write
+  prometheus_listen_path: /api/v1/prometheus/write
+  upstream_loki_url: http://192.168.100.122:3100/loki/api/v1/push
+  upstream_prometheus_url:  http://192.168.100.122:9090/api/v1/write
+  pipelineTemplates: /home/jacky/project/agent/deploy/templates
+  firewall_template_path: "../../pkg/nodemap/node/device/firewall/common/v4/templates"
+
+redis:
+  addresses:
+    - "127.0.0.1:6379"
+  db: 0
+  password: Redis@Passw0rd
+  pool_size: 10
+
+nacos:
+  server: "192.168.100.122"
+  port: 8848
+  namespace: "dev"
+  group: "OneOPS_GROUP"
+  agent_group: "OneOPS_Agent_Config"
+  data_id: "cipher-aes-start-config"
+  username: "nacos"
+  password: "nacos"
+  log_dir: "/tmp/nacos/log"
+  cache_dir: "/tmp/nacos/cache"
+  log_level: "debug"
+  notLoadCacheAtStart: true
+
+syslog_manager:
+  port: 1514
+  protocol: udp
+  loki_endpoint: http://192.168.100.122:3100 
+metrics_manager:
+  port: 1555
+  remoteWriteurl: http://192.168.100.122:9090/api/v1/write
+
+database:
+  type: "mongodb"
+  uri: "mongodb://root:UniOPS_Passw0rd@192.168.100.122:27017"
+  database: "controller"
+  max_pool_size: 100
+
+use_docker_etcd: false
+etcd:
+  host: 192.168.100.122
+  hostPort: 2379
+  username: root
+  password: Etcd@Passw0rd
+
+# etcd:
+#   image: quay.io/coreos/etcd:v3.5.0
+#   port: 2379
+#   hostPort: 3379
+#   host: localhost
+#   name: default_area_etcd
+#   dataDir: "/var/lib/etcd"
+# sudo mkdir -p /var/lib/etcd
+# sudo chown -R 1000:1000 /var/lib/etcd  # 假设etcd在容器中使用UID 1000运行
+
+minio:
+  proxyAddr: ":9009"
+  endpoint: "192.168.100.122:9000"
+  accessKeyID: "3GSPC8hXVA4Jml805KCm"
+  secretAccessKey: "J6dYEhuf12gP86aGFYx2eSTHsMoqPE12jh7Fpoi8"
+  useSSL: false
+  bucketName: "test-bucket"
+
+telegraf:
+  enable: false
+  image: telegraf:1.27.2
+  name: telegraf
+  config_path: /etc/telegraf/telegraf.conf
+  prometheus_port: 9273
+  loki_endpoint: http://192.168.100.122:3100
+  prometheus_endpoint: http://192.168.100.122:9090

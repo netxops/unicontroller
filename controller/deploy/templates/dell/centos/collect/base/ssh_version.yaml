@@ -1,0 +1,6 @@
+name: sshVersion
+method: SSH
+dataType: map[string]string
+target: cat /etc/*elease
+timeout: 5s
+expectedType: JSON

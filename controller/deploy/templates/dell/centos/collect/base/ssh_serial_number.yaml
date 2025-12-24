@@ -1,0 +1,7 @@
+name: sshSerialNumber
+method: SSH
+target: "dmidecode -t system"
+dataType: map[string]string
+timeout: 5s
+expectedType: JSON
+

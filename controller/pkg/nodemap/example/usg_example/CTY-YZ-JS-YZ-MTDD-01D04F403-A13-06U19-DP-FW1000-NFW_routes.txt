@@ -1,0 +1,20 @@
+========== 节点路由表: CTY-YZ-JS-YZ-MTDD-01D04F403-A13-06U19-DP-FW1000-NFW ==========
+生成时间: 2025-12-02 14:35:25
+
+
+---------- VRF: default (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+132.254.96.0/22      192.167.254.19       vlan-if1209     false      false     
+0.0.0.0/0            192.167.255.19       vlan-if1208     false      true      
+
+默认网关:
+  NextHop: 192.167.255.19, Interface: vlan-if1208, Connected: false
+
+---------- VRF: mgmt (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+0.0.0.0/0            132.254.194.254      meth0_0         false      true      
+
+默认网关:
+  NextHop: 132.254.194.254, Interface: meth0_0, Connected: false

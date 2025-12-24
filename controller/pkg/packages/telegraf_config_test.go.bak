@@ -1,0 +1,736 @@
+package packages
+
+import (
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"testing"
+
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/tidwall/gjson"
+)
+
+func TestTelegrafConfigLoad(t *testing.T) {
+	// 创建临时目录
+	tempDir, err := ioutil.TempDir("", "telegraf_test")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+
+	// 创建主配置文件
+	mainConfigContent := `
+[agent]
+  interval = "10s"
+  round_interval = true
+
+[[inputs.cpu]]
+  percpu = true
+  totalcpu = true
+
+[[inputs.cpu]]
+  core_tags = false
+  report_active = false
+`
+	mainConfigPath := filepath.Join(tempDir, "telegraf.conf")
+	err = ioutil.WriteFile(mainConfigPath, []byte(mainConfigContent), 0644)
+	require.NoError(t, err)
+
+	// 创建额外的配置文件
+	extraConfigContent := `
+[[outputs.influxdb]]
+  urls = ["http://localhost:8086"]
+  database = "telegraf"
+`
+	extraConfigPath := filepath.Join(tempDir, "extra.conf")
+	err = ioutil.WriteFile(extraConfigPath, []byte(extraConfigContent), 0644)
+	require.NoError(t, err)
+
+	// 创建 TelegrafConfig 实例
+	tc := NewTelegrafConfig(mainConfigPath, tempDir)
+
+	// 加载配置
+	config, err := tc.Load()
+	require.NoError(t, err)
+	require.NotNil(t, config)
+
+	// 验证配置内容
+	assert.Equal(t, "10s", config.Data["agent"].(map[string]interface{})["interval"])
+	assert.True(t, config.Data["agent"].(map[string]interface{})["round_interval"].(bool))
+
+	inputs, ok := config.Data["inputs"].(map[string]interface{})
+	assert.True(t, ok)
+	assert.Len(t, inputs, 1)
+
+	cpuInputs, ok := inputs["cpu"].([]interface{})
+	assert.True(t, ok)
+	cpuinput := cpuInputs[0]
+	assert.True(t, cpuinput.(map[string]interface{})["percpu"].(bool))
+	assert.True(t, cpuinput.(map[string]interface{})["totalcpu"].(bool))
+
+	outputs, ok := config.Data["outputs"].(map[string]interface{})
+	assert.True(t, ok)
+	assert.Len(t, outputs, 1)
+	influxdbOutputs, ok := outputs["influxdb"].([]interface{})
+	assert.True(t, ok)
+
+	influxdbOutput := influxdbOutputs[0]
+	assert.True(t, ok)
+	assert.Equal(t, []interface{}{"http://localhost:8086"}, influxdbOutput.(map[string]interface{})["urls"].([]interface{}))
+	assert.Equal(t, "telegraf", influxdbOutput.(map[string]interface{})["database"].(string))
+}
+
+func TestTelegrafConfig_Load(t *testing.T) {
+	// 创建一个临时目录来存放测试配置文件
+	tempDir, err := ioutil.TempDir("", "telegraf_test")
+	if err != nil {
+		t.Fatalf("Failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	// 创建主配置文件
+	mainConfigContent := `
+[agent]
+  interval = "10s"
+  round_interval = true
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "10s"
+  flush_jitter = "0s"
+  precision = "0s"
+  hostname = ""
+  omit_hostname = false
+[global_tags]
+  dc = "us-east-1"
+`
+	mainConfigPath := filepath.Join(tempDir, "telegraf.conf")
+	if err := ioutil.WriteFile(mainConfigPath, []byte(mainConfigContent), 0644); err != nil {
+		t.Fatalf("Failed to write main config file: %v", err)
+	}
+
+	// 创建额外的配置文件
+	extraConfigContent := `
+[[inputs.cpu]]
+  percpu = true
+  totalcpu = true
+
+[[outputs.influxdb_v2]]
+  urls = ["http://localhost:8086"]
+  token = "my-token"
+  organization = "my-org"
+  bucket = "my-bucket"
+`
+	extraConfigPath := filepath.Join(tempDir, "extra.conf")
+	if err := ioutil.WriteFile(extraConfigPath, []byte(extraConfigContent), 0644); err != nil {
+		t.Fatalf("Failed to write extra config file: %v", err)
+	}
+
+	// 创建并加载 TelegrafConfig
+	tc := &TelegrafConfig{
+		configFile: mainConfigPath,
+		configDir:  tempDir,
+	}
+
+	_, err = tc.Load()
+	if err != nil {
+		t.Fatalf("Failed to load config: %v", err)
+	}
+
+	// 验证加载的配置
+	assert.Equal(t, "10s", tc.Config.GetString("agent.interval"))
+	assert.True(t, tc.Config.GetBool("agent.round_interval"))
+	assert.Equal(t, 1000, tc.Config.GetInt("agent.metric_batch_size"))
+	assert.Equal(t, 10000, tc.Config.GetInt("agent.metric_buffer_limit"))
+	assert.Equal(t, "0s", tc.Config.GetString("agent.collection_jitter"))
+	assert.Equal(t, "10s", tc.Config.GetString("agent.flush_interval"))
+	assert.Equal(t, "0s", tc.Config.GetString("agent.flush_jitter"))
+	assert.Equal(t, "0s", tc.Config.GetString("agent.precision"))
+	assert.Equal(t, "", tc.Config.GetString("agent.hostname"))
+	assert.False(t, tc.Config.GetBool("agent.omit_hostname"))
+
+	assert.Equal(t, "us-east-1", tc.Config.GetString("global_tags.dc"))
+
+	cpu, err := tc.PluginConfigToViper("inputs", "cpu", 0)
+	assert.NoError(t, err)
+	assert.True(t, cpu.GetBool("percpu"))
+	assert.True(t, cpu.GetBool("totalcpu"))
+
+	influxdb, err := tc.PluginConfigToViper("outputs", "influxdb_v2", 0)
+	assert.NoError(t, err)
+
+	assert.Equal(t, []string{"http://localhost:8086"}, influxdb.GetStringSlice("urls"))
+	assert.Equal(t, "my-token", influxdb.GetString("token"))
+	assert.Equal(t, "my-org", influxdb.GetString("organization"))
+	assert.Equal(t, "my-bucket", influxdb.GetString("bucket"))
+}
+
+func TestAddConfigWithStrategy(t *testing.T) {
+	t.Run("Plugin Configurations", testAddPluginConfigs)
+	t.Run("Global Configurations", testAddGlobalConfigs)
+}
+
+func testAddPluginConfigs(t *testing.T) {
+	tests := []struct {
+		name     string
+		key      string
+		value    map[string]interface{}
+		strategy mergeStrategy
+		initial  map[string]interface{}
+		expected map[string]interface{}
+		wantErr  bool
+	}{
+		{
+			name:     "Add new input plugin",
+			key:      "inputs.cpu",
+			value:    map[string]interface{}{"percpu": true, "totalcpu": true},
+			strategy: OverwriteStrategy,
+			initial:  map[string]interface{}{},
+			expected: map[string]interface{}{
+				"inputs": map[string]interface{}{
+					"cpu": []interface{}{
+						map[string]interface{}{
+							"percpu":   true,
+							"totalcpu": true,
+						},
+					},
+				},
+			},
+		},
+		{
+			name:     "Add new output plugin",
+			key:      "outputs.influxdb_v2",
+			value:    map[string]interface{}{"urls": []string{"http://localhost:8086"}, "token": "my-token", "organization": "my-org", "bucket": "my-bucket"},
+			strategy: OverwriteStrategy,
+			initial:  map[string]interface{}{},
+			expected: map[string]interface{}{
+				"outputs": map[string]interface{}{
+					"influxdb_v2": []interface{}{
+						map[string]interface{}{
+							"urls":         []string{"http://localhost:8086"},
+							"token":        "my-token",
+							"organization": "my-org",
+							"bucket":       "my-bucket",
+						},
+					},
+				},
+			},
+		},
+		{
+			name:     "Add new processor plugin",
+			key:      "processors.rename",
+			value:    map[string]interface{}{"replace": []map[string]string{{"field": "host", "dest": "hostname"}}},
+			strategy: OverwriteStrategy,
+			initial:  map[string]interface{}{},
+			expected: map[string]interface{}{
+				"processors": map[string]interface{}{
+					"rename": []interface{}{
+						map[string]interface{}{
+							"replace": []map[string]string{{"field": "host", "dest": "hostname"}},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	runConfigTests(t, tests)
+}
+
+func testAddGlobalConfigs(t *testing.T) {
+	tests := []struct {
+		name     string
+		key      string
+		value    map[string]interface{}
+		strategy mergeStrategy
+		initial  map[string]interface{}
+		expected map[string]interface{}
+		wantErr  bool
+	}{
+		{
+			name:     "Add new agent config",
+			key:      "agent",
+			value:    map[string]interface{}{"interval": "30s", "round_interval": true},
+			strategy: OverwriteStrategy,
+			initial:  map[string]interface{}{},
+			expected: map[string]interface{}{
+				"agent": map[string]interface{}{"interval": "30s", "round_interval": true},
+			},
+		},
+		{
+			name:     "Merge with existing agent config",
+			key:      "agent",
+			value:    map[string]interface{}{"metric_batch_size": 1000, "metric_buffer_limit": 10000},
+			strategy: MergeStrategy,
+			initial: map[string]interface{}{
+				"agent": map[string]interface{}{"interval": "10s", "round_interval": true},
+			},
+			expected: map[string]interface{}{
+				"agent": map[string]interface{}{
+					"interval":            "10s",
+					"round_interval":      true,
+					"metric_batch_size":   1000,
+					"metric_buffer_limit": 10000,
+				},
+			},
+		},
+		{
+			name:     "Add new global tags",
+			key:      "global_tags",
+			value:    map[string]interface{}{"dc": "us-east-1", "rack": "1a"},
+			strategy: OverwriteStrategy,
+			initial:  map[string]interface{}{},
+			expected: map[string]interface{}{
+				"global_tags": map[string]interface{}{"dc": "us-east-1", "rack": "1a"},
+			},
+		},
+	}
+
+	runConfigTests(t, tests)
+}
+
+func runConfigTests(t *testing.T, tests interface{}) {
+	// switch testCases := tests.(type) {
+	// case []struct {
+	// 	name     string
+	// 	key      string
+	// 	value    map[string]interface{}
+	// 	strategy mergeStrategy
+	// 	initial  map[string]interface{}
+	// 	expected map[string]interface{}
+	// 	wantErr  bool
+	// }:
+	// 	for _, tt := range testCases {
+	// 		t.Run(tt.name, func(t *testing.T) {
+	// 			runSingleTest(t, tt.key, tt.value, tt.strategy, tt.initial, tt.expected, tt.wantErr)
+	// 		})
+	// 	}
+	// case []struct {
+	// 	name     string
+	// 	key      string
+	// 	value    map[string]interface{}
+	// 	strategy mergeStrategy
+	// 	initial  map[string]interface{}
+	// 	expected map[string]interface{}
+	// 	wantErr  bool
+	// }:
+	// 	for _, tt := range testCases {
+	// 		t.Run(tt.name, func(t *testing.T) {
+	// 			runSingleTest(t, tt.key, tt.value, tt.strategy, tt.initial, tt.expected, tt.wantErr)
+	// 		})
+	// 	}
+	// }
+
+	for _, tt := range tests.([]struct {
+		name     string
+		key      string
+		value    map[string]interface{}
+		strategy mergeStrategy
+		initial  map[string]interface{}
+		expected map[string]interface{}
+		wantErr  bool
+	}) {
+		t.Run(tt.name, func(t *testing.T) {
+			runSingleTest(t, tt.key, tt.value, tt.strategy, tt.initial, tt.expected, tt.wantErr)
+		})
+	}
+}
+
+func runSingleTest(t *testing.T, key string, value interface{}, strategy mergeStrategy, initial, expected interface{}, wantErr bool) {
+	tc := &TelegrafConfig{
+		Config: viper.New(),
+	}
+	for k, v := range initial.(map[string]interface{}) {
+		tc.Config.Set(k, v)
+	}
+
+	err := tc.AddConfigWithStrategy(key, value, strategy)
+
+	if wantErr {
+		assert.Error(t, err)
+	} else {
+		assert.NoError(t, err)
+		if expectedMap, ok := expected.(map[string][]interface{}); ok {
+			for k, v := range expectedMap {
+				assert.Equal(t, toJSON(v), toJSON(tc.Config.Get(k)))
+			}
+		} else if expectedMap, ok := expected.(map[string]interface{}); ok {
+			for k, v := range expectedMap {
+				assert.Equal(t, toJSON(v), toJSON(tc.Config.Get(k)))
+			}
+		} else {
+			t.Errorf("Expected map but got %T", expected)
+		}
+	}
+}
+func TestAddConfigSection(t *testing.T) {
+	t.Run("Global Configurations", testAddGlobalConfigSection)
+	t.Run("Agent Configurations", testAddAgentConfigSection)
+	t.Run("Plugin Configurations", testAddPluginConfigSection)
+}
+
+func testAddGlobalConfigSection(t *testing.T) {
+	tests := []struct {
+		name     string
+		key      string
+		content  string
+		strategy mergeStrategy
+		initial  map[string]interface{}
+		expected map[string]interface{}
+		wantErr  bool
+	}{
+		{
+			name: "Add new global tags",
+			key:  "global_tags",
+			content: `dc = "us-east-1"
+rack = "1a"`,
+			strategy: OverwriteStrategy,
+			initial:  map[string]interface{}{},
+			expected: map[string]interface{}{"global_tags": map[string]interface{}{"dc": "us-east-1", "rack": "1a"}},
+		},
+		// 可以在这里添加更多全局配置的测试用例
+	}
+
+	runConfigSectionTests(t, tests)
+}
+
+func testAddAgentConfigSection(t *testing.T) {
+	tests := []struct {
+		name     string
+		key      string
+		content  string
+		strategy mergeStrategy
+		initial  map[string]interface{}
+		expected map[string]interface{}
+		wantErr  bool
+	}{
+		{
+			name: "Merge with existing agent config",
+			key:  "agent",
+			content: `flush_interval = "15s"
+flush_jitter = "5s"`,
+			strategy: MergeStrategy,
+			initial: map[string]interface{}{
+				"agent": map[string]interface{}{"interval": "10s", "round_interval": true},
+			},
+			expected: map[string]interface{}{
+				"agent": map[string]interface{}{
+					"interval":       "10s",
+					"round_interval": true,
+					"flush_interval": "15s",
+					"flush_jitter":   "5s",
+				},
+			},
+		},
+		// 可以在这里添加更多 agent 配置的测试用例
+	}
+
+	runConfigSectionTests(t, tests)
+}
+
+func testAddPluginConfigSection(t *testing.T) {
+	tests := []struct {
+		name     string
+		key      string
+		content  string
+		strategy mergeStrategy
+		initial  map[string]interface{}
+		expected map[string]interface{}
+		wantErr  bool
+	}{
+		{
+			name: "Add new input plugin",
+			key:  "inputs.cpu",
+			content: `percpu = true
+		totalcpu = true`,
+			strategy: OverwriteStrategy,
+			initial:  map[string]interface{}{},
+			expected: map[string]interface{}{
+				"inputs": map[string]interface{}{
+					"cpu": []interface{}{
+						map[string]interface{}{
+							"percpu":   true,
+							"totalcpu": true,
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "Add new output plugin",
+			key:  "outputs.influxdb_v2",
+			content: `urls = ["http://localhost:8086"]
+				token = "my-token"
+				organization = "my-org"
+				bucket = "my-bucket"`,
+			strategy: OverwriteStrategy,
+			initial:  map[string]interface{}{},
+			expected: map[string]interface{}{
+				"outputs": map[string]interface{}{
+					"influxdb_v2": []interface{}{
+						map[string]interface{}{
+							"urls":         []interface{}{"http://localhost:8086"},
+							"token":        "my-token",
+							"organization": "my-org",
+							"bucket":       "my-bucket",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "Add new processor plugin",
+			key:  "processors.rename",
+			content: `[[processors.rename]]
+		  [[processors.rename.replace]]
+		    field = "host"
+		    dest = "hostname"`,
+			strategy: OverwriteStrategy,
+			initial:  map[string]interface{}{},
+			expected: map[string]interface{}{
+				"processors": map[string]interface{}{
+					"rename": []interface{}{
+						map[string]interface{}{
+							"replace": []map[string]string{{"field": "host", "dest": "hostname"}},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tempDir, err := ioutil.TempDir("", "telegraf_test")
+			require.NoError(t, err)
+			defer os.RemoveAll(tempDir)
+
+			tc := &TelegrafConfig{
+				Config:     viper.New(),
+				configFile: filepath.Join(tempDir, "telegraf.conf"),
+				configDir:  tempDir,
+			}
+
+			for k, v := range tt.initial {
+				tc.Config.Set(k, v)
+			}
+
+			err = tc.AddConfigSection(tt.key, tt.content, tt.strategy)
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+
+			err = tc.Save()
+			assert.NoError(t, err)
+
+			loadedConfig, err := tc.Load()
+			assert.NoError(t, err)
+
+			for k, v := range tt.expected {
+				assert.Equal(t, toJSON(v), toJSON(loadedConfig.Data[k]))
+			}
+		})
+	}
+}
+
+func runConfigSectionTests(t *testing.T, tests []struct {
+	name     string
+	key      string
+	content  string
+	strategy mergeStrategy
+	initial  map[string]interface{}
+	expected map[string]interface{}
+	wantErr  bool
+}) {
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// 创建临时目录
+			tempDir, err := ioutil.TempDir("", "telegraf_test")
+			require.NoError(t, err)
+			defer os.RemoveAll(tempDir)
+
+			// 创建 TelegrafConfig 实例
+			tc := &TelegrafConfig{
+				Config:     viper.New(),
+				configFile: filepath.Join(tempDir, "telegraf.conf"),
+				configDir:  tempDir,
+			}
+
+			// 设置初始配置
+			for k, v := range tt.initial {
+				tc.Config.Set(k, v)
+			}
+
+			// 添加新的配置段
+			err = tc.AddConfigSection(tt.key, tt.content, tt.strategy)
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+
+			// 保存配置到文件
+			err = tc.Save()
+			assert.NoError(t, err)
+
+			// 重新加载配置
+			loadedConfig, err := tc.Load()
+			assert.NoError(t, err)
+
+			// 验证加载的配置
+			for k, v := range tt.expected {
+				assert.Equal(t, toJSON(v), toJSON(loadedConfig.Data[k]))
+			}
+		})
+	}
+}
+func TestTelegrafConfigLoadSaveLoad(t *testing.T) {
+	// 创建临时目录
+	tempDir, err := ioutil.TempDir("", "telegraf_test")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+
+	// 复制原始配置文件到临时目录
+	originalPath := "data/telegraf_config.toml"
+	tempConfigPath := filepath.Join(tempDir, "telegraf.conf")
+	originalContent, err := ioutil.ReadFile(originalPath)
+	require.NoError(t, err, "Failed to read original TOML file")
+	err = ioutil.WriteFile(tempConfigPath, originalContent, 0644)
+	require.NoError(t, err, "Failed to write temporary config file")
+
+	// 创建 TelegrafConfig 实例
+	tc := NewTelegrafConfig(tempConfigPath, tempDir)
+
+	// 第一次加载配置
+	config1, err := tc.Load()
+	require.NoError(t, err, "Failed to load original config")
+
+	// 保存配置到临时文件
+	err = tc.Save()
+	require.NoError(t, err, "Failed to save config")
+
+	// 重新加载保存的配置
+	config2, err := tc.Load()
+	require.NoError(t, err, "Failed to reload saved config")
+
+	// 比较原始配置和重新加载的配置
+	assert.Equal(t, config1.Data, config2.Data, "Configs do not match after save and reload")
+
+	// 检查特定的配置项
+	assertConfigEqual(t, config1, config2, "inputs.cpu.0.percpu")
+	assertConfigEqual(t, config1, config2, "inputs.cpu.0.report_active")
+	assertConfigEqual(t, config1, config2, "agent.interval")
+	assertConfigEqual(t, config1, config2, "outputs.influxdb.0.urls")
+}
+
+func assertConfigEqual(t *testing.T, config1, config2 *Config, path string) {
+	// 将配置转换为 JSON 字符串
+	json1 := gjson.Parse(toJSON(config1.Data))
+	json2 := gjson.Parse(toJSON(config2.Data))
+
+	// 使用 gjson 获取指定路径的值
+	value1 := json1.Get(path)
+	value2 := json2.Get(path)
+
+	// 比较值
+	assert.Equal(t, value1.String(), value2.String(), fmt.Sprintf("Config mismatch at path: %s", path))
+}
+
+func TestTelegrafConfig_DeleteConfig(t *testing.T) {
+	// 创建一个测试用的 TelegrafConfig 实例
+	tc := &TelegrafConfig{
+		Config: viper.New(),
+	}
+
+	// 模拟 telegraf_config.toml 文件中的配置
+	tc.Config.Set("inputs.nats", []interface{}{
+		map[string]interface{}{
+			"server":           "http://localhost:8222",
+			"response_timeout": "5s",
+		},
+		map[string]interface{}{
+			"server":           "http://localhost:18222",
+			"response_timeout": "2s",
+		},
+	})
+
+	tc.Config.Set("inputs.mem", []interface{}{
+		map[string]interface{}{},
+	})
+
+	tc.Config.Set("outputs.influxdb", []interface{}{
+		map[string]interface{}{
+			"urls":     []string{"http://localhost:8086"},
+			"database": "telegraf",
+		},
+	})
+
+	// 测试场景1: 删除第一个 NATS 配置
+	err := tc.DeleteConfig("inputs.nats", map[string]interface{}{
+		"server":           "http://localhost:8222",
+		"response_timeout": "5s",
+	})
+	assert.NoError(t, err)
+
+	remaining := tc.Config.Get("inputs.nats")
+	assert.Equal(t, []interface{}{
+		map[string]interface{}{
+			"server":           "http://localhost:18222",
+			"response_timeout": "2s",
+		},
+	}, remaining)
+
+	// 测试场景2: 删除第二个（也是最后一个）NATS 配置
+	err = tc.DeleteConfig("inputs.nats", map[string]interface{}{
+		"server":           "http://localhost:18222",
+		"response_timeout": "2s",
+	})
+	assert.NoError(t, err)
+
+	remaining = tc.Config.Get("inputs.nats")
+	assert.Equal(t, []interface{}{}, remaining)
+
+	// 测试场景3: 尝试删除不存在的配置
+	err = tc.DeleteConfig("inputs.nats", map[string]interface{}{
+		"server":           "http://localhost:28222",
+		"response_timeout": "3s",
+	})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "does not contain any values")
+
+	// 测试场景4: 尝试删除不存在的插件配置
+	err = tc.DeleteConfig("inputs.mysql", map[string]interface{}{
+		"server": "localhost:3306",
+	})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "does not exist in the configuration")
+
+	// 测试场景5: 删除空配置（如 [[inputs.mem]]）
+	err = tc.DeleteConfig("inputs.mem", map[string]interface{}{})
+	assert.NoError(t, err)
+	remaining = tc.Config.Get("inputs.mem")
+	assert.Equal(t, []interface{}{}, remaining)
+
+	// 测试场景6: 尝试使用空键删除配置
+	err = tc.DeleteConfig("", map[string]interface{}{})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "invalid key or value provided")
+
+	// 测试场景7: 尝试使用nil值删除配置
+	err = tc.DeleteConfig("inputs.cpu", nil)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "invalid key or value provided")
+
+	// 测试场景8: 删除包含切片的配置
+	err = tc.DeleteConfig("outputs.influxdb", map[string]interface{}{
+		"urls":     []string{"http://localhost:8086"},
+		"database": "telegraf",
+	})
+	assert.NoError(t, err)
+	remaining = tc.Config.Get("outputs.influxdb")
+	assert.Equal(t, []interface{}{}, remaining)
+}

@@ -1,0 +1,16 @@
+base_mode_config: mode_config/base_mode_config.yaml
+base_templates:
+  - alive/base/ssh_alive_check.yaml
+  - collect/base/snmp_version.yaml  
+  - collect/base/snmp_iftable.yaml
+  - collect/base/snmp_ifHighSpeed.yaml
+  - collect/base/snmp_ipAddrEntry.yaml
+  - collect/base/snmp_arp.yaml
+  - snmp/base/snmp_version_process.yaml
+  - snmp/base/snmp_iftable_process.yaml
+  - snmp/base/snmp_ifHighSpeed_process.yaml
+  - snmp/base/snmp_ipAddrEntry_process.yaml
+  - snmp/base/snmp_arp_process.yaml
+  - transform/base/description_to_version.yaml
+  - transform/base/alive_check_transform.yaml
+  - join/base/snmp_devicePorts.yaml

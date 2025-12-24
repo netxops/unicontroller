@@ -1,0 +1,6 @@
+name: lldpOutgoingTransform
+mappings:
+  - inputField: telnetLldpTextFSM
+    outputField: lldpOutgoingTransform                      
+    regex: |
+      expr: msRemoveSpaces(value, "outgoing")

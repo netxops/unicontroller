@@ -1,0 +1,16 @@
+prompts:
+  - "[\\r\\n]?[^\n]+(>|#) $"
+err_prompts:
+  - "(?i)error:"
+  - "(?i)does not exist"
+  - "command not found"
+  - "No such file or directory"
+init_commands:
+  - "stty -echo"
+save_commands:
+  - "sync"
+first_chain:
+  - "cat /etc/config"
+last_chain:
+  - "cat /etc/config"
+auth_cmd: ""

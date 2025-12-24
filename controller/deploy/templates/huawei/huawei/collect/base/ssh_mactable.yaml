@@ -1,0 +1,6 @@
+name: sshMacTable
+method: SSH
+target: display mac-address
+dataType: map[string]string
+timeout: 5s
+expectedType: JSON

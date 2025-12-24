@@ -1,0 +1,24 @@
+prompts:
+  - "[a-zA-Z\\d:@\\[\\(\\) \\/\\]-]*\\(?(config|~)\\)? #\\s+$"
+  - "[a-zA-Z\\d:@\\[\\\\(\\) \\/\\]-]*(:?\\(tmos\\))#\\s+$"
+err_prompts:
+  - "command not found"
+  - " wrong number of arguments"
+  - "Syntax Error:"
+  - "cannot execute binary file"
+  - "No such file or directory"
+  - "already exists in partition Common"
+  - "zsh: parse error near"
+  - "was not found"
+  - "_terminal:\\[:"
+init_commands:
+  - "tmsh"
+  - "modify cli preference pager disabled"
+  - "modify cli preference display-threshold 0"
+save_commands:
+  - "save sys config"
+first_chain:
+  - "show running-config"
+last_chain:
+  - "show running-config"
+auth_cmd: ""

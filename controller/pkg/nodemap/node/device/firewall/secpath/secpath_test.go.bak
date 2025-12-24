@@ -1,0 +1,152 @@
+package secpath
+
+import (
+	"testing"
+
+	"github.com/influxdata/telegraf/controller/pkg/nodemap/node/device/firewall/common"
+	"github.com/netxops/utils/policy"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestFindPolicyByIntent(t *testing.T) {
+	// 创建一个 SecPathNode 实例
+	secpath := &SecPathNode{
+		PolicySet: &PolicySet{
+			securityPolicyAcl: []*Policy{
+				{
+					id:      1,
+					name:    "Policy1",
+					srcZone: []string{"trust"},
+					dstZone: []string{"untrust"},
+					policyEntry: &policy.PolicyEntry{
+						PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+						PolicyEntryDst:     mustNetworkGroup("10.0.0.0/24"),
+						PolicyEntryService: mustNewService("tcp:80"),
+					},
+				},
+				{
+					id:      2,
+					name:    "Policy2",
+					srcZone: []string{"any"},
+					dstZone: []string{"dmz"},
+					policyEntry: &policy.PolicyEntry{
+						PolicyEntrySrc:     mustNetworkGroup("192.168.0.0/16"),
+						PolicyEntryDst:     mustNetworkGroup("172.16.0.0/16"),
+						PolicyEntryService: mustNewService("tcp:443"),
+					},
+				},
+				{
+					id:      3,
+					name:    "Policy3",
+					srcZone: []string{"trust"},
+					dstZone: []string{"untrust"},
+					policyEntry: &policy.PolicyEntry{
+						PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+						PolicyEntryDst:     mustNetworkGroup("10.0.0.0/24"),
+						PolicyEntryService: mustNewService("tcp:80,443"),
+					},
+				},
+			},
+		},
+	}
+
+	tests := []struct {
+		name         string
+		intent       *policy.Intent
+		fromZone     string
+		toZone       string
+		config       common.MatchConfig
+		expected     int
+		expectedName []string
+	}{
+		{
+			name: "Exact match",
+			intent: &policy.Intent{
+				PolicyEntry: policy.PolicyEntry{
+					PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+					PolicyEntryDst:     mustNetworkGroup("10.0.0.0/24"),
+					PolicyEntryService: mustNewService("tcp:80"),
+				},
+			},
+			fromZone:     "trust",
+			toZone:       "untrust",
+			config:       common.MatchConfig{MatchSrc: true, MatchDst: true, MatchService: true, MatchThreshold: 3},
+			expected:     1,
+			expectedName: []string{"Policy1"},
+		},
+		{
+			name: "Partial match with threshold 2",
+			intent: &policy.Intent{
+				PolicyEntry: policy.PolicyEntry{
+					PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+					PolicyEntryDst:     mustNetworkGroup("10.0.0.0/24"),
+					PolicyEntryService: mustNewService("tcp:443"),
+				},
+			},
+			fromZone:     "trust",
+			toZone:       "untrust",
+			config:       common.MatchConfig{MatchSrc: true, MatchDst: true, MatchService: true, MatchThreshold: 2},
+			expected:     2,
+			expectedName: []string{"Policy1", "Policy3"},
+		},
+		{
+			name: "Match with 'any' zone",
+			intent: &policy.Intent{
+				PolicyEntry: policy.PolicyEntry{
+					PolicyEntrySrc:     mustNetworkGroup("192.168.0.0/16"),
+					PolicyEntryDst:     mustNetworkGroup("172.16.0.0/16"),
+					PolicyEntryService: mustNewService("tcp:443"),
+				},
+			},
+			fromZone:     "trust",
+			toZone:       "dmz",
+			config:       common.MatchConfig{MatchSrc: true, MatchDst: true, MatchService: true, MatchThreshold: 3, StrictZone: false},
+			expected:     1,
+			expectedName: []string{"Policy2"},
+		},
+		{
+			name: "No match with strict zone",
+			intent: &policy.Intent{
+				PolicyEntry: policy.PolicyEntry{
+					PolicyEntrySrc:     mustNetworkGroup("192.168.0.0/16"),
+					PolicyEntryDst:     mustNetworkGroup("172.16.0.0/16"),
+					PolicyEntryService: mustNewService("tcp:443"),
+				},
+			},
+			fromZone:     "trust",
+			toZone:       "dmz",
+			config:       common.MatchConfig{MatchSrc: true, MatchDst: true, MatchService: true, MatchThreshold: 3, StrictZone: true},
+			expected:     0,
+			expectedName: []string{},
+		},
+		{
+			name: "Match only source and destination",
+			intent: &policy.Intent{
+				PolicyEntry: policy.PolicyEntry{
+					PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+					PolicyEntryDst:     mustNetworkGroup("10.0.0.0/24"),
+					PolicyEntryService: mustNewService("udp:53"),
+				},
+			},
+			fromZone:     "trust",
+			toZone:       "untrust",
+			config:       common.MatchConfig{MatchSrc: true, MatchDst: true, MatchService: false, MatchThreshold: 2},
+			expected:     2,
+			expectedName: []string{"Policy1", "Policy3"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := common.FindPolicyByIntent(secpath, tt.intent, tt.fromZone, tt.toZone, tt.config)
+			assert.Equal(t, tt.expected, len(result), "Number of matched policies should be %d, got %d", tt.expected, len(result))
+
+			for i, policy := range result {
+				assert.Contains(t, tt.expectedName, policy.Name(), "Policy ID %s should be in expected Names", policy.Name())
+				if i < len(tt.expectedName) {
+					assert.Equal(t, tt.expectedName[i], policy.Name(), "Policy ID should match expected Name")
+				}
+			}
+		})
+	}
+}

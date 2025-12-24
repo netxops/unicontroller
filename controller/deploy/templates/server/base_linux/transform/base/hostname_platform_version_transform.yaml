@@ -1,0 +1,26 @@
+name: hostnamePlatformVersionTransform
+mappings:
+  # 映射主机名
+  - inputField: hostnameCollect#value
+    outputField: hostname
+    unchanged: true
+  
+  # 映射平台信息
+  - inputField: platform
+    outputField: platform
+    unchanged: true
+  
+  # 映射版本信息
+  - inputField: version
+    outputField: version
+    unchanged: true
+
+  # 映射架构信息
+  - inputField: architectureCollect#value
+    outputField: architecture
+    unchanged: true
+
+  # 映射内核信息
+  - inputField: kernelCollect#value
+    outputField: kernel_version
+    unchanged: true

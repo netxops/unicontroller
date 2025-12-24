@@ -1,0 +1,28 @@
+vendor: HuaWei
+platform: VRP
+collectionMethod: Mixed
+timeout: 60s
+retries: 3
+username: admin
+password: admin@345
+resultType: JSON
+debug: true
+verboseLogging: true
+
+pipeline:
+  - type: Collect
+    config:
+      collectConfig:
+        collectItems:
+          - $include: collect/snmp_sysDescr.yaml
+          - $include: collect/ssh_interfaceBrief.yaml
+  - type: Parse
+    config:
+      parseConfig:
+        parseItems:
+          - $include: parse/version_extract.yaml
+  - type: TextFSM
+    config:
+      textFSMConfig:
+        textFSMItems:
+          - $include: textfsm/interface_brief.textfsm

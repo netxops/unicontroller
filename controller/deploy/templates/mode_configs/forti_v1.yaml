@@ -1,0 +1,18 @@
+prompts:
+  - "[\\r\\n]?[^\n]+(>|#) $"
+err_prompts:
+  - "(?i)error:"
+  - "(?i)does not exist"
+  - "command not found"
+  - "No such file or directory"
+init_commands:
+  - "config system console"
+  - "set output standard"
+  - "end"
+save_commands:
+  - "execute save"
+first_chain:
+  - "show full-configuration"
+last_chain:
+  - "show full-configuration"
+auth_cmd: ""

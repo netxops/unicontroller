@@ -1,0 +1,24 @@
+# 定义一个数据合并操作，用于创建设备端口的综合信息
+name: snmpDevicePorts
+
+# 指定主要的输入数据源，这里是接口表的处理结果
+leftInput: "snmpIftableProcess"
+
+# 定义要合并的其他数据源
+rightInputs: 
+  # 合并 IP 地址表的处理结果
+  - name: "snmpIpAddrEntryProcess"
+    key: "ifindex"  # 使用 "interface" 字段作为合并键
+  
+  # 合并高速接口信息的处理结果
+  - name: "snmpIfHighSpeedProcess"
+    key: "_index"  # 使用 "_index" 字段作为合并键
+
+# 指定合并后的输出字段名
+outputField: "snmpDevicePorts"
+
+# 指定合并类型为左连接（保留左表的所有记录）
+joinType: "left"
+
+# 指定左表（主表）用于合并的键
+leftKey: "_index"

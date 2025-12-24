@@ -1,0 +1,8 @@
+name: SerialNumberExtract
+inputField: sshSerialNumber#value
+outputField: serialNumber
+dataType: map[string]string
+expectedType: string
+operation: Regex
+pattern: Serial Number:\s*(.*)
+

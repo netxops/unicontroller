@@ -1,0 +1,23 @@
+prompts:
+  - "\\S+[^\n]+(>|#)\\s$"
+err_prompts:
+  - "% Incomplete command"
+  - "% Unrecognized"
+  - "% Too many parameters"
+  - "% Parameter error"
+  - "% Ambiguous command"
+  - "% Please"
+  - "% Such file"
+  - "% Unrecognized command"
+  - "[\\r\\n] % \\w"
+  - "\\s+Error: "
+  - "Failed to move"
+init_commands:
+  - "no cli session paging enable"
+save_commands:
+  - "save configuration"
+first_chain:
+  - "show running-config"
+last_chain:
+  - "show running-config"
+auth_cmd: "enable"

@@ -1,0 +1,749 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "totalItems": 10,
+        "totalPages": 1,
+        "pageNumber": 1,
+        "pageSize": 100,
+        "itemsOffset": 0,
+        "itemLength": 10,
+        "privateOffset": 0,
+        "items": [
+            {
+                "uuid": "00000000000000000000000000000000",
+                "name": "eth0",
+                "description": "",
+                "vsys": null,
+                "mtu": 1500,
+                "ifType": "PHYSICALIF",
+                "ifMode": "ROUTE",
+                "mac": "cc:d3:9d:99:9f:75",
+                "shutdown": false,
+                "ipv4": {
+                    "ipv4Mode": "STATIC",
+                    "staticIp": [
+                        {
+                            "ipaddress": {
+                                "start": "10.251.251.251",
+                                "end": "",
+                                "bits": 24
+                            },
+                            "isSync": false
+                        },
+                        {
+                            "ipaddress": {
+                                "start": "192.168.100.107",
+                                "end": "",
+                                "bits": 24
+                            },
+                            "isSync": false
+                        }
+                    ],
+                    "dhcp": null,
+                    "pppoeGroupName": ""
+                },
+                "ipv6": {
+                    "ipv6Mode": "STATIC",
+                    "autoconfigEnable": false,
+                    "autoconfigDefaultRoute": false,
+                    "staticIp": [],
+                    "dhcp6": null,
+                    "ipv6Param": {
+                        "enable": false,
+                        "mtu": 1500,
+                        "nd_learning": false,
+                        "nd_inspection": null,
+                        "nd": null
+                    }
+                },
+                "wanEnable": false,
+                "defaultGateway": {
+                    "ipv4Gateway": "192.168.100.254",
+                    "ipv6Gateway": ""
+                },
+                "reverseRoute": null,
+                "reverseRouteEnable": false,
+                "bandSwitch": {
+                    "ingressbandSwitch": {
+                        "value": 0
+                    },
+                    "egressbandSwitch": {
+                        "value": 0
+                    }
+                },
+                "manage": {
+                    "ssh": true,
+                    "snmp": true,
+                    "https": true,
+                    "ping": true
+                },
+                "jumbo": false,
+                "vlan": null,
+                "vlanId": 0,
+                "physicalif": {
+                    "speedDuplex": {
+                        "autoneg": true,
+                        "speed": 1000,
+                        "duplex": "full"
+                    },
+                    "bypassMirror": null
+                },
+                "subif": null,
+                "channelif": null,
+                "gretunif": null,
+                "tunnelif": null,
+                "oobManage": false,
+                "lldpConfig": {
+                    "state": "",
+                    "basicTlv": null,
+                    "dot1Tlv": null,
+                    "dot3Tlv": {
+                        "linkAggregation": false,
+                        "macPhysic": false,
+                        "maximumFrameSize": false
+                    }
+                },
+                "rstp": null,
+                "ipmacBind": ""
+            },
+            {
+                "uuid": "00000000000000000000000000000001",
+                "name": "eth1",
+                "description": "",
+                "vsys": null,
+                "mtu": 1500,
+                "ifType": "PHYSICALIF",
+                "ifMode": "ROUTE",
+                "mac": "cc:d3:9d:99:9f:76",
+                "shutdown": false,
+                "ipv4": {
+                    "ipv4Mode": "STATIC",
+                    "staticIp": [
+                        {
+                            "ipaddress": {
+                                "start": "172.32.100.1",
+                                "end": "",
+                                "bits": 24
+                            },
+                            "isSync": false
+                        }
+                    ],
+                    "dhcp": null,
+                    "pppoeGroupName": ""
+                },
+                "ipv6": {
+                    "ipv6Mode": "STATIC",
+                    "autoconfigEnable": false,
+                    "autoconfigDefaultRoute": false,
+                    "staticIp": [],
+                    "dhcp6": null,
+                    "ipv6Param": {
+                        "enable": false,
+                        "mtu": 1500,
+                        "nd_learning": false,
+                        "nd_inspection": null,
+                        "nd": null
+                    }
+                },
+                "wanEnable": false,
+                "defaultGateway": null,
+                "reverseRoute": null,
+                "reverseRouteEnable": true,
+                "bandSwitch": {
+                    "ingressbandSwitch": {
+                        "value": 1048576000
+                    },
+                    "egressbandSwitch": {
+                        "value": 1048576000
+                    }
+                },
+                "manage": {
+                    "ssh": true,
+                    "snmp": true,
+                    "https": true,
+                    "ping": true
+                },
+                "jumbo": false,
+                "vlan": null,
+                "vlanId": 0,
+                "physicalif": {
+                    "speedDuplex": {
+                        "autoneg": true,
+                        "speed": 1000,
+                        "duplex": "full"
+                    },
+                    "bypassMirror": null
+                },
+                "subif": null,
+                "channelif": null,
+                "gretunif": null,
+                "tunnelif": null,
+                "oobManage": false,
+                "lldpConfig": {
+                    "state": "",
+                    "basicTlv": null,
+                    "dot1Tlv": null,
+                    "dot3Tlv": {
+                        "linkAggregation": false,
+                        "macPhysic": false,
+                        "maximumFrameSize": false
+                    }
+                },
+                "rstp": null,
+                "ipmacBind": ""
+            },
+            {
+                "uuid": "00000000000000000000000000000002",
+                "name": "eth2",
+                "description": "",
+                "vsys": null,
+                "mtu": 1500,
+                "ifType": "PHYSICALIF",
+                "ifMode": "ROUTE",
+                "mac": "cc:d3:9d:99:9f:77",
+                "shutdown": false,
+                "ipv4": {
+                    "ipv4Mode": "STATIC",
+                    "staticIp": [
+                        {
+                            "ipaddress": {
+                                "start": "172.32.101.254",
+                                "end": "",
+                                "bits": 24
+                            },
+                            "isSync": false
+                        }
+                    ],
+                    "dhcp": null,
+                    "pppoeGroupName": ""
+                },
+                "ipv6": {
+                    "ipv6Mode": "STATIC",
+                    "autoconfigEnable": false,
+                    "autoconfigDefaultRoute": false,
+                    "staticIp": [],
+                    "dhcp6": null,
+                    "ipv6Param": {
+                        "enable": false,
+                        "mtu": 1500,
+                        "nd_learning": false,
+                        "nd_inspection": null,
+                        "nd": null
+                    }
+                },
+                "wanEnable": false,
+                "defaultGateway": null,
+                "reverseRoute": null,
+                "reverseRouteEnable": false,
+                "bandSwitch": {
+                    "ingressbandSwitch": {
+                        "value": 1048576000
+                    },
+                    "egressbandSwitch": {
+                        "value": 1048576000
+                    }
+                },
+                "manage": {
+                    "ssh": true,
+                    "snmp": true,
+                    "https": false,
+                    "ping": true
+                },
+                "jumbo": false,
+                "vlan": null,
+                "vlanId": 0,
+                "physicalif": {
+                    "speedDuplex": {
+                        "autoneg": true,
+                        "speed": 1000,
+                        "duplex": "full"
+                    },
+                    "bypassMirror": null
+                },
+                "subif": null,
+                "channelif": null,
+                "gretunif": null,
+                "tunnelif": null,
+                "oobManage": false,
+                "lldpConfig": {
+                    "state": "",
+                    "basicTlv": null,
+                    "dot1Tlv": null,
+                    "dot3Tlv": {
+                        "linkAggregation": false,
+                        "macPhysic": false,
+                        "maximumFrameSize": false
+                    }
+                },
+                "rstp": null,
+                "ipmacBind": ""
+            },
+            {
+                "uuid": "00000000000000000000000000000003",
+                "name": "eth3",
+                "description": "",
+                "vsys": null,
+                "mtu": 1500,
+                "ifType": "PHYSICALIF",
+                "ifMode": "ROUTE",
+                "mac": "cc:d3:9d:99:9f:78",
+                "shutdown": false,
+                "ipv4": {
+                    "ipv4Mode": "STATIC",
+                    "staticIp": [],
+                    "dhcp": null,
+                    "pppoeGroupName": ""
+                },
+                "ipv6": {
+                    "ipv6Mode": "STATIC",
+                    "autoconfigEnable": false,
+                    "autoconfigDefaultRoute": false,
+                    "staticIp": [],
+                    "dhcp6": null,
+                    "ipv6Param": {
+                        "enable": false,
+                        "mtu": 1500,
+                        "nd_learning": false,
+                        "nd_inspection": null,
+                        "nd": null
+                    }
+                },
+                "wanEnable": false,
+                "defaultGateway": null,
+                "reverseRoute": null,
+                "reverseRouteEnable": false,
+                "bandSwitch": {
+                    "ingressbandSwitch": {
+                        "value": 1048576000
+                    },
+                    "egressbandSwitch": {
+                        "value": 1048576000
+                    }
+                },
+                "manage": {
+                    "ssh": false,
+                    "snmp": false,
+                    "https": false,
+                    "ping": false
+                },
+                "jumbo": false,
+                "vlan": null,
+                "vlanId": 0,
+                "physicalif": {
+                    "speedDuplex": {
+                        "autoneg": true,
+                        "speed": 1000,
+                        "duplex": "full"
+                    },
+                    "bypassMirror": null
+                },
+                "subif": null,
+                "channelif": null,
+                "gretunif": null,
+                "tunnelif": null,
+                "oobManage": false,
+                "lldpConfig": null,
+                "rstp": null,
+                "ipmacBind": ""
+            },
+            {
+                "uuid": "00000000000000000000000000000004",
+                "name": "eth4",
+                "description": "",
+                "vsys": null,
+                "mtu": 1500,
+                "ifType": "PHYSICALIF",
+                "ifMode": "ROUTE",
+                "mac": "cc:d3:9d:99:9f:79",
+                "shutdown": false,
+                "ipv4": {
+                    "ipv4Mode": "STATIC",
+                    "staticIp": [],
+                    "dhcp": null,
+                    "pppoeGroupName": ""
+                },
+                "ipv6": {
+                    "ipv6Mode": "STATIC",
+                    "autoconfigEnable": false,
+                    "autoconfigDefaultRoute": false,
+                    "staticIp": [],
+                    "dhcp6": null,
+                    "ipv6Param": {
+                        "enable": false,
+                        "mtu": 1500,
+                        "nd_learning": false,
+                        "nd_inspection": null,
+                        "nd": null
+                    }
+                },
+                "wanEnable": false,
+                "defaultGateway": null,
+                "reverseRoute": null,
+                "reverseRouteEnable": false,
+                "bandSwitch": {
+                    "ingressbandSwitch": {
+                        "value": 1048576000
+                    },
+                    "egressbandSwitch": {
+                        "value": 1048576000
+                    }
+                },
+                "manage": {
+                    "ssh": false,
+                    "snmp": false,
+                    "https": false,
+                    "ping": false
+                },
+                "jumbo": false,
+                "vlan": null,
+                "vlanId": 0,
+                "physicalif": {
+                    "speedDuplex": {
+                        "autoneg": true,
+                        "speed": 1000,
+                        "duplex": "full"
+                    },
+                    "bypassMirror": null
+                },
+                "subif": null,
+                "channelif": null,
+                "gretunif": null,
+                "tunnelif": null,
+                "oobManage": false,
+                "lldpConfig": null,
+                "rstp": null,
+                "ipmacBind": ""
+            },
+            {
+                "uuid": "00000000000000000000000000000005",
+                "name": "eth5",
+                "description": "",
+                "vsys": null,
+                "mtu": 1500,
+                "ifType": "PHYSICALIF",
+                "ifMode": "ROUTE",
+                "mac": "cc:d3:9d:99:9f:7a",
+                "shutdown": false,
+                "ipv4": {
+                    "ipv4Mode": "STATIC",
+                    "staticIp": [],
+                    "dhcp": null,
+                    "pppoeGroupName": ""
+                },
+                "ipv6": {
+                    "ipv6Mode": "STATIC",
+                    "autoconfigEnable": false,
+                    "autoconfigDefaultRoute": false,
+                    "staticIp": [],
+                    "dhcp6": null,
+                    "ipv6Param": {
+                        "enable": false,
+                        "mtu": 1500,
+                        "nd_learning": false,
+                        "nd_inspection": null,
+                        "nd": null
+                    }
+                },
+                "wanEnable": false,
+                "defaultGateway": null,
+                "reverseRoute": null,
+                "reverseRouteEnable": false,
+                "bandSwitch": {
+                    "ingressbandSwitch": {
+                        "value": 1048576000
+                    },
+                    "egressbandSwitch": {
+                        "value": 1048576000
+                    }
+                },
+                "manage": {
+                    "ssh": false,
+                    "snmp": false,
+                    "https": false,
+                    "ping": false
+                },
+                "jumbo": false,
+                "vlan": null,
+                "vlanId": 0,
+                "physicalif": {
+                    "speedDuplex": {
+                        "autoneg": true,
+                        "speed": 1000,
+                        "duplex": "full"
+                    },
+                    "bypassMirror": null
+                },
+                "subif": null,
+                "channelif": null,
+                "gretunif": null,
+                "tunnelif": null,
+                "oobManage": false,
+                "lldpConfig": null,
+                "rstp": null,
+                "ipmacBind": ""
+            },
+            {
+                "uuid": "00000000000000000000000000000006",
+                "name": "eth6",
+                "description": "",
+                "vsys": null,
+                "mtu": 1500,
+                "ifType": "PHYSICALIF",
+                "ifMode": "ROUTE",
+                "mac": "cc:d3:9d:99:9f:7b",
+                "shutdown": false,
+                "ipv4": {
+                    "ipv4Mode": "STATIC",
+                    "staticIp": [],
+                    "dhcp": null,
+                    "pppoeGroupName": ""
+                },
+                "ipv6": {
+                    "ipv6Mode": "STATIC",
+                    "autoconfigEnable": false,
+                    "autoconfigDefaultRoute": false,
+                    "staticIp": [],
+                    "dhcp6": null,
+                    "ipv6Param": {
+                        "enable": false,
+                        "mtu": 1500,
+                        "nd_learning": false,
+                        "nd_inspection": null,
+                        "nd": null
+                    }
+                },
+                "wanEnable": false,
+                "defaultGateway": null,
+                "reverseRoute": null,
+                "reverseRouteEnable": false,
+                "bandSwitch": {
+                    "ingressbandSwitch": {
+                        "value": 1048576000
+                    },
+                    "egressbandSwitch": {
+                        "value": 1048576000
+                    }
+                },
+                "manage": {
+                    "ssh": false,
+                    "snmp": false,
+                    "https": false,
+                    "ping": false
+                },
+                "jumbo": false,
+                "vlan": null,
+                "vlanId": 0,
+                "physicalif": {
+                    "speedDuplex": {
+                        "autoneg": true,
+                        "speed": 1000,
+                        "duplex": "full"
+                    },
+                    "bypassMirror": null
+                },
+                "subif": null,
+                "channelif": null,
+                "gretunif": null,
+                "tunnelif": null,
+                "oobManage": false,
+                "lldpConfig": null,
+                "rstp": null,
+                "ipmacBind": ""
+            },
+            {
+                "uuid": "00000000000000000000000000000007",
+                "name": "eth7",
+                "description": "",
+                "vsys": null,
+                "mtu": 1500,
+                "ifType": "PHYSICALIF",
+                "ifMode": "ROUTE",
+                "mac": "cc:d3:9d:99:9f:7c",
+                "shutdown": false,
+                "ipv4": {
+                    "ipv4Mode": "STATIC",
+                    "staticIp": [],
+                    "dhcp": null,
+                    "pppoeGroupName": ""
+                },
+                "ipv6": {
+                    "ipv6Mode": "STATIC",
+                    "autoconfigEnable": false,
+                    "autoconfigDefaultRoute": false,
+                    "staticIp": [],
+                    "dhcp6": null,
+                    "ipv6Param": {
+                        "enable": false,
+                        "mtu": 1500,
+                        "nd_learning": false,
+                        "nd_inspection": null,
+                        "nd": null
+                    }
+                },
+                "wanEnable": false,
+                "defaultGateway": null,
+                "reverseRoute": null,
+                "reverseRouteEnable": false,
+                "bandSwitch": {
+                    "ingressbandSwitch": {
+                        "value": 1048576000
+                    },
+                    "egressbandSwitch": {
+                        "value": 1048576000
+                    }
+                },
+                "manage": {
+                    "ssh": false,
+                    "snmp": false,
+                    "https": false,
+                    "ping": false
+                },
+                "jumbo": false,
+                "vlan": null,
+                "vlanId": 0,
+                "physicalif": {
+                    "speedDuplex": {
+                        "autoneg": true,
+                        "speed": 1000,
+                        "duplex": "full"
+                    },
+                    "bypassMirror": null
+                },
+                "subif": null,
+                "channelif": null,
+                "gretunif": null,
+                "tunnelif": null,
+                "oobManage": false,
+                "lldpConfig": null,
+                "rstp": null,
+                "ipmacBind": ""
+            },
+            {
+                "uuid": "A0000000000000000000000000000000",
+                "name": "vpntun",
+                "description": "",
+                "vsys": null,
+                "mtu": 1500,
+                "ifType": "VPNTUN",
+                "ifMode": "ROUTE",
+                "mac": "",
+                "shutdown": false,
+                "ipv4": {
+                    "ipv4Mode": "STATIC",
+                    "staticIp": [],
+                    "dhcp": null,
+                    "pppoeGroupName": ""
+                },
+                "ipv6": {
+                    "ipv6Mode": "STATIC",
+                    "autoconfigEnable": false,
+                    "autoconfigDefaultRoute": false,
+                    "staticIp": [],
+                    "dhcp6": null,
+                    "ipv6Param": {
+                        "enable": true,
+                        "mtu": 1500,
+                        "nd_learning": false,
+                        "nd_inspection": null,
+                        "nd": null
+                    }
+                },
+                "wanEnable": false,
+                "defaultGateway": null,
+                "reverseRoute": null,
+                "reverseRouteEnable": false,
+                "bandSwitch": {
+                    "ingressbandSwitch": {
+                        "value": 1048576000
+                    },
+                    "egressbandSwitch": {
+                        "value": 1048576000
+                    }
+                },
+                "manage": {
+                    "ssh": false,
+                    "snmp": false,
+                    "https": true,
+                    "ping": false
+                },
+                "jumbo": false,
+                "vlan": null,
+                "vlanId": 0,
+                "physicalif": null,
+                "subif": null,
+                "channelif": null,
+                "gretunif": null,
+                "tunnelif": null,
+                "oobManage": false,
+                "lldpConfig": null,
+                "rstp": null,
+                "ipmacBind": ""
+            },
+            {
+                "uuid": "B0000000000000000000000000000000",
+                "name": "veth.0",
+                "description": "",
+                "vsys": null,
+                "mtu": 1500,
+                "ifType": "VLANIF",
+                "ifMode": "",
+                "mac": "",
+                "shutdown": false,
+                "ipv4": {
+                    "ipv4Mode": "STATIC",
+                    "staticIp": [
+                        {
+                            "ipaddress": {
+                                "start": "1.1.1.1",
+                                "end": "",
+                                "bits": 24
+                            },
+                            "isSync": false
+                        }
+                    ],
+                    "dhcp": null,
+                    "pppoeGroupName": ""
+                },
+                "ipv6": {
+                    "ipv6Mode": "STATIC",
+                    "autoconfigEnable": false,
+                    "autoconfigDefaultRoute": false,
+                    "staticIp": [
+                        {
+                            "start": "2000::1",
+                            "end": "",
+                            "bits": 96
+                        }
+                    ],
+                    "dhcp6": null,
+                    "ipv6Param": {
+                        "enable": true,
+                        "mtu": 1500,
+                        "nd_learning": false,
+                        "nd_inspection": null,
+                        "nd": null
+                    }
+                },
+                "wanEnable": false,
+                "defaultGateway": null,
+                "reverseRoute": null,
+                "reverseRouteEnable": false,
+                "bandSwitch": null,
+                "manage": null,
+                "jumbo": false,
+                "vlan": null,
+                "vlanId": 0,
+                "physicalif": null,
+                "subif": null,
+                "channelif": null,
+                "gretunif": null,
+                "tunnelif": null,
+                "oobManage": false,
+                "lldpConfig": null,
+                "rstp": null,
+                "ipmacBind": ""
+            }
+        ]
+    }
+}

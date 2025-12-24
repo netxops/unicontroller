@@ -1,0 +1,7 @@
+name: VersionExtract
+inputField: sysDescr
+outputField: version
+dataType: map[string]string
+expectedType: String
+operation: Regex
+pattern: "Version\\s+(\\S+)"

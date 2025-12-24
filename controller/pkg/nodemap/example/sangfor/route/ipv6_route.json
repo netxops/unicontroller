@@ -1,0 +1,483 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "description": "通过此接口，可以获取后台ipv6路由信息.包括状态",
+        "chapters": [
+            "网络",
+            "路由",
+            "查询IPV6路由状态"
+        ],
+        "apiname": "getIpv6RouteList",
+        "title": "获取后台IPv6路由信息列表",
+        "inputParams": {
+            "cookies": [
+                {
+                    "docrequired": "是",
+                    "name": "token",
+                    "type": "string",
+                    "extra": "{\"maxLength\":64}",
+                    "relationshipKey": "token",
+                    "description": "认证令牌"
+                },
+                {
+                    "docrequired": "是",
+                    "name": "SESSID",
+                    "type": "string",
+                    "extra": "{\"maxLength\":256}",
+                    "relationshipKey": "SESSID",
+                    "description": "认证会话"
+                }
+            ],
+            "headers": [],
+            "uri": [
+                {
+                    "docrequired": "否",
+                    "name": "_length",
+                    "type": "int32",
+                    "extra": {
+                        "minimum": 1,
+                        "default": 100,
+                        "maximum": 200
+                    },
+                    "relationshipKey": "_length",
+                    "description": "获取最大长度，限制最大值，如果数据不够可能返回小于 length"
+                },
+                {
+                    "docrequired": "否",
+                    "name": "routeType",
+                    "type": "string",
+                    "extra": {
+                        "enums": [
+                            {
+                                "description": "所有路由",
+                                "value": "ALL_ROUTE"
+                            },
+                            {
+                                "description": "静态路由",
+                                "value": "STATIC_ROUTE"
+                            },
+                            {
+                                "description": "直接路由",
+                                "value": "DIRECT_ROUTE"
+                            },
+                            {
+                                "description": "OSPF 路由",
+                                "value": "OSPF_ROUTE"
+                            },
+                            {
+                                "description": "OSPFv3 路由",
+                                "value": "OSPFV3_ROUTE"
+                            },
+                            {
+                                "description": "RIP 路由",
+                                "value": "RIP_ROUTE"
+                            },
+                            {
+                                "description": "RIPNG 路由",
+                                "value": "RIPNG_ROUTE"
+                            },
+                            {
+                                "description": "VPN 路由",
+                                "value": "VPN_ROUTE"
+                            },
+                            {
+                                "description": "SSL_VPN 路由",
+                                "value": "SSL_VPN_ROUTE"
+                            },
+                            {
+                                "description": "BGP 路由",
+                                "value": "BGP_ROUTE"
+                            }
+                        ]
+                    },
+                    "relationshipKey": "routeType",
+                    "description": "获取路由的类型"
+                },
+                {
+                    "docrequired": "否",
+                    "name": "_search",
+                    "type": "string",
+                    "extra": {
+                        "maxLength": 95
+                    },
+                    "relationshipKey": "_search",
+                    "description": "模糊搜索关键字"
+                },
+                {
+                    "docrequired": "否",
+                    "name": "tableId",
+                    "type": "uint32",
+                    "extra": {
+                        "default": 251,
+                        "minimum": 0,
+                        "enums": [
+                            {
+                                "description": "管理网络路由表",
+                                "value": 250
+                            },
+                            {
+                                "description": "业务网络路由表",
+                                "value": 251
+                            }
+                        ],
+                        "maximum": 256
+                    },
+                    "relationshipKey": "tableId",
+                    "description": "路由表Id"
+                },
+                {
+                    "docrequired": "否",
+                    "name": "_start",
+                    "type": "int32",
+                    "extra": {
+                        "minimum": 0,
+                        "default": 0,
+                        "maximum": 2000000
+                    },
+                    "relationshipKey": "_start",
+                    "description": "起始位置，从 0 开始"
+                }
+            ]
+        },
+        "inputSamples": {
+            "request": "GET https://192.168.1.1/api/v1/namespaces/public/routes/ipv6?routeType=STATIC_ROUTE&_start=0&_length=100",
+            "description": "获取后台ipv6路由信息列表，查询条件：查看所有静态路由路由，起始位置为0，最多展示100条"
+        },
+        "outputParams": [
+            {
+                "docrequired": "否",
+                "name": "code",
+                "type": "int",
+                "relationshipKey": "code",
+                "description": "错误码"
+            },
+            {
+                "docrequired": "否",
+                "name": "message",
+                "type": "string",
+                "relationshipKey": "message",
+                "description": "错误信息"
+            },
+            {
+                "docrequired": "是",
+                "name": "data",
+                "type": "object",
+                "relationshipKey": "data",
+                "description": "分页数据"
+            },
+            {
+                "docrequired": "--",
+                "name": "totalItems",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.totalItems",
+                "description": "总共多少项目"
+            },
+            {
+                "docrequired": "--",
+                "name": "totalPages",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.totalPages",
+                "description": "总共多少页"
+            },
+            {
+                "docrequired": "--",
+                "name": "pageNumber",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.pageNumber",
+                "description": "当前页码，从 1 开始"
+            },
+            {
+                "docrequired": "--",
+                "name": "pageSize",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.pageSize",
+                "description": "每页多大"
+            },
+            {
+                "docrequired": "--",
+                "name": "itemsOffset",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.itemsOffset",
+                "description": "当前条目偏移，从 0 开始"
+            },
+            {
+                "docrequired": "--",
+                "name": "itemLength",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.itemLength",
+                "description": "数据列表长度"
+            },
+            {
+                "docrequired": "--",
+                "name": "privateOffset",
+                "type": "uint64",
+                "extra": [],
+                "relationshipKey": "data.privateOffset",
+                "description": "内部偏移"
+            },
+            {
+                "docrequired": "--",
+                "name": "items",
+                "type": "object[]",
+                "extra": [],
+                "relationshipKey": "data.items",
+                "description": "有效数据列表"
+            },
+            {
+                "docrequired": "--",
+                "name": "routeType",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.routeType",
+                "description": "类型"
+            },
+            {
+                "docrequired": "--",
+                "name": "prefix",
+                "type": "string",
+                "extra": {
+                    "pattern desc": "IPv6地址格式错误, 输入示例:fe80::40ca:81ff:fea9:a768/24"
+                },
+                "relationshipKey": "data.items.prefix",
+                "description": "目的IPv6地址/掩码"
+            },
+            {
+                "docrequired": "--",
+                "name": "gateway",
+                "type": "string[]",
+                "extra": [],
+                "relationshipKey": "data.items.gateway",
+                "description": "下一跳ipv6地址"
+            },
+            {
+                "docrequired": "--",
+                "name": "metric",
+                "type": "uint32",
+                "extra": [],
+                "relationshipKey": "data.items.metric",
+                "description": "静态路由度量值"
+            },
+            {
+                "docrequired": "--",
+                "name": "ifname",
+                "type": "string[]",
+                "extra": [],
+                "relationshipKey": "data.items.ifname",
+                "description": "出接口名称"
+            },
+            {
+                "docrequired": "--",
+                "name": "distance",
+                "type": "uint8",
+                "extra": [],
+                "relationshipKey": "data.items.distance",
+                "description": "路由管理距离"
+            },
+            {
+                "docrequired": "--",
+                "name": "flags",
+                "type": "uint8",
+                "extra": [],
+                "relationshipKey": "data.items.flags",
+                "description": "路由标记,包含路由是否有效信息"
+            },
+            {
+                "docrequired": "--",
+                "name": "tag",
+                "type": "uint32",
+                "extra": [],
+                "relationshipKey": "data.items.tag",
+                "description": "zebra路由标记字段,用于过滤路由的需求"
+            },
+            {
+                "docrequired": "--",
+                "name": "status",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "有效",
+                            "value": "VALID"
+                        },
+                        {
+                            "description": "无效",
+                            "value": "INVALID"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.status",
+                "description": "路由表项状态"
+            },
+            {
+                "docrequired": "--",
+                "name": "nexthopStatus",
+                "type": "object[]",
+                "extra": [],
+                "relationshipKey": "data.items.nexthopStatus",
+                "description": "下一跳信息列表"
+            },
+            {
+                "docrequired": "--",
+                "name": "nexthopTypes",
+                "type": "uint8",
+                "extra": [],
+                "relationshipKey": "data.items.nexthopStatus.nexthopTypes",
+                "description": "下一跳类型"
+            },
+            {
+                "docrequired": "--",
+                "name": "nexthopFlags",
+                "type": "uint8",
+                "extra": [],
+                "relationshipKey": "data.items.nexthopStatus.nexthopFlags",
+                "description": "下一跳flag，包含下一跳状态信息，如:是否有效"
+            },
+            {
+                "docrequired": "--",
+                "name": "weight",
+                "type": "uint8",
+                "extra": [],
+                "relationshipKey": "data.items.nexthopStatus.weight",
+                "description": "权重"
+            },
+            {
+                "docrequired": "--",
+                "name": "extendEnable",
+                "type": "bool",
+                "extra": [],
+                "relationshipKey": "data.items.nexthopStatus.extendEnable",
+                "description": "下一跳扩展信息中,路由使能标记"
+            },
+            {
+                "docrequired": "--",
+                "name": "linkdtStatus",
+                "type": "bool",
+                "extra": [],
+                "relationshipKey": "data.items.nexthopStatus.linkdtStatus",
+                "description": "下一跳扩展信息中,链路探测状态,true有效，false无效"
+            },
+            {
+                "docrequired": "--",
+                "name": "nexthopStatus",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.nexthopStatus.nexthopStatus",
+                "description": "下一挑状态"
+            },
+            {
+                "docrequired": "--",
+                "name": "fibFlagCharacter",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.nexthopStatus.fibFlagCharacter",
+                "description": "fib flag character"
+            },
+            {
+                "docrequired": "--",
+                "name": "invalid_reason",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.nexthopStatus.invalid_reason",
+                "description": "下一跳无效原因"
+            },
+            {
+                "docrequired": "--",
+                "name": "linkdtEnable",
+                "type": "bool",
+                "extra": [],
+                "relationshipKey": "data.items.linkdtEnable",
+                "description": "静态路由关联链路探测启,禁用开关"
+            },
+            {
+                "docrequired": "--",
+                "name": "linkdt",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.linkdt",
+                "description": "静态路由关联链路探测"
+            },
+            {
+                "docrequired": "--",
+                "name": "description",
+                "type": "string",
+                "extra": {
+                    "maxLength": 36
+                },
+                "relationshipKey": "data.items.description",
+                "description": "描述信息"
+            },
+            {
+                "docrequired": "--",
+                "name": "selectedFlagsCharacter",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.selectedFlagsCharacter",
+                "description": "selected flag character"
+            },
+            {
+                "docrequired": "--",
+                "name": "uuid",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.uuid",
+                "description": "资源唯一ID"
+            },
+            {
+                "docrequired": "--",
+                "name": "invalid_reason",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.invalid_reason",
+                "description": "路由无效原因"
+            }
+        ],
+        "outputSamples": {
+            "incorrect": {
+                "message": "无效参数",
+                "data": "",
+                "code": 22
+            },
+            "correct": {
+                "message": "成功",
+                "data": {
+                    "itemsOffset": 0,
+                    "itemLength": 2,
+                    "pageSize": 100,
+                    "items": [
+                        {
+                            "routeType": "静态路由",
+                            "prefix": "3000::/64",
+                            "gateway": "2000::161",
+                            "metric": 256,
+                            "ifname": "eth0"
+                        },
+                        {
+                            "routeType": "静态路由",
+                            "prefix": "4000::/64",
+                            "gateway": "2000::55",
+                            "metric": 256,
+                            "ifname": "eth0"
+                        }
+                    ],
+                    "totalPages": 1,
+                    "pageNumber": 1,
+                    "totalItems": 2
+                },
+                "code": 0
+            }
+        },
+        "position": "6.8.9.3",
+        "api": {
+            "url": "https://{host}/api/v1/namespaces/@namespace/routes/ipv6",
+            "method": "GET"
+        },
+        "chapter": "查询IPV6路由状态"
+    }
+}

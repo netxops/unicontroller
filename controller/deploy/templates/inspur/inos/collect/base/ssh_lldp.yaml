@@ -1,0 +1,6 @@
+name: sshLldp
+method: SSH
+target: sh lldp ne de
+dataType: map[string]string
+timeout: 5s
+expectedType: JSON

@@ -1,0 +1,9 @@
+name: aliveCheckTransform
+mappings:
+  - inputField: sshIpa#value
+    outputField: output
+    unchanged: true
+  - inputField: item.sshIpa.target
+    outputField: command
+    unchanged: true
+

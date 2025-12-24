@@ -1,0 +1,112 @@
+========== 节点路由表: NJ-JiS-E24-FW-1.RP.Edu8000E ==========
+生成时间: 2025-12-02 14:35:39
+
+
+---------- VRF: default (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+132.254.64.0/20      132.252.19.105       Eth-Trunk2.15   false      false     
+132.224.160.0/20     132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.80.0/21      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.88.0/22      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.92.0/23      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.26.0/24      132.252.19.73        Eth-Trunk2.11   false      false     
+132.252.44.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.64.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.27.0/24      132.252.19.73        Eth-Trunk2.11   false      false     
+132.252.69.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.24.0/24      132.252.19.73        Eth-Trunk2.11   false      false     
+132.252.56.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.196.0/24     132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.28.0/24      132.252.19.73        Eth-Trunk2.11   false      false     
+132.252.42.0/24      132.252.19.137       Eth-Trunk2.19   false      false     
+132.252.94.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.66.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.45.0/24      132.252.19.169       Eth-Trunk2.21   false      false     
+132.252.57.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.65.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.67.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.70.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.228.185.0/24     132.252.19.169       Eth-Trunk2.21   false      false     
+132.252.30.0/24      132.252.19.81        Eth-Trunk2.12   false      false     
+132.252.33.0/24      132.252.19.97        Eth-Trunk2.14   false      false     
+132.252.206.0/24     132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.29.0/24      132.252.19.73        Eth-Trunk2.11   false      false     
+132.252.255.0/24     132.252.19.193       Eth-Trunk2.22   false      false     
+132.252.62.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.46.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.60.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.31.0/24      132.252.19.81        Eth-Trunk2.12   false      false     
+132.252.48.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.68.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.35.0/24      132.252.19.89        Eth-Trunk2.13   false      false     
+132.252.63.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.61.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.198.0/24     132.252.19.73        Eth-Trunk2.11   false      false     
+132.252.205.0/24     132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.25.0/24      132.252.19.73        Eth-Trunk2.11   false      false     
+132.252.71.0/24      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.199.0/24     132.252.19.73        Eth-Trunk2.11   false      false     
+132.252.204.128/25   132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.254.0/25     132.252.19.193       Eth-Trunk2.22   false      false     
+132.252.36.0/25      132.252.19.89        Eth-Trunk2.13   false      false     
+132.252.43.0/25      132.252.19.145       Eth-Trunk2.20   false      false     
+132.252.197.0/25     132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.37.0/25      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.32.0/25      132.252.19.81        Eth-Trunk2.12   false      false     
+132.252.36.128/25    132.252.19.89        Eth-Trunk2.13   false      false     
+132.252.41.0/25      132.252.19.73        Eth-Trunk2.11   false      false     
+132.252.32.128/25    132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.39.128/25    132.252.19.121       Eth-Trunk2.17   false      false     
+132.252.43.128/25    132.252.19.129       Eth-Trunk2.18   false      false     
+132.252.197.128/25   132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.34.0/25      132.252.19.97        Eth-Trunk2.14   false      false     
+132.252.34.128/25    132.252.19.97        Eth-Trunk2.14   false      false     
+132.252.38.0/25      132.252.19.113       Eth-Trunk2.16   false      false     
+132.252.39.0/25      132.252.19.121       Eth-Trunk2.17   false      false     
+132.252.40.0/25      132.252.19.129       Eth-Trunk2.18   false      false     
+132.252.204.0/25     132.252.19.97        Eth-Trunk2.14   false      false     
+132.224.69.0/26      132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.40.192/26    132.252.19.129       Eth-Trunk2.18   false      false     
+132.252.37.128/26    132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.38.128/26    132.252.19.113       Eth-Trunk2.16   false      false     
+132.252.37.192/26    132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.40.128/26    132.252.19.129       Eth-Trunk2.18   false      false     
+132.224.69.128/26    132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.254.192/26   132.252.19.137       Eth-Trunk2.19   false      false     
+132.252.38.192/26    132.252.19.113       Eth-Trunk2.16   false      false     
+132.252.254.128/27   132.252.19.193       Eth-Trunk2.22   false      false     
+10.254.45.64/28      132.252.19.97        Eth-Trunk2.14   false      false     
+132.252.254.160/28   132.252.19.193       Eth-Trunk2.22   false      false     
+132.252.19.184/29    132.252.19.137       Eth-Trunk2.19   false      false     
+132.252.19.248/29    132.252.19.105       Eth-Trunk2.15   false      false     
+132.252.19.160/29    132.252.19.169       Eth-Trunk2.21   false      false     
+132.252.19.176/30    132.252.19.137       Eth-Trunk2.19   false      false     
+0.0.0.0/0            132.252.19.65        Eth-Trunk2.10   false      true      
+
+默认网关:
+  NextHop: 132.252.19.65, Interface: Eth-Trunk2.10, Connected: false
+
+---------- VRF: default (IPv6) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+240e:1c7:8006:a0::/60 240E:1C7:8006:1:132:252:19:91 Eth-Trunk2.20   false      false     
+240e:1c7:8006:b0::/60 240E:1C7:8006:1:132:252:19:A9 Eth-Trunk2.21   false      false     
+240e:1c7:8006:10::/60 240E:1C7:8006:1:132:252:19:49 Eth-Trunk2.11   false      false     
+240e:1c7:8006:30::/60 240E:1C7:8006:1:132:252:19:51 Eth-Trunk2.12   false      false     
+240e:1c7:8006:50::/60 240E:1C7:8006:1:132:252:19:61 Eth-Trunk2.14   false      false     
+240e:1c7:8006:60::/60 240E:1C7:8006:1:132:252:19:69 Eth-Trunk2.15   false      false     
+240e:1c7:8006:70::/60 240E:1C7:8006:1:132:252:19:71 Eth-Trunk2.16   false      false     
+240e:1c7:8006:90::/60 240E:1C7:8006:1:132:252:19:81 Eth-Trunk2.18   false      false     
+240e:1c7:8006:20::/60 240E:1C7:8006:1:132:252:19:49 Eth-Trunk2.11   false      false     
+240e:1c7:8006:40::/60 240E:1C7:8006:1:132:252:19:59 Eth-Trunk2.13   false      false     
+240e:1c7:8006:80::/60 240E:1C7:8006:1:132:252:19:79 Eth-Trunk2.17   false      false     
+::/0                 240E:1C7:8006:1:132:252:19:41 Eth-Trunk2.10   false      true      
+
+默认网关:
+  NextHop: 240E:1C7:8006:1:132:252:19:41, Interface: Eth-Trunk2.10, Connected: false
+
+---------- VRF: VPN_JiS_Management (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+132.224.0.0/11       132.252.20.1         GigabitEthernet0/0/0 false      false     

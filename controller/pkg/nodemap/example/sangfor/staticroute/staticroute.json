@@ -1,0 +1,472 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "description": "通过此接口，可以获取配置中心所有静态路由表项",
+        "chapters": [
+            "网络",
+            "路由",
+            "静态路由IPV4"
+        ],
+        "inputSamples": {
+            "request": "GET https://192.168.1.1/api/v1/namespaces/public/staticroutes/ipv4?_start=0&_length=100",
+            "description": "获取所有ipv4静态路由配置，查询条件：起始位置为0，最多展示100条"
+        },
+        "title": "获取IPv4静态路由列表",
+        "position": "6.8.2.2",
+        "outputSamples": {
+            "incorrect": {
+                "message": "无效参数",
+                "data": "",
+                "code": 22
+            },
+            "correct": {
+                "message": "成功",
+                "data": {
+                    "itemsOffset": 0,
+                    "itemLength": 1,
+                    "pageSize": 100,
+                    "items": [
+                        {
+                            "description": "",
+                            "gateway": "10.155.255.254",
+                            "ifname": "eth0",
+                            "enable": true,
+                            "uuid": "4770AB8D9C724277ADA046371463C13F",
+                            "weight": 1,
+                            "distance": 1,
+                            "metric": 0,
+                            "tableId": 0,
+                            "tag": 0,
+                            "status": 1,
+                            "linkdtEnable": false,
+                            "prefix": "0.0.0.0/0"
+                        }
+                    ],
+                    "totalPages": 1,
+                    "pageNumber": 1,
+                    "totalItems": 1
+                },
+                "code": 0
+            }
+        },
+        "inputParams": {
+            "headers": [],
+            "cookies": [
+                {
+                    "description": "认证令牌",
+                    "relationshipKey": "token",
+                    "name": "token",
+                    "type": "string",
+                    "docrequired": "是",
+                    "extra": "{\"maxLength\":64}"
+                },
+                {
+                    "description": "认证会话",
+                    "relationshipKey": "SESSID",
+                    "name": "SESSID",
+                    "type": "string",
+                    "docrequired": "是",
+                    "extra": "{\"maxLength\":256}"
+                }
+            ],
+            "uri": [
+                {
+                    "description": "指定排序字段",
+                    "relationshipKey": "_sortby",
+                    "name": "_sortby",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "maxLength": 100
+                    }
+                },
+                {
+                    "description": "目的ip地址/掩码，例如0.0.0.0/0",
+                    "relationshipKey": "prefix",
+                    "name": "prefix",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.0/24"
+                    }
+                },
+                {
+                    "description": "下一跳ip地址",
+                    "relationshipKey": "gateway",
+                    "name": "gateway",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.10"
+                    }
+                },
+                {
+                    "description": "起始位置，从 0 开始",
+                    "relationshipKey": "_start",
+                    "name": "_start",
+                    "type": "int32",
+                    "docrequired": "否",
+                    "extra": {
+                        "minimum": 0,
+                        "default": 0,
+                        "maximum": 2000000
+                    }
+                },
+                {
+                    "description": "路由管理距离，默认为1",
+                    "relationshipKey": "distance",
+                    "name": "distance",
+                    "type": "uint8",
+                    "docrequired": "否",
+                    "extra": {
+                        "minimum": 1,
+                        "maximum": 255
+                    }
+                },
+                {
+                    "description": "获取最大长度，限制最大值，如果数据不够可能返回小于 length",
+                    "relationshipKey": "_length",
+                    "name": "_length",
+                    "type": "int32",
+                    "docrequired": "否",
+                    "extra": {
+                        "minimum": 1,
+                        "default": 100,
+                        "maximum": 200
+                    }
+                },
+                {
+                    "description": "出接口名称，自动选择接口识别到的接口不支持该参数过滤",
+                    "relationshipKey": "ifname",
+                    "name": "ifname",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "minLength": 1,
+                        "maxLength": 48
+                    }
+                },
+                {
+                    "description": "选择字段，字段用逗号分隔",
+                    "relationshipKey": "_select",
+                    "name": "_select",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "maxLength": 1000
+                    }
+                },
+                {
+                    "description": "指定排序方式（正序/倒序）",
+                    "relationshipKey": "_order",
+                    "name": "_order",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "default": "asc",
+                        "enums": [
+                            {
+                                "value": "asc",
+                                "description": "按升序排列"
+                            },
+                            {
+                                "value": "desc",
+                                "description": "按降序排列"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "description": "模糊搜索关键字",
+                    "relationshipKey": "_search",
+                    "name": "_search",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "maxLength": 95
+                    }
+                },
+                {
+                    "description": "静态路由度量值",
+                    "relationshipKey": "metric",
+                    "name": "metric",
+                    "type": "uint32",
+                    "docrequired": "否",
+                    "extra": {
+                        "minimum": 0,
+                        "maximum": 255
+                    }
+                }
+            ]
+        },
+        "api": {
+            "url": "https://{host}/api/v1/namespaces/@namespace/staticroutes/ipv4",
+            "method": "GET"
+        },
+        "outputParams": [
+            {
+                "description": "错误码",
+                "relationshipKey": "code",
+                "name": "code",
+                "type": "int",
+                "docrequired": "否"
+            },
+            {
+                "description": "错误信息",
+                "relationshipKey": "message",
+                "name": "message",
+                "type": "string",
+                "docrequired": "否"
+            },
+            {
+                "description": "分页数据",
+                "relationshipKey": "data",
+                "name": "data",
+                "type": "object",
+                "docrequired": "是"
+            },
+            {
+                "description": "总共多少项目",
+                "relationshipKey": "data.totalItems",
+                "name": "totalItems",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "总共多少页",
+                "relationshipKey": "data.totalPages",
+                "name": "totalPages",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "当前页码，从 1 开始",
+                "relationshipKey": "data.pageNumber",
+                "name": "pageNumber",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "每页多大",
+                "relationshipKey": "data.pageSize",
+                "name": "pageSize",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "当前条目偏移，从 0 开始",
+                "relationshipKey": "data.itemsOffset",
+                "name": "itemsOffset",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "数据列表长度",
+                "relationshipKey": "data.itemLength",
+                "name": "itemLength",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "内部偏移",
+                "relationshipKey": "data.privateOffset",
+                "name": "privateOffset",
+                "type": "uint64",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "有效数据列表",
+                "relationshipKey": "data.items",
+                "name": "items",
+                "type": "object[]",
+                "docrequired": "--",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "静态路由唯一资源ID",
+                "relationshipKey": "data.items.uuid",
+                "name": "uuid",
+                "type": "string",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "静态路由启禁用开关",
+                "relationshipKey": "data.items.enable",
+                "name": "enable",
+                "type": "bool",
+                "docrequired": "否",
+                "extra": []
+            },
+            {
+                "description": "描述信息",
+                "relationshipKey": "data.items.description",
+                "name": "description",
+                "type": "string",
+                "docrequired": "否",
+                "extra": {
+                    "maxLength": 95,
+                    "minLength": 0,
+                    "pattern desc": "描述字段不能包含`~!#$%^&*+\\|{};:\"'/<>? 特殊字符"
+                }
+            },
+            {
+                "description": "目的IP地址/掩码",
+                "relationshipKey": "data.items.prefix",
+                "name": "prefix",
+                "type": "string",
+                "docrequired": "否",
+                "extra": {
+                    "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.0/24"
+                }
+            },
+            {
+                "description": "下一跳ip地址",
+                "relationshipKey": "data.items.gateway",
+                "name": "gateway",
+                "type": "string",
+                "docrequired": "否",
+                "extra": {
+                    "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.10"
+                }
+            },
+            {
+                "description": "出接口名称",
+                "relationshipKey": "data.items.ifname",
+                "name": "ifname",
+                "type": "string",
+                "docrequired": "否",
+                "extra": {
+                    "maxLength": 48,
+                    "minLength": 1,
+                    "pattern desc": "接口名称不能包含^\\f\\n\\r\\t`~!#$%^&*+\\\\|{};:\\\"',/<>?\\r\\n 特殊字符"
+                }
+            },
+            {
+                "description": "路由度量值",
+                "relationshipKey": "data.items.metric",
+                "name": "metric",
+                "type": "uint32",
+                "docrequired": "否",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 255
+                }
+            },
+            {
+                "description": "静态路由关联接口链路探测启禁用开关，默认false",
+                "relationshipKey": "data.items.linkdtEnable",
+                "name": "linkdtEnable",
+                "type": "bool",
+                "docrequired": "否",
+                "extra": {
+                    "default": false
+                }
+            },
+            {
+                "description": "静态路由关联链路探测",
+                "relationshipKey": "data.items.linkdt",
+                "name": "linkdt",
+                "type": "string",
+                "docrequired": "否",
+                "extra": []
+            },
+            {
+                "description": "路由标记，默认为0",
+                "relationshipKey": "data.items.tag",
+                "name": "tag",
+                "type": "uint32",
+                "docrequired": "否",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 4294967295
+                }
+            },
+            {
+                "description": "路由管理距离，默认为1",
+                "relationshipKey": "data.items.distance",
+                "name": "distance",
+                "type": "uint8",
+                "docrequired": "否",
+                "extra": {
+                    "minimum": 1,
+                    "maximum": 255
+                }
+            },
+            {
+                "description": "目的虚拟系统名称，默认为public",
+                "relationshipKey": "data.items.vsys",
+                "name": "vsys",
+                "type": "string",
+                "docrequired": "否",
+                "extra": {
+                    "maxLength": 31,
+                    "minLength": 1,
+                    "pattern desc": "名称错误"
+                }
+            },
+            {
+                "description": "路由表Id，不可修改",
+                "relationshipKey": "data.items.tableId",
+                "name": "tableId",
+                "type": "uint32",
+                "docrequired": "否",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": 251,
+                            "description": "业务网络路由表"
+                        },
+                        {
+                            "value": 250,
+                            "description": "管理网络路由表"
+                        },
+                        {
+                            "value": 239,
+                            "description": "SSLVPN路由表"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "ipv4静态路由权重，默认为1",
+                "relationshipKey": "data.items.weight",
+                "name": "weight",
+                "type": "uint8",
+                "docrequired": "否",
+                "extra": {
+                    "minimum": 1,
+                    "maximum": 255
+                }
+            },
+            {
+                "description": "状态信息，状态字段不可设置或修改",
+                "relationshipKey": "data.items.status",
+                "name": "status",
+                "type": "uint8",
+                "docrequired": "否",
+                "extra": []
+            },
+            {
+                "description": "路由无效原因",
+                "relationshipKey": "data.items.invalid_reason",
+                "name": "invalid_reason",
+                "type": "string",
+                "docrequired": "--",
+                "extra": []
+            }
+        ],
+        "apiname": "getIpv4StaticRoutes",
+        "chapter": "静态路由IPV4"
+    }
+}

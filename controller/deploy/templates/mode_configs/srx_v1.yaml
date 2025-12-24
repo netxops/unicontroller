@@ -1,0 +1,24 @@
+prompts:
+  - "[\\n\\r]+\\S+[>](?:\\s*)$"
+  - "[\\n\\r]+\\S+[#](?:\\s*)$"
+err_prompts:
+  - "syntax error, expecting"
+  - "(?i)error:"
+  - "(?i)does not exist"
+  - "command not found:"
+  - "% ?Error"
+  - "(?m)^% \\w+"
+  - "[\\r\\n]+error: "
+  - "(?i)connection timed out"
+init_commands:
+  - "set cli screen-width 140"
+  - "set cli screen-length 0"
+save_commands:
+  - "commit"
+first_chain:
+  - "run set cli screen-width 140"
+  - "run set cli screen-length 0"
+  - "run show configuration | display set"
+last_chain:
+  - "run show configuration | display set"
+auth_cmd: ""

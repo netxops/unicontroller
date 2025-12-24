@@ -1,0 +1,43 @@
+base_mode_config: mode_config/base_mode_config.yaml
+base_templates:
+  - alive/base/ssh_alive_check.yaml
+  - collect/base/snmp_version.yaml  
+  - collect/base/snmp_sysDescr.yaml
+  - collect/base/ssh_interfaceBrief.yaml
+  - collect/base/snmp_iftable.yaml
+  - collect/base/snmp_ifHighSpeed.yaml
+  - collect/base/snmp_ipAddrEntry.yaml
+  - collect/base/snmp_serial.yaml
+  - collect/base/snmp_cdp.yaml
+  - collect/base/snmp_arp.yaml
+  - collect/base/snmp_mactable.yaml
+  - collect/base/ssh_ip_a.yaml
+  - collect/base/ssh_lldp.yaml
+#  - collect/base/snmp_hostname.yaml
+  - parse/base/version_extract.yaml
+  - parse/base/serial_extract.yaml
+  - textfsm/base/interface_brief.textfsm
+  - snmp/base/snmp_version_process.yaml
+  - snmp/base/snmp_iftable_process.yaml
+  - snmp/base/snmp_ifHighSpeed_process.yaml
+  - snmp/base/snmp_ipAddrEntry_process.yaml
+  - snmp/base/snmp_cdp_process.yaml
+  - snmp/base/snmp_arp_process.yaml
+  - snmp/base/snmp_mactable_process.yaml
+#  - snmp/base/snmp_hostname_process.yaml
+  - transform/base/description_to_version.yaml
+#  - transform/base/snmp_device_ports.yaml
+  - transform/base/alive_check_transform.yaml
+#  - transform/base/hostname_transform.yaml
+  - join/base/snmp_devicePorts.yaml
+
+version_rules:
+  - range: ">=12.2"
+    templates:
+      - collect/v12/snmp_sysDescr.yaml
+    priority: 50
+  - range: ">=15.0"
+    templates:
+      - collect/v15/enhanced_snmp_sysDescr.yaml
+      - collect/v15/advanced_interface_collect.yaml
+    priority: 60

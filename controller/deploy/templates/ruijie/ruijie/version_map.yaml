@@ -1,0 +1,35 @@
+base_mode_config: mode_config/base_mode_config.yaml
+hub_config: 
+base_templates:
+  - alive/base/telnet_alive_check.yaml
+  - collect/base/snmp_version.yaml
+  - collect/base/snmp_iftable.yaml
+  - collect/base/snmp_ifHighSpeed.yaml
+  - collect/base/snmp_ipAddrEntry.yaml
+  - collect/base/snmp_arp.yaml
+  - collect/base/ssh_lldp.yaml
+  - collect/base/telnet_lldp.yaml
+  - collect/base/telnet_mactable.yaml
+  - collect/base/snmp_lldp1.yaml
+  - collect/base/snmp_lldp2.yaml
+  - collect/base/ssh_mactable.yaml
+  - collect/base/snmp_sysDescr.yaml
+  - snmp/base/snmp_version_process.yaml
+  - snmp/base/snmp_iftable_process.yaml
+  - snmp/base/snmp_ifHighSpeed_process.yaml
+  - snmp/base/snmp_ipAddrEntry_process.yaml
+  - snmp/base/snmp_arp_process.yaml
+  - snmp/base/snmp_lldp1_process.yaml
+  - snmp/base/snmp_lldp2_process.yaml
+  - snmp/base/snmp_hostname_process.yaml
+  - transform/base/description_to_version.yaml
+  - transform/base/alive_check_transform.yaml
+  - transform/base/mactable_name_transform.yaml
+  - transform/base/lldp_outgoing_transform.yaml
+  - join/base/snmp_devicePorts.yaml
+  - join/base/snmp_lldp_join.yaml
+  - textfsm/base/ssh_lldp.textfsm
+  - textfsm/base/telnet_lldp.textfsm
+  - textfsm/base/ssh_mactable.textfsm
+  - textfsm/base/telnet_mactable.textfsm
+

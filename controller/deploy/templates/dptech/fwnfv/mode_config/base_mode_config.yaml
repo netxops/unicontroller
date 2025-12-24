@@ -1,0 +1,22 @@
+prompts:
+  - "^(<|\\[)[\\S ]+(?:>|\\])$"
+err_prompts:
+  - "^\\s*Error: "
+ignore_prompts:
+  - "(?i)\\[Y/N\\]"
+  - "(?i)\\[yes/no\\]"
+pager_prompts:
+  - "^\\s*\\-{4}\\s*More\\s*\\-{4}\\s*$"
+pager_command: " "
+init_commands:
+  - "screen-length 0 temporary"
+  - "system-view"
+save_commands:
+  - "return"
+  - "save"
+  - "y"
+first_chain:
+  - "display current-configuration"
+last_chain:
+  - "display current-configuration"
+auth_cmd: ""

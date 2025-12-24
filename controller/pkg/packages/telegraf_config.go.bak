@@ -1,0 +1,607 @@
+package packages
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+
+	"github.com/BurntSushi/toml"
+	"github.com/netxops/gokit/del"
+	"github.com/netxops/gokit/list"
+	"github.com/netxops/gokit/set"
+	"github.com/spf13/viper"
+	"gopkg.in/yaml.v2"
+)
+
+type TelegrafConfig struct {
+	configFile string
+	configDir  string
+	updateKey  string
+	Config     *viper.Viper
+}
+
+func NewTelegrafConfig(configFile, configDir string) *TelegrafConfig {
+	return &TelegrafConfig{
+		configFile: configFile,
+		configDir:  configDir,
+	}
+}
+
+func (tc *TelegrafConfig) Load() (*Config, error) {
+	tc.Config = viper.New()
+	tc.Config.SetConfigType("toml")
+
+	total := []byte{}
+
+	// 加载主配置文件
+	if tc.configFile != "" {
+		bs, err := ioutil.ReadFile(tc.configFile)
+		if err != nil {
+			return nil, err
+		}
+		total = append(total, bs...)
+	}
+
+	if tc.configDir != "" {
+		files, err := ioutil.ReadDir(tc.configDir)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read directory %s: %v", tc.configDir, err)
+		}
+		for _, file := range files {
+			filePath := filepath.Join(tc.configDir, file.Name())
+			if !file.IsDir() && strings.HasSuffix(file.Name(), ".conf") {
+				if filePath == tc.configFile {
+					continue
+				}
+			}
+
+			total = append(total, []byte("\n")...)
+
+			bs, err := ioutil.ReadFile(filePath)
+			if err != nil {
+				return nil, fmt.Errorf("failed to read config file %s: %v", file.Name(), err)
+			}
+
+			total = append(total, bs...)
+		}
+	}
+
+	if err := tc.Config.ReadConfig(bytes.NewBuffer(total)); err != nil {
+		return nil, err
+	}
+
+	// 创建并返回 Config 结构体
+	return &Config{
+		Data: tc.Config.AllSettings(),
+	}, nil
+}
+
+func (tc *TelegrafConfig) Save() error {
+	if tc.Config == nil {
+		return fmt.Errorf("no configuration to save")
+	}
+
+	// 保存主配置文件
+	if tc.configFile != "" {
+		if err := tc.saveMainConfig(); err != nil {
+			return err
+		}
+	} else {
+		return fmt.Errorf("no main configuration file specified")
+	}
+
+	// 保存特殊配置到单独的文件
+	if tc.configDir != "" {
+		if err := tc.saveSpecialConfigs(); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (tc *TelegrafConfig) saveMainConfig() error {
+	mainConfig := viper.New()
+	mainConfig.SetConfigType("toml")
+
+	// 复制除了特殊配置之外的所有配置
+	for key, value := range tc.Config.AllSettings() {
+		if !tc.isSpecialConfig(key) {
+			mainConfig.Set(key, value)
+		}
+	}
+
+	// 创建或打开主配置文件
+	f, err := os.Create(tc.configFile)
+	if err != nil {
+		return fmt.Errorf("failed to create main config file: %v", err)
+	}
+	defer f.Close()
+
+	// 将配置写入文件
+	encoder := toml.NewEncoder(f)
+	if err := encoder.Encode(mainConfig.AllSettings()); err != nil {
+		return fmt.Errorf("failed to encode main configuration: %v", err)
+	}
+
+	return nil
+}
+
+func (tc *TelegrafConfig) optimization(bs []byte) string {
+	lines := strings.Split(string(bs), "\n")
+	lines = list.Filter(lines, func(line string) bool {
+		if strings.TrimSpace(line) == "" {
+			return false
+		}
+		return true
+	})
+	if len(lines) == 0 {
+		return ""
+	}
+	hold := list.SlidingWindowFilterSingle(lines, 2, func(lines []string) bool {
+		one := strings.TrimSpace(lines[0])
+		two := strings.TrimSpace(lines[1])
+		if strings.Index(two, "[") == 0 && strings.Index(one, "[") == 0 {
+			return false
+		}
+		return true
+	})
+
+	if strings.Index(strings.TrimSpace(lines[len(lines)-1]), "[") != 0 {
+		hold = append(hold, lines[len(lines)-1])
+	}
+
+	return strings.Join(hold, "\n")
+}
+
+func (tc *TelegrafConfig) saveSpecialConfigs() error {
+	specialConfigs := []string{"inputs", "outputs", "processors"}
+
+	for _, configType := range specialConfigs {
+		configs := tc.Config.Get(configType)
+		if configs == nil {
+			continue
+		}
+
+		configsMap, ok := configs.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("invalid format for %s configuration", configType)
+		}
+
+		for key, configList := range configsMap {
+			cs, ok := configList.([]interface{})
+			if !ok {
+				return fmt.Errorf("invalid format for %s configuration", configType)
+			}
+			fileName := fmt.Sprintf("%s.%s.conf", configType, key)
+			filePath := filepath.Join(tc.configDir, fileName)
+			f, err := os.Create(filePath)
+			if err != nil {
+				return fmt.Errorf("failed to create file %s: %v", fileName, err)
+			}
+			defer f.Close()
+			for _, c := range cs {
+				buffer := bytes.NewBuffer([]byte{})
+
+				// 直接写入插件配置，不包含顶级部分
+				fmt.Fprintf(f, "[[%s.%s]]\n", configType, key)
+				encoder := toml.NewEncoder(buffer)
+				if err := encoder.Encode(c); err != nil {
+					return fmt.Errorf("failed to encode configuration for %s: %v", fileName, err)
+				}
+
+				lines := tc.optimization(buffer.Bytes())
+				f.WriteString(lines)
+				f.WriteString("\n")
+			}
+
+		}
+	}
+
+	return nil
+}
+
+func (tc *TelegrafConfig) isSpecialConfig(key string) bool {
+	specialConfigs := []string{"inputs", "outputs", "processors"}
+	for _, prefix := range specialConfigs {
+		if strings.HasPrefix(key, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+// func (tc *TelegrafConfig) RemoveConfig(key string) error {
+// 	if !tc.Config.IsSet(key) {
+// 		return fmt.Errorf("key '%s' does not exist in the configuration", key)
+// 	}
+
+// 	// 如果键包含点号，我们需要逐层删除
+// 	keys := strings.Split(key, ".")
+// 	lastKey := keys[len(keys)-1]
+// 	parentKey := strings.Join(keys[:len(keys)-1], ".")
+
+// 	if parentKey == "" {
+// 		// 如果是顶层键，直接从配置中删除
+// 		tc.Config.Set(key, nil)
+// 	} else {
+// 		// 如果是嵌套键，我们需要获取父级配置并修改它
+// 		parent := tc.Config.Get(parentKey)
+// 		if parentMap, ok := parent.(map[string]interface{}); ok {
+// 			delete(parentMap, lastKey)
+// 			tc.Config.Set(parentKey, parentMap)
+// 		} else {
+// 			return fmt.Errorf("unable to remove key '%s': parent is not a map", key)
+// 		}
+// 	}
+
+// 	return nil
+// }
+
+func (tc *TelegrafConfig) AddPluginConfigWithStrategy(key string, value interface{}, _ mergeStrategy) error {
+	keys := strings.Split(key, ".")
+	data := tc.Config.Get(keys[0])
+	if data == nil {
+		data = []interface{}{}
+	}
+	if configs, ok := data.([]interface{}); ok {
+		configs = append(configs, value)
+		tc.Config.Set(keys[0], configs)
+	} else {
+		return fmt.Errorf("unable to add plugin configuration to '%s': parent is not a slice", keys[0])
+	}
+	return nil
+}
+
+func (tc *TelegrafConfig) AddConfigWithStrategy(key string, value interface{}, strategy mergeStrategy) error {
+	// 验证 key 格式
+	if !isValidKey(key) {
+		return fmt.Errorf("invalid key format: %s", key)
+	}
+
+	// 验证 value 类型
+	configMap, ok := value.(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("value must be of type map[string]interface{}")
+	}
+
+	// 处理插件配置
+	if isPluginConfig(key) {
+		return tc.addPluginConfig(key, configMap)
+	}
+
+	// 处理全局配置
+	switch strategy {
+	case OverwriteStrategy:
+		tc.Config.Set(key, configMap)
+	case MergeStrategy:
+		if err := tc.mergeWithoutOverwrite(key, configMap); err != nil {
+			return err
+		}
+	case MergeAndOverwriteStrategy:
+		if err := tc.mergeWithOverwrite(key, configMap); err != nil {
+			return err
+		}
+	case MergeOrErrorStrategy:
+		if err := tc.mergeOrError(key, configMap); err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("unknown merge strategy")
+	}
+
+	return nil
+}
+
+func isValidKey(key string) bool {
+	validPrefixes := []string{"inputs.", "outputs.", "processors.", "aggregators.", "global_tags", "agent"}
+	for _, prefix := range validPrefixes {
+		if strings.HasPrefix(key, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+func isPluginConfig(key string) bool {
+	pluginPrefixes := []string{"inputs.", "outputs.", "processors.", "aggregators."}
+	for _, prefix := range pluginPrefixes {
+		if strings.HasPrefix(key, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+// 删除开关配置时需要value不为空，比如删除[[inputs.mem]]，需要value为map[string]interface{}
+func (tc *TelegrafConfig) DeleteConfig(key string, value interface{}) error {
+	key = strings.TrimSpace(key)
+	if key == "" || value == nil {
+		return fmt.Errorf("invalid key or value provided")
+	}
+
+	configs := tc.Config.Get(key)
+	if configs == nil {
+		return fmt.Errorf("key '%s' does not exist in the configuration", key)
+	}
+
+	cl, ok := configs.([]interface{})
+	if !ok {
+		return fmt.Errorf("unable to delete configuration from '%s': parent is not a slice", key)
+	}
+
+	if len(cl) == 0 {
+		if value != nil {
+			return fmt.Errorf("key '%s' does not contain any values in the configuration", key)
+		}
+	}
+
+	cl, ok = del.FromSliceByValue(cl, value, func(a, b interface{}) bool {
+		return toJSON(a) == toJSON(b)
+	})
+
+	if !ok {
+		return fmt.Errorf("value not found in key '%s'", key)
+	}
+
+	tc.Config.Set(key, cl)
+	return nil
+}
+
+func (tc *TelegrafConfig) addPluginConfig(key string, configMap map[string]interface{}) error {
+	parts := strings.SplitN(key, ".", 2)
+	if len(parts) != 2 {
+		return fmt.Errorf("invalid plugin key format: %s", key)
+	}
+
+	pluginType, pluginName := parts[0], parts[1]
+
+	existingConfigs := tc.Config.Get(pluginType)
+	var configs map[string]interface{}
+
+	if existingConfigs != nil {
+		var ok bool
+		configs, ok = existingConfigs.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("existing configuration for %s is not a slice of maps", pluginType)
+		}
+	} else {
+		configs = make(map[string]interface{})
+	}
+
+	if cl, exists := configs[pluginName]; exists {
+		if _, ok := cl.([]interface{}); !ok {
+			return fmt.Errorf("existing configuration for %s.%s is not a slice of maps", pluginType, pluginName)
+		}
+		cl = set.AddUnique(cl.([]interface{}), configMap)
+		configs[pluginName] = cl
+	} else {
+		cl = []interface{}{configMap}
+		configs[pluginName] = cl
+	}
+
+	// 更新配置
+	tc.Config.Set(pluginType, configs)
+
+	return nil
+}
+
+func (tc *TelegrafConfig) AddConfigSection(key, content string, strategy mergeStrategy) error {
+	var value interface{}
+	var err error
+
+	partten := regexp.MustCompile(`^(inputs|outputs|processors)\..+$`)
+	if partten.MatchString(strings.TrimSpace(key)) && len(strings.TrimSpace(content)) == 0 {
+		parts := strings.Split(key, ".")
+		if len(parts) != 2 {
+			return fmt.Errorf("invalid section key format: %s", key)
+		}
+		configs := tc.Config.Get(key)
+		if configs == nil {
+			configs = make(map[string]interface{})
+		}
+		if c, ok := configs.(map[string]interface{}); ok {
+			c[parts[1]] = []interface{}{map[string]interface{}{}}
+			return tc.AddConfigWithStrategy(key, c, strategy)
+		}
+	}
+
+	// 尝试解析 TOML
+	if err = toml.Unmarshal([]byte(content), &value); err == nil {
+		return tc.AddConfigWithStrategy(key, value, strategy)
+	}
+
+	// 尝试解析 JSON
+	if err = json.Unmarshal([]byte(content), &value); err == nil {
+		return tc.AddConfigWithStrategy(key, value, strategy)
+	}
+
+	// 尝试解析 YAML
+	if err = yaml.Unmarshal([]byte(content), &value); err == nil {
+		return tc.AddConfigWithStrategy(key, value, strategy)
+	}
+
+	// 如果所有格式都解析失败，返回错误
+	return fmt.Errorf("failed to parse content as TOML, JSON, or YAML: %v", err)
+}
+
+func (tc *TelegrafConfig) PluginTypeConfig(pluginType string) ([]map[string]interface{}, error) {
+
+	pluginConfig := []map[string]interface{}{}
+	if err := tc.Config.UnmarshalKey(pluginType, &pluginConfig); err != nil {
+		return pluginConfig, err
+	}
+
+	return pluginConfig, nil
+}
+
+func (tc *TelegrafConfig) PluginConfig(pluginType, name string) ([]interface{}, error) {
+
+	pluginConfig := []map[string]interface{}{}
+	if err := tc.Config.UnmarshalKey(pluginType, &pluginConfig); err != nil {
+		return []interface{}{}, err
+	}
+
+	for _, config := range pluginConfig {
+		if result, ok := config[name].([]interface{}); ok {
+			return result, nil
+		} else {
+			return nil, fmt.Errorf("config %s.%s is not a slicemap", pluginType, name)
+		}
+	}
+
+	return []interface{}{}, fmt.Errorf("plugin config %s.%s not found", pluginType, name)
+}
+
+func (tc *TelegrafConfig) PluginConfigToViper(pluginType string, pluginName string, index int) (*viper.Viper, error) {
+	pluginConfig, err := tc.PluginConfig(pluginType, pluginName)
+	if err != nil {
+		return nil, err
+	}
+
+	if index < 0 || index >= len(pluginConfig) {
+		return nil, fmt.Errorf("invalid index for plugin config")
+	}
+	return ViperFromInterface(pluginConfig[index])
+}
+
+// ViperFromInterface 从 interface{} 创建一个新的 Viper 实例
+func ViperFromInterface(data interface{}) (*viper.Viper, error) {
+	v := viper.New()
+	v.SetConfigType("toml")
+
+	switch d := data.(type) {
+	case map[string]interface{}:
+		for key, value := range d {
+			v.Set(key, value)
+		}
+	case []interface{}:
+		for i, value := range d {
+			v.Set(fmt.Sprintf("%d", i), value)
+		}
+	default:
+		return nil, fmt.Errorf("unsupported data type: %T", data)
+	}
+
+	return v, nil
+}
+
+// ViperFromMap 从 map[string]interface{} 创建一个新的 Viper 实例
+func ViperFromMap(data map[string]interface{}) *viper.Viper {
+	v := viper.New()
+	v.SetConfigType("toml")
+
+	for key, value := range data {
+		v.Set(key, value)
+	}
+
+	return v
+}
+
+func (tc *TelegrafConfig) mergeWithoutOverwrite(key string, value interface{}) error {
+	existing := tc.Config.Get(key)
+	if existing == nil {
+		tc.Config.Set(key, value)
+		tc.updateKey = key
+		return nil
+	}
+
+	switch existingValue := existing.(type) {
+	case map[string]interface{}:
+		if newValue, ok := value.(map[string]interface{}); ok {
+			for k, v := range newValue {
+				if _, exists := existingValue[k]; !exists {
+					existingValue[k] = v
+					tc.updateKey = key
+				}
+			}
+			tc.Config.Set(key, existingValue)
+		}
+	case []interface{}:
+		if newValue, ok := value.([]interface{}); ok {
+			tc.Config.Set(key, append(existingValue, newValue...))
+			tc.updateKey = key
+		}
+	}
+	return nil
+}
+
+func (tc *TelegrafConfig) mergeWithOverwrite(key string, value interface{}) error {
+	existing := tc.Config.Get(key)
+	if existing == nil {
+		tc.Config.Set(key, value)
+		tc.updateKey = key
+		return nil
+	}
+
+	switch existingValue := existing.(type) {
+	case map[string]interface{}:
+		if newValue, ok := value.(map[string]interface{}); ok {
+			for k, v := range newValue {
+				existingValue[k] = v
+
+			}
+			tc.Config.Set(key, existingValue)
+			tc.updateKey = key
+		}
+	case []interface{}:
+		if newValue, ok := value.([]interface{}); ok {
+			tc.Config.Set(key, append(existingValue, newValue...))
+			tc.updateKey = key
+		}
+	default:
+		tc.Config.Set(key, value)
+		tc.updateKey = key
+	}
+	return nil
+}
+
+func (tc *TelegrafConfig) mergeOrError(key string, value interface{}) error {
+	existing := tc.Config.Get(key)
+	if existing == nil {
+		tc.Config.Set(key, value)
+		tc.updateKey = key
+		return nil
+	}
+
+	switch existingValue := existing.(type) {
+	case map[string]interface{}:
+		if newValue, ok := value.(map[string]interface{}); ok {
+			for k, v := range newValue {
+				if _, exists := existingValue[k]; exists {
+					return fmt.Errorf("conflict detected for key %s", k)
+				}
+				existingValue[k] = v
+				tc.updateKey = key
+			}
+			tc.Config.Set(key, existingValue)
+		}
+	case []interface{}:
+		if newValue, ok := value.([]interface{}); ok {
+			tc.Config.Set(key, append(existingValue, newValue...))
+			tc.updateKey = key
+		}
+	default:
+		return fmt.Errorf("conflict detected for key %s", key)
+	}
+	return nil
+}
+
+func contains[T comparable](s []T, e T) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
+func toJSON(v interface{}) string {
+	b, _ := json.Marshal(v)
+	return string(b)
+}

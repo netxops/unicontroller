@@ -1,0 +1,6 @@
+name: sshHostname
+method: SSH
+target: hostname
+dataType: map[string]string
+timeout: 5s
+expectedType: JSON

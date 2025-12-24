@@ -1,0 +1,6 @@
+name: kernelCollect
+method: SSH
+dataType: map[string]string
+target: uname -r
+timeout: 10s
+expectedType: Text

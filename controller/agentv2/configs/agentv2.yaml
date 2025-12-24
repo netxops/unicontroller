@@ -1,0 +1,120 @@
+# Agent V2 配置文件
+
+# 服务器配置
+server:
+  grpc_port: 10380
+  http_port: 58080
+  upload_dir: ""  # 文件上传目录，留空使用默认值：/tmp/agentv2/uploads
+
+# Agent 配置
+agent:
+  code: "agent-001"  # Agent 标识码，必须唯一，用于 Controller 识别
+  # workspace: 工作目录，如果不设置，将根据用户权限自动选择：
+  #   - 特权用户（root）: /opt/uniops-agent
+  #   - 普通用户: ~/app/uniops-agent
+  workspace: ""  # 留空使用默认值，或指定自定义路径
+  log_level: "info"
+
+# 服务注册配置（用于与 Controller 集成）
+registry:
+  enabled: true
+  etcd_endpoints:
+    - "127.0.0.1:3379"  # etcd 地址，必须与 Controller 使用相同的 etcd
+  etcd_username: "root"  # etcd 用户名（如果etcd启用了认证，必须配置）
+  etcd_password: "Etcd@Passw0rd"  # etcd 密码（如果etcd启用了认证，必须配置）
+  etcd_prefix: "/agents"  # etcd key 前缀
+  register_interval: 30s  # 注册刷新间隔
+  ttl: 60s  # 租约 TTL
+
+# 服务发现配置
+discovery:
+  enabled: true
+  interval: 30s
+
+# 健康检查配置
+health_check:
+  default_interval: 30s
+  default_timeout: 5s
+  default_retries: 3
+
+# 自动恢复配置
+auto_recovery:
+  enabled: true
+  max_restarts: 5
+  restart_delay: 5s
+  backoff_factor: 2.0
+  max_backoff: 60s
+
+# 指标收集配置
+metrics:
+  enabled: true
+  interval: 10s
+  collect_system: true
+  collect_service: true
+  # 增强型收集器配置（基于 Prometheus，参考 Node Exporter 指标命名）
+  enhanced_enabled: true  # 是否启用增强型收集器（默认启用）
+  
+  # 推荐配置：只启用核心collectors（稳定可靠，适用于生产环境）
+  # 核心collectors包括：cpu, meminfo, loadavg, filesystem, diskstats, netdev, stat, os, time, uname
+  # 当前环境测试结果：启用所有时37个成功，34个因环境限制失败
+  # 使用 only_core 可以避免环境限制错误，只启用10个核心collectors
+  enhanced_only_core: true
+  
+  # 可选配置方式1：指定启用的collectors列表（空表示启用所有）
+  # 如果 enhanced_only_core 为 false，可以使用此配置精确控制启用的collectors
+  # enhanced_collectors: 
+  #   - "cpu"
+  #   - "meminfo"
+  #   - "loadavg"
+  #   - "filesystem"
+  #   - "diskstats"
+  #   - "netdev"
+  #   - "stat"
+  #   - "os"
+  #   - "time"
+  #   - "uname"
+  #   - "hwmon"      # 硬件监控（如果可用）
+  #   - "netstat"    # 网络统计（如果可用）
+  
+  # 可选配置方式2：排除某些collectors（适用于需要大部分collectors但排除特定几个的场景）
+  # 如果 enhanced_only_core 为 false，可以使用此配置排除容易失败的collectors
+  # enhanced_exclude:
+  #   - "ntp"        # NTP collector需要特定配置
+  #   - "perf"       # Perf collector需要特殊权限
+  #   - "selinux"    # SELinux collector仅在启用SELinux的系统上可用
+  #   - "systemd"    # Systemd collector需要systemd环境
+  #   - "logind"     # Logind collector需要logind服务
+  #   - "runit"      # Runit collector需要runit环境
+  #   - "supervisord" # Supervisord collector需要supervisord环境
+  #   - "cpu"        # 如果环境缺少/proc，排除需要procfs的collectors
+  #   - "meminfo"    # 如果环境缺少/proc，排除需要procfs的collectors
+  #   - "stat"       # 如果环境缺少/proc，排除需要procfs的collectors
+  # 历史缓存配置
+  history_enabled: true    # 是否启用历史缓存
+  history_max_points: 360   # 历史数据点最大数量（默认 360，即 1 小时，10秒间隔）
+  # 指标上报配置
+  report_enabled: false  # 是否启用指标上报到 Controller
+  controller_url: "http://localhost:8081"  # Controller 地址
+  report_interval: 30s  # 上报间隔
+  retry_count: 3  # 失败重试次数
+  retry_delay: 5s  # 重试延迟
+  # 应用指标配置（业务指标收集）
+  application_enabled: true   # 是否启用应用指标收集
+  application_endpoint: ":9091"  # 应用指标接收端点（Prometheus 格式）
+  
+  # 指标策略配置（用于从 Controller 动态获取指标采集策略）
+  strategy_enabled: true  # 是否启用策略（默认 false，需要手动启用）
+  strategy_source: "api"  # 策略来源："config"（配置文件）或 "api"（从 Controller API 获取）
+  strategy_api_url: ""  # 策略API地址（留空则使用 controller_url）
+  strategy_sync_interval: "30s"  # 策略同步间隔（默认5分钟）
+
+# 日志配置
+logging:
+  # directory: 日志目录，如果不设置，将根据用户权限自动选择：
+  #   - 特权用户（root）: /var/log/agentv2
+    # - 普通用户: ~/.local/log/agentv2
+  directory: ""  # 留空使用默认值，或指定自定义路径
+  max_size: 100MB
+  max_files: 10
+  level: "info"
+

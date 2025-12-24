@@ -1,0 +1,564 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "totalItems": 19,
+        "totalPages": 1,
+        "pageNumber": 1,
+        "pageSize": 100,
+        "itemsOffset": 0,
+        "items": [
+            {
+                "routeType": "STATIC",
+                "prefix": "0.0.0.0\/0",
+                "gateway": [
+                    "172.32.100.254"
+                ],
+                "ifname": [
+                    "eth1"
+                ],
+                "metric": 0,
+                "distance": 1,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 5,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "DIRECT",
+                "prefix": "1.1.1.0\/24",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "veth.0"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 1,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "HOST",
+                "prefix": "1.1.1.1\/32",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "veth.0"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 1,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "DIRECT",
+                "prefix": "10.251.251.0\/24",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "eth0"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 1,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "HOST",
+                "prefix": "10.251.251.251\/32",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "eth0"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 1,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "HOST",
+                "prefix": "127.0.0.1\/32",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "null0"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 20,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 10,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "STATIC",
+                "prefix": "172.32.2.0\/24",
+                "gateway": [
+                    "192.168.100.254"
+                ],
+                "ifname": [
+                    "eth0"
+                ],
+                "metric": 0,
+                "distance": 1,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 5,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "DIRECT",
+                "prefix": "172.32.100.0\/24",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "eth1"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 1,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "HOST",
+                "prefix": "172.32.100.1\/32",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "eth1"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 1,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "DIRECT",
+                "prefix": "172.32.101.0\/24",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "eth2"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 1,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "HOST",
+                "prefix": "172.32.101.254\/32",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "eth2"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 1,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "STATIC",
+                "prefix": "182.168.112.0\/24",
+                "gateway": [
+                    "172.32.101.1"
+                ],
+                "ifname": [
+                    "eth2"
+                ],
+                "metric": 0,
+                "distance": 1,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 5,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "STATIC",
+                "prefix": "182.168.113.0\/24",
+                "gateway": [
+                    "172.32.101.1"
+                ],
+                "ifname": [
+                    "eth2"
+                ],
+                "metric": 0,
+                "distance": 1,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 5,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "STATIC",
+                "prefix": "182.168.114.0\/24",
+                "gateway": [
+                    "172.32.101.1"
+                ],
+                "ifname": [
+                    "eth2"
+                ],
+                "metric": 0,
+                "distance": 1,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 5,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "STATIC",
+                "prefix": "182.168.115.0\/24",
+                "gateway": [
+                    "172.32.101.1"
+                ],
+                "ifname": [
+                    "eth2"
+                ],
+                "metric": 0,
+                "distance": 1,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 5,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "STATIC",
+                "prefix": "182.168.116.0\/24",
+                "gateway": [
+                    "172.32.101.1"
+                ],
+                "ifname": [
+                    "eth2"
+                ],
+                "metric": 0,
+                "distance": 1,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 5,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "DIRECT",
+                "prefix": "192.168.100.0\/24",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "eth0"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 1,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "HOST",
+                "prefix": "192.168.100.107\/32",
+                "gateway": [
+                    "0.0.0.0"
+                ],
+                "ifname": [
+                    "eth0"
+                ],
+                "metric": 0,
+                "distance": 0,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 1,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            },
+            {
+                "routeType": "STATIC",
+                "prefix": "192.168.101.0\/24",
+                "gateway": [
+                    "192.168.100.254"
+                ],
+                "ifname": [
+                    "eth0"
+                ],
+                "metric": 0,
+                "distance": 1,
+                "flags": 16,
+                "tag": 0,
+                "status": "VALID",
+                "nexthopStatus": [
+                    {
+                        "nexthopTypes": 5,
+                        "nexthopFlags": 3,
+                        "weight": 1,
+                        "extendEnable": true,
+                        "linkdtStatus": true,
+                        "nexthopStatus": " ",
+                        "fibFlagCharacter": "*",
+                        "invalid_reason": "有效"
+                    }
+                ],
+                "selectedFlagsCharacter": "\u003e",
+                "invalid_reason": "有效"
+            }
+        ]
+    }
+}

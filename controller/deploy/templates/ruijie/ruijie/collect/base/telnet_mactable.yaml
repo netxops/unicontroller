@@ -1,0 +1,6 @@
+name: telnetMacTable
+method: TELNET
+target: show mac-address-table
+dataType: map[string]string
+timeout: 5s
+expectedType: JSON

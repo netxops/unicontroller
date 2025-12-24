@@ -1,0 +1,16 @@
+# 处理项的名称，用于在处理过程中标识这个特定的 SNMP 处理配置
+name: snmpIfHighSpeedProcess
+
+# 定义如何从 SNMP OID 后缀中提取索引
+# [0] 表示使用 OID 后缀的第一个元素作为索引
+# 例如，如果 OID 后缀是 "1.3.6.1.2.1.31.1.1.1.15.1"，那么索引将是 "1"
+indexPositions: [0]
+
+# 将 SNMP 数据中的分类器映射到更有意义的名称
+classifierToNameMap:
+  # 将默认的 "value" 字段重命名为 "rate"，使其更具描述性
+  "value": "rate"
+
+# 指定输入数据的字段名
+# 表示这个处理项将处理名为 "snmpIfHighSpeed" 的输入数据
+inputField: snmpIfHighSpeed

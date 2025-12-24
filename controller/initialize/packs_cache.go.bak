@@ -1,0 +1,18 @@
+package initialize
+
+import (
+	"github.com/douyu/jupiter/pkg/xlog"
+	"github.com/influxdata/telegraf/controller/global"
+	"github.com/influxdata/telegraf/controller/model"
+)
+
+func InitPacksCache() {
+	global.PacksCache = make(map[string]*model.Schema)
+	var schemas []*model.Schema
+	if err := global.DB.Find(&schemas).Error; err != nil {
+		xlog.Default().Panic("failed init packs cache", xlog.FieldErr(err))
+	}
+	for _, schema := range schemas {
+		global.PacksCache[schema.Package] = schema
+	}
+}

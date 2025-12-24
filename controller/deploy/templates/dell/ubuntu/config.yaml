@@ -1,0 +1,25 @@
+pipeline:
+  - type: AliveCheck
+    config:
+      aliveCheckConfig:
+        aliveCheckItem:
+          $include: alive/ssh_alive_check.yaml
+  - type: Collect
+    config:
+      collectConfig:
+        collectItems:
+          - $include: collect/ssh_version.yaml
+          - $include: collect/ssh_hostname.yaml
+          - $include: collect/ssh_os_info.yaml
+          - $include: collect/ssh_ip_a.yaml
+  - type: Parse
+    config:
+      parseConfig:
+        parseItems:
+          - $include: parse/hostname_extract.yaml
+          - $include: parse/version_extract.yaml
+  - type: Transform
+    config:
+      transformConfig:
+        transformItems:
+          - $include: transform/alive_check_transform.yaml

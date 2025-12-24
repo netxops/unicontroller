@@ -1,0 +1,289 @@
+# 平台识别规则
+# 用于从设备信息中识别设备平台
+
+rules:
+  # ============ Cisco平台 ============
+  
+  # Cisco IOS
+  - name: cisco_ios_snmp
+    manufacturer: Cisco
+    platform: IOS
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: sysDescr
+        regex: "(?i)cisco.*ios.*software.*version"
+        confidence: 0.95
+        required: true
+      - source: sysDescr
+        regex: "(?i)cisco.*systems"
+        confidence: 0.8
+  
+  - name: cisco_ios_ssh
+    manufacturer: Cisco
+    platform: IOS
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: versionInfo
+        regex: "(?i)cisco.*ios.*software"
+        confidence: 0.95
+        required: true
+      - source: versionInfo
+        regex: "(?i)version.*\\d+"
+        confidence: 0.8
+  
+  # Cisco Nexus
+  - name: cisco_nexus_snmp
+    manufacturer: Cisco
+    platform: Nexus
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: sysDescr
+        regex: "(?i)nexus"
+        confidence: 0.9
+        required: true
+  
+  - name: cisco_nexus_ssh
+    manufacturer: Cisco
+    platform: Nexus
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: versionInfo
+        regex: "(?i)nx-os|nexus"
+        confidence: 0.95
+        required: true
+  
+  # Cisco ASA
+  - name: cisco_asa_snmp
+    manufacturer: Cisco
+    platform: ASA
+    catalog: FIREWALL
+    priority: 20
+    patterns:
+      - source: sysDescr
+        regex: "(?i)cisco.*asa"
+        confidence: 0.95
+        required: true
+  
+  # ============ Huawei平台 ============
+  
+  # Huawei VRP
+  - name: huawei_vrp_snmp
+    manufacturer: Huawei
+    platform: VRP
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: sysDescr
+        regex: "(?i)vrp"
+        confidence: 0.9
+        required: true
+  
+  - name: huawei_vrp_ssh
+    manufacturer: Huawei
+    platform: VRP
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: versionInfo
+        regex: "(?i)vrp.*software"
+        confidence: 0.95
+        required: true
+  
+  # Huawei USG
+  - name: huawei_usg_snmp
+    manufacturer: Huawei
+    platform: USG
+    catalog: FIREWALL
+    priority: 20
+    patterns:
+      - source: sysDescr
+        regex: "(?i)usg"
+        confidence: 0.9
+        required: true
+    versionExtract:
+      source: sysDescr
+      regex: "(?i)V(\\d+R\\d+C\\d+S\\w+)|Version\\s+(\\S+)"
+      groups: ["full_version", "simple_version"]
+  
+  - name: huawei_usg_ssh
+    manufacturer: Huawei
+    platform: USG
+    catalog: FIREWALL
+    priority: 20
+    patterns:
+      - source: versionInfo
+        regex: "(?i)usg.*firewall"
+        confidence: 0.95
+        required: true
+  
+  # Huawei HuaWei (通用)
+  - name: huawei_huawei_snmp
+    manufacturer: Huawei
+    platform: HuaWei
+    catalog: NETWORK
+    priority: 15
+    patterns:
+      - source: sysDescr
+        regex: "(?i)huawei"
+        confidence: 0.8
+        required: true
+  
+  # ============ H3C平台 ============
+  
+  # H3C Comware
+  - name: h3c_comware_snmp
+    manufacturer: H3C
+    platform: Comware
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: sysDescr
+        regex: "(?i)comware"
+        confidence: 0.9
+        required: true
+  
+  - name: h3c_comware_ssh
+    manufacturer: H3C
+    platform: Comware
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: versionInfo
+        regex: "(?i)comware.*software"
+        confidence: 0.95
+        required: true
+  
+  # H3C SecPath
+  - name: h3c_secpath_snmp
+    manufacturer: H3C
+    platform: SecPath
+    catalog: FIREWALL
+    priority: 20
+    patterns:
+      - source: sysDescr
+        regex: "(?i)secpath"
+        confidence: 0.9
+        required: true
+  
+  - name: h3c_secpath_ssh
+    manufacturer: H3C
+    platform: SecPath
+    catalog: FIREWALL
+    priority: 20
+    patterns:
+      - source: versionInfo
+        regex: "(?i)secpath.*firewall"
+        confidence: 0.95
+        required: true
+  
+  # ============ Dell平台 ============
+  
+  # Dell Ubuntu
+  - name: dell_ubuntu_osrelease
+    manufacturer: Dell
+    platform: Ubuntu
+    catalog: SERVER
+    priority: 20
+    patterns:
+      - source: osRelease
+        regex: "(?i)NAME=.*Ubuntu"
+        confidence: 0.95
+        required: true
+      - source: osRelease
+        regex: "(?i)ID=ubuntu"
+        confidence: 0.9
+  
+  - name: dell_ubuntu_uname
+    manufacturer: Dell
+    platform: Ubuntu
+    catalog: SERVER
+    priority: 15
+    patterns:
+      - source: unameInfo
+        regex: "(?i)ubuntu"
+        confidence: 0.8
+        required: true
+  
+  # Dell CentOS
+  - name: dell_centos_osrelease
+    manufacturer: Dell
+    platform: Centos
+    catalog: SERVER
+    priority: 20
+    patterns:
+      - source: osRelease
+        regex: "(?i)NAME=.*CentOS|NAME=.*\"CentOS"
+        confidence: 0.95
+        required: true
+      - source: osRelease
+        regex: "(?i)ID=centos"
+        confidence: 0.9
+  
+  - name: dell_centos_uname
+    manufacturer: Dell
+    platform: Centos
+    catalog: SERVER
+    priority: 15
+    patterns:
+      - source: unameInfo
+        regex: "(?i)centos"
+        confidence: 0.8
+        required: true
+  
+  # ============ 其他平台 ============
+  
+  # Dptech FWNFV
+  - name: dptech_fwnfv_snmp
+    manufacturer: Dptech
+    platform: FWNFV
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: sysDescr
+        regex: "(?i)fwnfv|dp.*tech"
+        confidence: 0.9
+        required: true
+  
+  # Sangfor SangforOS
+  - name: sangfor_sangforos_snmp
+    manufacturer: Sangfor
+    platform: SangforOS
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: sysDescr
+        regex: "(?i)sangfor.*os"
+        confidence: 0.9
+        required: true
+  
+  # Ruijie Ruijie
+  - name: ruijie_ruijie_snmp
+    manufacturer: Ruijie
+    platform: Ruijie
+    catalog: NETWORK
+    priority: 20
+    patterns:
+      - source: sysDescr
+        regex: "(?i)ruijie"
+        confidence: 0.9
+        required: true
+  
+  # 通用Linux服务器
+  - name: server_base_linux
+    manufacturer: server
+    platform: base_linux
+    catalog: SERVER
+    priority: 10
+    patterns:
+      - source: osRelease
+        regex: "(?i)NAME=.*"
+        confidence: 0.7
+        required: true
+      - source: unameInfo
+        regex: "(?i)linux"
+        confidence: 0.6
+

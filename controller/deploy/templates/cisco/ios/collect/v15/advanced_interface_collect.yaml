@@ -1,0 +1,7 @@
+name: interfaceAdvanced
+method: SSH
+target: show interface
+timeout: 15s
+expectedType: JSON
+options:
+  detail: true

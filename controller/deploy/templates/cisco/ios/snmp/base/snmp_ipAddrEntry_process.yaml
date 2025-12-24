@@ -1,0 +1,7 @@
+name: snmpIpAddrEntryProcess
+indexPositions: [1]
+classifierPositions: [0]
+classifierToNameMap:
+  "2": "interface"
+  "3": "mask"
+inputField: snmpIpAddrEntry

@@ -1,0 +1,7 @@
+name: interfaceBrief
+method: SSH
+target: show interface status
+timeout: 10s
+expectedType: JSON
+fields:
+  - interfaceBrief

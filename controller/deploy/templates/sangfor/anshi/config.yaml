@@ -1,0 +1,48 @@
+pipeline:
+  - type: AliveCheck
+    config:
+      aliveCheckConfig:
+        aliveCheckItem:
+          $include: alive/ssh_alive_check.yaml
+  - type: Collect
+    config:
+      collectConfig:
+        collectItems:
+          - $include: collect/snmp_iftable.yaml
+          - $include: collect/snmp_ipAddrEntry.yaml
+          - $include: collect/snmp_ifHighSpeed.yaml
+          - $include: collect/snmp_version.yaml
+          - $include: collect/snmp_arp.yaml
+          - $include: collect/ssh_lldp.yaml
+          - $include: collect/snmp_lldp1.yaml
+          - $include: collect/snmp_lldp2.yaml
+          - $include: collect/ssh_mactable.yaml
+  - type: SnmpProcess
+    config:
+      snmpProcessConfig:
+        processItems:
+            - $include: snmp/snmp_iftable_process.yaml
+            - $include: snmp/snmp_version_process.yaml
+            - $include: snmp/snmp_ifHighSpeed_process.yaml
+            - $include: snmp/snmp_ipAddrEntry_process.yaml
+            - $include: snmp/snmp_arp_process.yaml
+            - $include: snmp/snmp_lldp1_process.yaml
+            - $include: snmp/snmp_lldp2_process.yaml
+  - type: Transform
+    config:
+      transformConfig:
+        transformItems:
+          - $include: transform/description_to_version.yaml
+          - $include: transform/alive_check_transform.yaml
+  - type: TextFSM
+    config:
+      textFSMConfig:
+        textFSMItems:
+          - $include: textfsm/ssh_lldp.textfsm
+          - $include: textfsm/ssh_mactable.textfsm
+  - type: Join
+    config:
+      joinConfig:
+        joinItems:
+          - $include: join/snmp_devicePorts.yaml
+          - $include: join/snmp_lldp_join.yaml

@@ -1,0 +1,44 @@
+========== 节点路由表: YZ-YiZ-C8U31-FW-1.DCN.Edu1000E ==========
+生成时间: 2025-12-02 14:35:40
+
+
+---------- VRF: default (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+132.254.171.0/24     132.254.164.25       Eth-Trunk21.103 false      false     
+132.254.172.0/24     132.254.164.25       Eth-Trunk21.103 false      false     
+132.254.173.0/24     132.254.164.25       Eth-Trunk21.103 false      false     
+132.254.176.0/24     132.254.164.25       Eth-Trunk21.103 false      false     
+132.254.180.0/24     132.254.164.33       Eth-Trunk21.104 false      false     
+132.254.181.0/24     132.254.164.33       Eth-Trunk21.104 false      false     
+132.254.174.0/24     132.254.164.25       Eth-Trunk21.103 false      false     
+132.254.177.0/24     132.254.164.25       Eth-Trunk21.103 false      false     
+132.254.182.0/24     132.254.164.33       Eth-Trunk21.104 false      false     
+132.254.183.0/24     132.254.164.33       Eth-Trunk21.104 false      false     
+132.254.185.0/24     132.254.164.41       Eth-Trunk21.105 false      false     
+132.254.186.0/24     132.254.164.17       Eth-Trunk21.102 false      false     
+132.254.166.0/24     132.254.164.17       Eth-Trunk21.102 false      false     
+132.254.167.0/24     132.254.164.17       Eth-Trunk21.102 false      false     
+132.254.168.0/24     132.254.164.17       Eth-Trunk21.102 false      false     
+132.254.170.0/24     132.254.164.25       Eth-Trunk21.103 false      false     
+132.254.175.0/24     132.254.164.25       Eth-Trunk21.103 false      false     
+132.254.178.0/24     132.254.164.25       Eth-Trunk21.103 false      false     
+132.254.179.0/24     132.254.164.25       Eth-Trunk21.103 false      false     
+132.254.184.0/24     132.254.164.33       Eth-Trunk21.104 false      false     
+132.254.165.0/24     132.254.164.17       Eth-Trunk21.102 false      false     
+132.254.169.0/24     132.254.164.17       Eth-Trunk21.102 false      false     
+132.254.187.0/24     132.254.164.17       Eth-Trunk21.102 false      false     
+132.254.164.128/29   132.254.164.41       Eth-Trunk21.105 false      false     
+0.0.0.0/0            132.254.164.9        Eth-Trunk21.101 false      true      
+
+默认网关:
+  NextHop: 132.254.164.9, Interface: Eth-Trunk21.101, Connected: false
+
+---------- VRF: default (IPv6) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+
+---------- VRF: VPN_YiZ_Management (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+132.224.0.0/11       132.254.160.129      GigabitEthernet0/0/0 false      false     

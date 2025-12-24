@@ -1,0 +1,7 @@
+name: versionCollect
+method: SSH
+dataType: map[string]string
+target: cat /etc/os-release
+timeout: 10s
+expectedType: Text
+

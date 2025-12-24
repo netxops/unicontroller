@@ -1,0 +1,396 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "totalItems": 8,
+        "totalPages": 1,
+        "pageNumber": 1,
+        "pageSize": 100,
+        "itemsOffset": 0,
+        "itemLength": 8,
+        "privateOffset": 0,
+        "items": [
+            {
+                "uuid": "51AA2614D92847BAA016F241D71DBB00",
+                "name": "DNAT-4",
+                "natHit": 0,
+                "enable": true,
+                "position": 0,
+                "natType": "DNAT",
+                "description": "",
+                "schedule": "all-week",
+                "snat": null,
+                "dnat": {
+                    "srcZones": [
+                        "L3_untrust_B"
+                    ],
+                    "srcIpGroups": [
+                        "172.32.2.1"
+                    ],
+                    "dstIpobj": {
+                        "dstIpobjType": "IPGROUP",
+                        "specifyIp": null,
+                        "ipGroups": [
+                            "192.168.115.0",
+                            "192.168.116.0"
+                        ]
+                    },
+                    "natService": [
+                        "ssh",
+                        "ftp",
+                        "telnet",
+                        "smtp",
+                        "ping",
+                        "dns-t",
+                        "dns-u"
+                    ],
+                    "transfer": {
+                        "transferType": "IP",
+                        "dnatEnableScheduling": false,
+                        "ipRange": null,
+                        "specifyIp": "172.32.101.254",
+                        "ipPrefix": "",
+                        "ipGroups": null,
+                        "transferPort": [],
+                        "slbPool": ""
+                    },
+                    "dnatIgnoreAcl": true,
+                    "bypassAclLog": false
+                },
+                "bnat": null
+            },
+            {
+                "uuid": "1B7F3042580F4DA2B75585B3F41B9713",
+                "name": "DNAT-3",
+                "natHit": 0,
+                "enable": true,
+                "position": 1,
+                "natType": "DNAT",
+                "description": "",
+                "schedule": "all-week",
+                "snat": null,
+                "dnat": {
+                    "srcZones": [
+                        "L3_untrust_B"
+                    ],
+                    "srcIpGroups": [
+                        "text-2"
+                    ],
+                    "dstIpobj": {
+                        "dstIpobjType": "IPGROUP",
+                        "specifyIp": null,
+                        "ipGroups": [
+                            "192.168.113.0"
+                        ]
+                    },
+                    "natService": [
+                        "any"
+                    ],
+                    "transfer": {
+                        "transferType": "IP",
+                        "dnatEnableScheduling": false,
+                        "ipRange": null,
+                        "specifyIp": "172.32.101.254",
+                        "ipPrefix": "",
+                        "ipGroups": null,
+                        "transferPort": [],
+                        "slbPool": ""
+                    },
+                    "dnatIgnoreAcl": true,
+                    "bypassAclLog": false
+                },
+                "bnat": null
+            },
+            {
+                "uuid": "6540D6550AED46E2B94DD8C77AE74ACA",
+                "name": "DNAT-2",
+                "natHit": 0,
+                "enable": true,
+                "position": 2,
+                "natType": "DNAT",
+                "description": "",
+                "schedule": "all-week",
+                "snat": null,
+                "dnat": {
+                    "srcZones": [
+                        "L3_untrust_B"
+                    ],
+                    "srcIpGroups": [
+                        "172.32.2.1"
+                    ],
+                    "dstIpobj": {
+                        "dstIpobjType": "IPGROUP",
+                        "specifyIp": null,
+                        "ipGroups": [
+                            "192.168.112.0"
+                        ]
+                    },
+                    "natService": [
+                        "https"
+                    ],
+                    "transfer": {
+                        "transferType": "IP",
+                        "dnatEnableScheduling": false,
+                        "ipRange": null,
+                        "specifyIp": "172.32.101.254",
+                        "ipPrefix": "",
+                        "ipGroups": null,
+                        "transferPort": [
+                            {
+                                "start": 443,
+                                "end": 0
+                            }
+                        ],
+                        "slbPool": ""
+                    },
+                    "dnatIgnoreAcl": true,
+                    "bypassAclLog": false
+                },
+                "bnat": null
+            },
+            {
+                "uuid": "F5A2212E223645CAB44044175FDEAB1A",
+                "name": "DNAT-1",
+                "natHit": 0,
+                "enable": true,
+                "position": 3,
+                "natType": "DNAT",
+                "description": "",
+                "schedule": "all-week",
+                "snat": null,
+                "dnat": {
+                    "srcZones": [
+                        "L3_untrust_B"
+                    ],
+                    "srcIpGroups": [
+                        "text-2"
+                    ],
+                    "dstIpobj": {
+                        "dstIpobjType": "IP",
+                        "specifyIp": [
+                            "192.168.112.254"
+                        ],
+                        "ipGroups": null
+                    },
+                    "natService": [
+                        "ssh"
+                    ],
+                    "transfer": {
+                        "transferType": "IP",
+                        "dnatEnableScheduling": false,
+                        "ipRange": null,
+                        "specifyIp": "172.32.101.254",
+                        "ipPrefix": "",
+                        "ipGroups": null,
+                        "transferPort": [
+                            {
+                                "start": 22,
+                                "end": 0
+                            }
+                        ],
+                        "slbPool": ""
+                    },
+                    "dnatIgnoreAcl": true,
+                    "bypassAclLog": false
+                },
+                "bnat": null
+            },
+            {
+                "uuid": "AD2DF330FB824CC3A5F1F2575B708035",
+                "name": "SANT-4",
+                "natHit": 0,
+                "enable": true,
+                "position": 4,
+                "natType": "SNAT",
+                "description": "",
+                "schedule": "all-week",
+                "snat": {
+                    "srcZones": [
+                        "L3_trust_B"
+                    ],
+                    "srcIpGroups": [
+                        "192.168.116.0"
+                    ],
+                    "dstNetobj": {
+                        "dstNetobjType": "ZONE",
+                        "interface": "",
+                        "zone": [
+                            "L3_untrust_B"
+                        ]
+                    },
+                    "dstIpGroups": [
+                        "dst-text1"
+                    ],
+                    "natService": [
+                        "any"
+                    ],
+                    "transfer": {
+                        "transferType": "IP",
+                        "sticky": "OFF",
+                        "ipRange": null,
+                        "tranferMode": "",
+                        "specifyIp": "172.32.2.100",
+                        "ipGroups": null,
+                        "transPort": {
+                            "portMode": "RANDOM",
+                            "portRange": {
+                                "start": 0,
+                                "end": 0
+                            },
+                            "blockSize": 0
+                        }
+                    }
+                },
+                "dnat": null,
+                "bnat": null
+            },
+            {
+                "uuid": "36C5E3394D9F4CF5A4BE2DD8DE09EA6D",
+                "name": "SANT-3",
+                "natHit": 0,
+                "enable": true,
+                "position": 5,
+                "natType": "SNAT",
+                "description": "",
+                "schedule": "all-week",
+                "snat": {
+                    "srcZones": [
+                        "L3_trust_B"
+                    ],
+                    "srcIpGroups": [
+                        "192.168.114.0"
+                    ],
+                    "dstNetobj": {
+                        "dstNetobjType": "ZONE",
+                        "interface": "",
+                        "zone": [
+                            "L3_untrust_B"
+                        ]
+                    },
+                    "dstIpGroups": [
+                        "dst-text1"
+                    ],
+                    "natService": [
+                        "any"
+                    ],
+                    "transfer": {
+                        "transferType": "IP",
+                        "sticky": "OFF",
+                        "ipRange": null,
+                        "tranferMode": "",
+                        "specifyIp": "172.32.2.254",
+                        "ipGroups": null,
+                        "transPort": {
+                            "portMode": "RANDOM",
+                            "portRange": {
+                                "start": 0,
+                                "end": 0
+                            },
+                            "blockSize": 0
+                        }
+                    }
+                },
+                "dnat": null,
+                "bnat": null
+            },
+            {
+                "uuid": "92C34AF747D34E4BBB40BD42420F1B38",
+                "name": "SANT-2",
+                "natHit": 0,
+                "enable": true,
+                "position": 6,
+                "natType": "SNAT",
+                "description": "",
+                "schedule": "all-week",
+                "snat": {
+                    "srcZones": [
+                        "L3_untrust_B"
+                    ],
+                    "srcIpGroups": [
+                        "192.168.113.0"
+                    ],
+                    "dstNetobj": {
+                        "dstNetobjType": "ZONE",
+                        "interface": "",
+                        "zone": [
+                            "L3_untrust_B"
+                        ]
+                    },
+                    "dstIpGroups": [
+                        "dst-text1"
+                    ],
+                    "natService": [
+                        "any"
+                    ],
+                    "transfer": {
+                        "transferType": "IP",
+                        "sticky": "OFF",
+                        "ipRange": null,
+                        "tranferMode": "",
+                        "specifyIp": "172.32.2.254",
+                        "ipGroups": null,
+                        "transPort": {
+                            "portMode": "RANDOM",
+                            "portRange": {
+                                "start": 0,
+                                "end": 0
+                            },
+                            "blockSize": 0
+                        }
+                    }
+                },
+                "dnat": null,
+                "bnat": null
+            },
+            {
+                "uuid": "2A205568DD944C8EABDC2F712D819C53",
+                "name": "SNAT-1",
+                "natHit": 0,
+                "enable": true,
+                "position": 7,
+                "natType": "SNAT",
+                "description": "",
+                "schedule": "all-week",
+                "snat": {
+                    "srcZones": [
+                        "L3_trust_B"
+                    ],
+                    "srcIpGroups": [
+                        "192.168.112.0"
+                    ],
+                    "dstNetobj": {
+                        "dstNetobjType": "ZONE",
+                        "interface": "",
+                        "zone": [
+                            "L3_untrust_B"
+                        ]
+                    },
+                    "dstIpGroups": [
+                        "dst-text1"
+                    ],
+                    "natService": [
+                        "any"
+                    ],
+                    "transfer": {
+                        "transferType": "OUTIF_IP",
+                        "sticky": "OFF",
+                        "ipRange": null,
+                        "tranferMode": "",
+                        "specifyIp": "",
+                        "ipGroups": null,
+                        "transPort": {
+                            "portMode": "RANDOM",
+                            "portRange": {
+                                "start": 0,
+                                "end": 0
+                            },
+                            "blockSize": 0
+                        }
+                    }
+                },
+                "dnat": null,
+                "bnat": null
+            }
+        ]
+    }
+}

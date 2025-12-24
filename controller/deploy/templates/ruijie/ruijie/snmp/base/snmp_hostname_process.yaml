@@ -1,0 +1,7 @@
+name: sysDescrProcess
+indexPositions: [1]
+dataType: map[string]string
+classifierPositions: [0]
+classifierToNameMap:
+  "5": "hostname"
+inputField: sysDescr

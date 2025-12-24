@@ -1,0 +1,657 @@
+package packages
+
+import (
+	"encoding/json"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"testing"
+
+	"github.com/influxdata/telegraf/controller/model"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+// buildTestPackage 创建一个用于测试的 Package
+func buildTestPackage(schemaParams map[string]interface{}, paths PackagePaths) Package {
+	schema := model.Schema{
+		ConfigFile:    schemaParams["ConfigFile"].(string),
+		Package:       schemaParams["Package"].(string),
+		Format:        schemaParams["Format"].(string),
+		Binary:        schemaParams["Binary"].(string),
+		Args:          schemaParams["Args"].([]string),
+		ListenPort:    schemaParams["ListenPort"].([]uint32),
+		StartupMethod: schemaParams["StartupMethod"].(string),
+		Version:       schemaParams["Version"].(string),
+		Desc:          schemaParams["Desc"].(string),
+	}
+
+	if configs, ok := schemaParams["Configs"].([]model.SchemaConfigItem); ok {
+		schema.Configs = make([]*model.SchemaConfigItem, len(configs))
+		for i, config := range configs {
+			schema.Configs[i] = &model.SchemaConfigItem{
+				Arg:  config.Arg,
+				File: config.File,
+			}
+		}
+	}
+
+	return Package{
+		Spec:      schema,
+		IsRunning: false,
+		Paths:     paths,
+	}
+}
+
+// 辅助函数用于创建 PackagePaths
+func buildPackagePaths(baseDir string) PackagePaths {
+	return PackagePaths{
+		PackageDir:        filepath.Join(baseDir, "package"),
+		ApplicationDir:    filepath.Join(baseDir, "package", "app"),
+		ScriptsDir:        filepath.Join(baseDir, "package", "scripts"),
+		ConfDir:           filepath.Join(baseDir, "package", "conf"),
+		LogsDir:           filepath.Join(baseDir, "package", "logs"),
+		BinaryPath:        filepath.Join(baseDir, "package", "app", "binary"),
+		StartupScriptPath: filepath.Join(baseDir, "package", "scripts", "startup.sh"),
+	}
+}
+
+func TestUnifiedConfigManager(t *testing.T) {
+	tempDir, err := ioutil.TempDir("", "unified_config_test")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+
+	// 使用辅助函数创建 PackagePaths
+	paths := buildPackagePaths(tempDir)
+
+	// 创建必要的目录和文件
+	require.NoError(t, os.MkdirAll(paths.PackageDir, 0755))
+	require.NoError(t, os.MkdirAll(paths.ConfDir, 0755))
+
+	// 创建测试用的 Package
+	schemaParams := map[string]interface{}{
+		"Package":       "TestPackage",
+		"Format":        "json",
+		"ConfigFile":    filepath.Join(paths.ConfDir, "config.json"),
+		"Binary":        "test_binary",
+		"Configs":       []model.SchemaConfigItem{{Arg: "config", File: "config.json"}},
+		"Args":          []string{"-c", "config.json"},
+		"ListenPort":    []uint32{8080},
+		"StartupMethod": "binary",
+		"Version":       "1.0.0",
+		"Desc":          "A test package",
+	}
+	testPackage := buildTestPackage(schemaParams, paths)
+	require.NoError(t, ioutil.WriteFile(testPackage.ConfigFile(), []byte("{}"), 0644))
+
+	// 创建 UnifiedConfigManager 实例
+	ucm := NewUnifiedConfigManager(testPackage, &RestartStrategy{})
+
+	initialConfig := &Config{
+		Data: map[string]interface{}{
+			"key1": "value1",
+			"key2": 42,
+		},
+	}
+	ucm.Config = initialConfig
+
+	t.Run("Save and Load", func(t *testing.T) {
+		assert.NoError(t, ucm.Save())
+		loadedConfig, err := ucm.Load()
+		assert.NoError(t, err)
+		assert.Equal(t, toJSON(initialConfig.Data), toJSON(loadedConfig.Data))
+	})
+
+	t.Run("Add and Remove Config", func(t *testing.T) {
+		assert.NoError(t, ucm.AddConfig("key3", "value3"))
+		assert.NoError(t, ucm.DeleteConfig("key2", nil))
+
+		loadedConfig, err := ucm.Load()
+		assert.NoError(t, err)
+
+		expectedConfig := map[string]interface{}{
+			"key1": "value1",
+			"key3": "value3",
+		}
+
+		assert.Equal(t, toJSON(expectedConfig), toJSON(loadedConfig.Data))
+	})
+
+	t.Run("Apply Strategy", func(t *testing.T) {
+		assert.NoError(t, ucm.Apply())
+	})
+
+	t.Run("Get Path and Format", func(t *testing.T) {
+		assert.Equal(t, testPackage.ConfigFile(), ucm.GetPath())
+		assert.Equal(t, "json", ucm.GetFormat())
+	})
+
+	t.Run("Observable", func(t *testing.T) {
+		mockObserver := &MockObserver{}
+		ucm.AddObserver(mockObserver)
+
+		assert.NoError(t, ucm.AddConfig("key4", "value4"))
+		assert.True(t, mockObserver.notified)
+
+		mockObserver.notified = false
+		assert.NoError(t, ucm.DeleteConfig("key4", nil))
+		assert.True(t, mockObserver.notified)
+	})
+}
+
+// func TestCompositeUnifiedConfigManager(t *testing.T) {
+// 	tempDir, err := ioutil.TempDir("", "composite_unified_config_test")
+// 	assert.NoError(t, err)
+// 	defer os.RemoveAll(tempDir)
+
+// 	os.Mkdir(filepath.Join(tempDir, "composite"), 0755)
+// 	ioutil.WriteFile(filepath.Join(tempDir, "composite", "config1.json"), []byte("{}"), 0644)
+// 	ioutil.WriteFile(filepath.Join(tempDir, "composite", "config2.yaml"), []byte("{}"), 0644)
+
+// 	// paths := PackagePaths{
+// 	// 	ConfDir: tempDir,
+// 	// }
+// 	compositeConfig := NewUnifiedConfigManager(&RestartStrategy{}, Package{}, WithConfigDir(tempDir))
+
+// 	testConfig := &Config{
+// 		Data: map[string]interface{}{
+// 			filepath.Join(tempDir, "composite", "config1.json"): map[string]interface{}{"key1": "value1"},
+// 			filepath.Join(tempDir, "composite", "config2.yaml"): map[string]interface{}{"key2": 42},
+// 		},
+// 	}
+
+// 	t.Run("Save and Load Composite", func(t *testing.T) {
+// 		assert.NoError(t, compositeConfig.Save(testConfig))
+// 		loadedConfig, err := compositeConfig.Load()
+// 		assert.NoError(t, err)
+// 		assert.Equal(t, toJSON(testConfig.Data), toJSON(loadedConfig.Data))
+// 	})
+
+// 	t.Run("Apply Composite Strategy", func(t *testing.T) {
+// 		assert.NoError(t, compositeConfig.Apply())
+// 	})
+
+// 	t.Run("Get Composite Format", func(t *testing.T) {
+// 		assert.Equal(t, "composite", compositeConfig.GetFormat())
+// 	})
+// }
+
+// func TestSchemaUnifiedConfigManager(t *testing.T) {
+// 	tempDir, err := ioutil.TempDir("", "schema_unified_config_test")
+// 	assert.NoError(t, err)
+// 	defer os.RemoveAll(tempDir)
+
+// 	schema := &model.Schema{
+// 		Configs: []*model.SchemaConfigItem{
+// 			{Arg: "config1", File: "config1.json"},
+// 			{Arg: "config2", File: "config2.yaml"},
+// 		},
+// 	}
+
+// 	schemaConfig := NewUnifiedConfigManager(&RestartStrategy{}, Package{Schema: *schema})
+
+// 	testConfig := &Config{
+// 		Data: map[string]interface{}{
+// 			"config1": map[string]interface{}{"key1": "value1"},
+// 			"config2": map[string]interface{}{"key2": 42},
+// 		},
+// 	}
+
+// 	t.Run("Save and Load Schema", func(t *testing.T) {
+// 		assert.NoError(t, schemaConfig.Save(testConfig))
+// 		loadedConfig, err := schemaConfig.Load()
+// 		assert.NoError(t, err)
+// 		assert.Equal(t, toJSON(testConfig.Data), toJSON(loadedConfig.Data))
+// 	})
+
+//		t.Run("Get Schema Format", func(t *testing.T) {
+//			assert.Equal(t, "schema", schemaConfig.GetFormat())
+//		})
+//	}
+func TestUnifiedConfigManager_AddConfigSection(t *testing.T) {
+	// 创建临时目录
+	tempDir, err := ioutil.TempDir("", "config_test")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+
+	// 使用辅助函数创建 PackagePaths
+	paths := buildPackagePaths(tempDir)
+
+	// 创建必要的目录和文件
+	require.NoError(t, os.MkdirAll(paths.PackageDir, 0755))
+	require.NoError(t, os.MkdirAll(paths.ConfDir, 0755))
+
+	// 创建测试用的 Package
+	schemaParams := map[string]interface{}{
+		"ConfigFile":    filepath.Join(paths.ConfDir, "config.json"),
+		"Package":       "TestPackage",
+		"Format":        "json",
+		"Binary":        "test_binary",
+		"Configs":       []model.SchemaConfigItem{{Arg: "config", File: "config.json"}},
+		"Args":          []string{"-c", "config.json"},
+		"ListenPort":    []uint32{8080},
+		"StartupMethod": "binary",
+		"Version":       "1.0.0",
+		"Desc":          "A test package",
+	}
+	testPackage := buildTestPackage(schemaParams, paths)
+
+	// 创建初始配置文件
+	initialConfig := map[string]interface{}{
+		"existing": "value",
+		"section": map[string]interface{}{
+			"key1": "value1",
+			"nested": map[string]interface{}{
+				"subkey": "subvalue",
+			},
+		},
+	}
+	initialConfigBytes, err := json.Marshal(initialConfig)
+	require.NoError(t, err)
+	err = ioutil.WriteFile(testPackage.ConfigFile(), initialConfigBytes, 0644)
+	require.NoError(t, err)
+
+	// 创建 UnifiedConfigManager 实例
+	ucm := NewUnifiedConfigManager(testPackage, &RestartStrategy{})
+
+	// 测试添加新的配置部分（使用覆盖策略）
+	newSection := `{
+        "key1": "newValue1",
+        "key2": "value2",
+        "nested": {
+            "subkey": "newSubvalue",
+            "newSubkey": "newValue"
+        }
+    }`
+	err = ucm.AddConfigSection("section", newSection, WithMergeStrategy(OverwriteStrategy))
+	assert.NoError(t, err)
+
+	// 验证配置是否正确更新（应完全覆盖原有的 "section"）
+	updatedConfig, err := ucm.Load()
+	assert.NoError(t, err)
+	assert.Equal(t, "value", updatedConfig.Data["existing"])
+	assert.NotNil(t, updatedConfig.Data["section"])
+
+	sectionData := updatedConfig.Data["section"].(map[string]interface{})
+	assert.Equal(t, "newValue1", sectionData["key1"])
+	assert.Equal(t, "value2", sectionData["key2"])
+	assert.NotNil(t, sectionData["nested"])
+
+	nestedSection := sectionData["nested"].(map[string]interface{})
+	assert.Equal(t, "newSubvalue", nestedSection["subkey"])
+	assert.Equal(t, "newValue", nestedSection["newSubkey"])
+
+	// 测试添加到现有部分（使用覆盖策略）
+	additionalSection := `{
+        "key2": "updatedValue2",
+        "key3": "value3"
+    }`
+	err = ucm.AddConfigSection("section", additionalSection, WithMergeStrategy(OverwriteStrategy))
+	assert.NoError(t, err)
+
+	// 验证配置是否正确更新（应完全覆盖之前的 "section"）
+	updatedConfig, err = ucm.Load()
+	assert.NoError(t, err)
+	sectionData = updatedConfig.Data["section"].(map[string]interface{})
+	assert.Equal(t, "updatedValue2", sectionData["key2"])
+	assert.Equal(t, "value3", sectionData["key3"])
+	assert.NotContains(t, sectionData, "key1")
+	assert.NotContains(t, sectionData, "nested")
+
+	// 测试添加嵌套配置部分（使用覆盖策略）
+	nestedSectionStr := `{
+        "deeplyNested": {
+            "level1": {
+                "level2": "nestedValue"
+            }
+        }
+    }`
+	err = ucm.AddConfigSection("section.nested", nestedSectionStr, WithMergeStrategy(OverwriteStrategy))
+	assert.NoError(t, err)
+
+	// 验证嵌套配置是否正确更新（应在 "section" 下创建新的 "nested"）
+	updatedConfig, err = ucm.Load()
+	assert.NoError(t, err)
+	sectionData = updatedConfig.Data["section"].(map[string]interface{})
+	assert.NotNil(t, sectionData["nested"])
+	nestedData := sectionData["nested"].(map[string]interface{})
+	deeplyNested, ok := nestedData["deeplyNested"].(map[string]interface{})
+	assert.True(t, ok, "deeplyNested should be a map")
+	level1, ok := deeplyNested["level1"].(map[string]interface{})
+	assert.True(t, ok, "level1 should be a map")
+	assert.Equal(t, "nestedValue", level1["level2"])
+}
+
+func TestUnifiedConfigManager_AddConfigSection2(t *testing.T) {
+	// 创建临时目录
+	tempDir, err := ioutil.TempDir("", "config_test")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+
+	// 使用辅助函数创建 PackagePaths
+	paths := buildPackagePaths(tempDir)
+
+	// 创建必要的目录和文件
+	require.NoError(t, os.MkdirAll(paths.PackageDir, 0755))
+	require.NoError(t, os.MkdirAll(paths.ConfDir, 0755))
+
+	// 创建测试用的 Package
+	schemaParams := map[string]interface{}{
+		"Package":       "TestPackage",
+		"ConfigFile":    filepath.Join(paths.ConfDir, "config.json"),
+		"Format":        "json",
+		"Binary":        "test_binary",
+		"Configs":       []model.SchemaConfigItem{{Arg: "config", File: "config.json"}},
+		"Args":          []string{"-c", "config.json"},
+		"ListenPort":    []uint32{8080},
+		"StartupMethod": "binary",
+		"Version":       "1.0.0",
+		"Desc":          "A test package",
+	}
+	testPackage := buildTestPackage(schemaParams, paths)
+
+	// 创建初始配置文件
+	initialConfig := map[string]interface{}{
+		"existing": "value",
+		"section": map[string]interface{}{
+			"key1": "value1",
+			"key2": "value2",
+			"nested": map[string]interface{}{
+				"subkey1": "subvalue1",
+				"subkey2": "subvalue2",
+			},
+		},
+	}
+	initialConfigBytes, err := json.Marshal(initialConfig)
+	require.NoError(t, err)
+	err = ioutil.WriteFile(testPackage.ConfigFile(), initialConfigBytes, 0644)
+	require.NoError(t, err)
+
+	testCases := []struct {
+		name           string
+		strategy       mergeStrategy
+		newSection     string
+		expectedResult map[string]interface{}
+		expectError    bool
+	}{
+		{
+			name:     "Merge Strategy",
+			strategy: MergeStrategy,
+			newSection: `{
+                "key2": "newValue2",
+                "key3": "value3",
+                "nested": {
+                    "subkey2": "newSubvalue2",
+                    "subkey3": "subvalue3"
+                }
+            }`,
+			expectedResult: map[string]interface{}{
+				"key1": "value1",
+				"key2": "value2", // 保持原值
+				"key3": "value3", // 新添加的键
+				"nested": map[string]interface{}{
+					"subkey1": "subvalue1",
+					"subkey2": "subvalue2", // 保持原值
+					"subkey3": "subvalue3", // 新添加的键
+				},
+			},
+			expectError: false,
+		},
+		{
+			name:     "Merge and Overwrite Strategy",
+			strategy: MergeAndOverwriteStrategy,
+			newSection: `{
+                "key2": "newValue2",
+                "key3": "value3",
+                "nested": {
+                    "subkey2": "newSubvalue2",
+                    "subkey3": "subvalue3"
+                }
+            }`,
+			expectedResult: map[string]interface{}{
+				"key1": "value1",
+				"key2": "newValue2",
+				"key3": "value3",
+				"nested": map[string]interface{}{
+					"subkey1": "subvalue1",
+					"subkey2": "newSubvalue2",
+					"subkey3": "subvalue3",
+				},
+			},
+			expectError: false,
+		},
+		{
+			name:     "Overwrite Strategy",
+			strategy: OverwriteStrategy,
+			newSection: `{
+                "key2": "newValue2",
+                "key3": "value3",
+                "nested": {
+                    "subkey2": "newSubvalue2",
+                    "subkey3": "subvalue3"
+                }
+            }`,
+			expectedResult: map[string]interface{}{
+				"key2": "newValue2",
+				"key3": "value3",
+				"nested": map[string]interface{}{
+					"subkey2": "newSubvalue2",
+					"subkey3": "subvalue3",
+				},
+			},
+			expectError: false,
+		},
+		{
+			name:     "MergeOrError Strategy - No Conflict",
+			strategy: MergeOrErrorStrategy,
+			newSection: `{
+                "key3": "value3",
+                "nested": {
+                    "subkey3": "subvalue3"
+                }
+            }`,
+			expectedResult: map[string]interface{}{
+				"key1": "value1",
+				"key2": "value2",
+				"key3": "value3",
+				"nested": map[string]interface{}{
+					"subkey1": "subvalue1",
+					"subkey2": "subvalue2",
+					"subkey3": "subvalue3",
+				},
+			},
+			expectError: false,
+		},
+		{
+			name:     "MergeOrError Strategy - With Conflict",
+			strategy: MergeOrErrorStrategy,
+			newSection: `{
+                "key2": "newValue2",
+                "nested": {
+                    "subkey2": "newSubvalue2"
+                }
+            }`,
+			expectedResult: nil,
+			expectError:    true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// 创建 UnifiedConfigManager 实例
+			ucm := NewUnifiedConfigManager(testPackage, &RestartStrategy{})
+
+			// 重置配置文件
+			err = ioutil.WriteFile(testPackage.ConfigFile(), initialConfigBytes, 0644)
+			require.NoError(t, err)
+
+			// 应用新的配置部分
+			err = ucm.AddConfigSection("section", tc.newSection, WithMergeStrategy(tc.strategy))
+
+			if tc.expectError {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+
+				// 验证配置是否正确更新
+				updatedConfig, err := ucm.Load()
+				assert.NoError(t, err)
+				assert.Equal(t, "value", updatedConfig.Data["existing"])
+				assert.NotNil(t, updatedConfig.Data["section"])
+
+				sectionData := updatedConfig.Data["section"].(map[string]interface{})
+				assert.Equal(t, tc.expectedResult, sectionData)
+			}
+		})
+	}
+}
+
+func TestUnifiedConfigManager_WithTelegraf(t *testing.T) {
+	// 创建临时目录
+	tempDir, err := ioutil.TempDir("", "telegraf_config_test")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+
+	// 使用辅助函数创建 PackagePaths
+	paths := buildPackagePaths(tempDir)
+
+	// 创建必要的目录和文件
+	require.NoError(t, os.MkdirAll(paths.PackageDir, 0755))
+	require.NoError(t, os.MkdirAll(paths.ConfDir, 0755))
+
+	// 创建测试用的 Package，设置 WithTelegraf 为 true
+	schemaParams := map[string]interface{}{
+		"Package":       "TelegrafPackage",
+		"ConfigFile":    filepath.Join(paths.ConfDir, "telegraf.conf"),
+		"Format":        "toml",
+		"Binary":        "telegraf",
+		"Configs":       []model.SchemaConfigItem{{Arg: "config", File: "telegraf.conf"}},
+		"Args":          []string{"-config", "telegraf.conf"},
+		"ListenPort":    []uint32{8125},
+		"StartupMethod": "binary",
+		"Version":       "1.19.0",
+		"Desc":          "Telegraf agent",
+	}
+	mainConfigContent := `
+[agent]
+  interval = "10s"
+  round_interval = true
+`
+	mainConfigPath := filepath.Join(paths.ConfDir, "telegraf.conf")
+	err = ioutil.WriteFile(mainConfigPath, []byte(mainConfigContent), 0644)
+
+	testPackage := buildTestPackage(schemaParams, paths)
+
+	// 创建 UnifiedConfigManager 实例，设置 WithTelegraf 为 true
+	ucm := NewUnifiedConfigManager(testPackage, &RestartStrategy{}, WithTelegraf(true))
+	assert.NotNil(t, ucm)
+
+	// 测试添加全局标签
+	t.Run("Add Global Tags", func(t *testing.T) {
+		err := ucm.AddConfig("global_tags", map[string]interface{}{
+			"dc":   "us-east-1",
+			"rack": "1a",
+		})
+		assert.NoError(t, err)
+
+		config, err := ucm.GetAllConfig()
+		assert.NoError(t, err)
+		globalTags, ok := config.Data["global_tags"].(map[string]interface{})
+		assert.True(t, ok)
+		assert.Equal(t, "us-east-1", globalTags["dc"])
+		assert.Equal(t, "1a", globalTags["rack"])
+	})
+
+	// 测试添加 agent 配置
+	t.Run("Add Agent Config", func(t *testing.T) {
+		err := ucm.AddConfig("agent", map[string]interface{}{
+			"interval":       "10s",
+			"round_interval": true,
+		})
+		assert.NoError(t, err)
+
+		config, err := ucm.GetAllConfig()
+		assert.NoError(t, err)
+		agent, ok := config.Data["agent"].(map[string]interface{})
+		assert.True(t, ok)
+		assert.Equal(t, "10s", agent["interval"])
+		assert.Equal(t, true, agent["round_interval"])
+	})
+
+	// 测试添加输入插件
+	t.Run("Add Input Plugin", func(t *testing.T) {
+		err := ucm.AddConfig("inputs.cpu", map[string]interface{}{
+
+			"percpu":   true,
+			"totalcpu": true,
+		})
+		assert.NoError(t, err)
+
+		config, err := ucm.GetAllConfig()
+		assert.NoError(t, err)
+		inputs, ok := config.Data["inputs"].(map[string]interface{})
+		assert.True(t, ok)
+		cpuInput, ok := inputs["cpu"].([]interface{})
+		assert.True(t, ok)
+		assert.Len(t, cpuInput, 1)
+		assert.Equal(t, true, cpuInput[0].(map[string]interface{})["percpu"])
+		assert.Equal(t, true, cpuInput[0].(map[string]interface{})["totalcpu"])
+	})
+
+	// 测试添加输出插件
+	t.Run("Add Output Plugin", func(t *testing.T) {
+		err := ucm.AddConfig("outputs.influxdb", map[string]interface{}{
+			"urls":     []string{"http://localhost:8086"},
+			"database": "telegraf",
+		})
+		assert.NoError(t, err)
+
+		config, err := ucm.GetAllConfig()
+		assert.NoError(t, err)
+		outputs, ok := config.Data["outputs"].(map[string]interface{})
+		assert.True(t, ok)
+		influxdbOutput, ok := outputs["influxdb"].([]interface{})
+		assert.True(t, ok)
+		assert.Len(t, influxdbOutput, 1)
+		assert.Equal(t, []string{"http://localhost:8086"}, influxdbOutput[0].(map[string]interface{})["urls"])
+		assert.Equal(t, "telegraf", influxdbOutput[0].(map[string]interface{})["database"])
+	})
+
+	// 测试更新现有配置
+	// t.Run("Update Existing Config", func(t *testing.T) {
+	// 	err := ucm.AddConfig("agent.interval", "30s")
+	// 	assert.NoError(t, err)
+
+	// 	config, err := ucm.GetAllConfig()
+	// 	assert.NoError(t, err)
+	// 	agent, ok := config.Data["agent"].(map[string]interface{})
+	// 	assert.True(t, ok)
+	// 	assert.Equal(t, "30s", agent["interval"])
+	// })
+
+	// 测试添加新的输入插件
+	t.Run("Add New Input Plugin", func(t *testing.T) {
+		err := ucm.AddConfig("inputs.mem", map[string]interface{}{})
+		assert.NoError(t, err)
+
+		config, err := ucm.GetAllConfig()
+		assert.NoError(t, err)
+		inputs, ok := config.Data["inputs"].(map[string]interface{})
+		assert.True(t, ok)
+		_, ok = inputs["mem"]
+		assert.True(t, ok)
+	})
+}
+
+type MockObserver struct {
+	notified bool
+}
+
+func (mo *MockObserver) OnConfigChanged() {
+	mo.notified = true
+}
+
+// func toJSON(v interface{}) string {
+// 	b, _ := json.Marshal(v)
+// 	return string(b)
+// }

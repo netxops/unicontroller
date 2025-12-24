@@ -1,0 +1,2330 @@
+﻿用户名和密码校验成功，请输入验证码:
+
+**********************************************************************
+                     *字符型安全审计平台*                     
+                     *退出请按Ctrl+c*                     
+                     *返回上一层请按Ctrl+r*                     
+                     *单点登录成功后以上快捷键失效*                     
+**********************************************************************
+
+请选择设备资源登录方式[1]键盘输入 [2]序号选择 [3]关键字查找 [4]非单点登录：4
+请选择资源类型[1]主机 [2]数据库 [3]网络设备 ：1
+请按照要求输入设备格式,如下所示
+ssh -l username host [-p port]
+telnet -l username host [-p port]
+ssh -l yunwei_zbiti 132.254.160.136
+密码：
+
+您选择的设备资源是:yunwei_zbiti@132.254.160.136:22.连接中.
+
+HRP_M<YZ-YiZ-C8U31-FW-1.DCN.Edu1000E>screen-length 0 tem 
+Info: The configuration takes effect on the current user terminal interface only.
+HRP_M<YZ-YiZ-C8U31-FW-1.DCN.Edu1000E>disp cur
+2025-05-30 08:52:52.039 +08:00
+!Software Version V500R002C00SPC600
+#
+sysname YZ-YiZ-C8U31-FW-1.DCN.Edu1000E
+#
+ undo l2tp sendaccm enable
+ l2tp domain suffix-separator @
+#
+info-center filter-id bymodule-alias SNMP SNMP_FAIL bynumber 200
+info-center loghost source GigabitEthernet0/0/0
+info-center loghost 132.224.41.122 vpn-instance VPN_YiZ_Management port 8555
+#
+ipv6
+#
+ ipsec sha2 compatible enable 
+#
+ undo factory-configuration prohibit
+#
+undo telnet server enable
+undo telnet ipv6 server enable
+#
+clock timezone PRC add 08:00:00
+#
+ hrp enable
+ hrp interface Eth-Trunk1 remote 172.172.172.202
+ hrp mirror session enable
+#
+ firewall detect ftp
+ firewall detect rtsp
+ firewall detect pptp
+#
+ firewall defend action discard
+#
+ log type traffic enable
+ log type syslog enable
+ log type policy enable
+#
+ undo dataflow enable
+#
+ undo sa force-detection enable
+#
+ configure disk type traffic-log 20
+ configure disk type threat-log 1
+ configure disk type url-log 1
+ configure disk type system-log 5
+ configure disk type user-log 5
+ configure disk type policy-log 10
+ configure disk type mail-log 1
+ configure disk type audit-log 5
+ configure disk type traffic-report 15
+ configure disk type threat-report 1
+ configure disk type url-report 1
+#
+ lldp enable
+#
+ isp name "china mobile" set filename china-mobile.csv 
+ isp name "china unicom" set filename china-unicom.csv 
+ isp name "china telecom" set filename china-telecom.csv 
+ isp name "china educationnet" set filename china-educationnet.csv 
+#
+ user-manage web-authentication security port 8887
+password-policy
+ level high
+user-manage single-sign-on ad
+user-manage single-sign-on tsm
+user-manage single-sign-on radius
+user-manage sso-sync radius
+page-setting
+ user-manage security version tlsv1.1 tlsv1.2
+#
+ firewall ids authentication type sha256
+#
+ web-manager security version tlsv1.1 tlsv1.2
+ web-manager enable
+ web-manager security enable
+ undo web-manager config-guide enable
+#
+firewall dataplane to manageplane application-apperceive default-action drop
+#
+ undo update schedule ips-sdb enable
+ update schedule ips-sdb daily 05:57
+ undo update schedule av-sdb enable
+ update schedule av-sdb daily 05:57
+ undo update schedule sa-sdb enable
+ update schedule sa-sdb daily 05:57
+ undo update schedule ip-reputation enable
+ update schedule ip-reputation daily 05:57
+ undo update schedule cnc enable
+ update schedule cnc daily 05:57
+#
+ set disk-scan parameter attach on
+ set disk-scan parameter cycle 15
+ set disk-scan parameter iostat 80
+ set disk-scan parameter speed 10
+ set disk-scan parameter switch on
+ set disk-scan parameter parallel 50
+ disk-usage alarm threshold 95 
+#
+ip vpn-instance VPN_YiZ_Management
+ ipv4-family
+  route-distinguisher 65208:2000
+  vpn-target 2000:1 export-extcommunity
+  vpn-target 2000:1 import-extcommunity
+#
+ip vpn-instance default
+ ipv4-family
+#
+ip address-set Auto_yunwei_address type object
+ address 1 132.252.197.136 0 description Auto-JiS-proxy01
+#
+ip address-set iboc_YiZ_403_RZBF_addr01 type object
+ description iBOC_YZ_YiZ_403_RongZaiBeiFen_address
+ address 0 132.254.96.0 mask 22
+#
+ip address-set iboc_GL4F_addr01 type object
+ description iBOC_GL4F_DC_address
+ address 0 132.224.69.64 mask 26
+ address 1 132.224.69.0 mask 26
+ address 2 132.224.70.0 mask 23
+ address 3 132.224.84.0 mask 22
+ address 4 132.224.88.0 mask 22
+ address 5 132.228.127.248 mask 29
+ address 6 132.228.176.240 mask 29
+ address 7 132.252.58.0 mask 23
+ address 8 132.252.128.0 mask 20
+ address 9 132.252.144.0 mask 21
+ address 10 132.252.152.0 mask 23
+ address 11 132.252.154.0 mask 23
+ address 12 132.254.240.0 mask 20
+#
+ip address-set iboc_CZLiY_addr01 type object
+ description iBOC_CZ_LiY_DC_address
+ address 0 132.224.0.0 mask 21
+ address 1 132.224.40.0 mask 22
+ address 2 132.224.201.0 mask 24 description CZLiY_TYY
+ address 3 132.224.207.0 mask 24 description CZLiY_TYY
+#
+ip address-set iboc_JiS_addr01 type object
+ description iBOC_JiS_DC_address
+ address 0 10.254.45.64 mask 28
+ address 1 132.224.69.0 mask 26
+ address 2 132.224.69.128 mask 26
+ address 3 132.224.160.0 mask 20
+ address 4 132.228.185.0 mask 24
+ address 5 132.252.19.0 mask 24
+ address 6 132.252.24.0 mask 21
+ address 7 132.252.32.0 mask 21
+ address 8 132.252.40.0 mask 22
+ address 9 132.252.44.0 mask 23
+ address 10 132.252.46.0 mask 24
+ address 11 132.252.48.0 mask 24
+ address 12 132.252.56.0 mask 23
+ address 13 132.252.60.0 mask 22
+ address 14 132.252.64.0 mask 21
+ address 15 132.252.80.0 mask 21
+ address 16 132.252.88.0 mask 22
+ address 17 132.252.92.0 mask 23
+ address 18 132.252.94.0 mask 24
+ address 19 132.252.196.0 mask 22
+ address 20 132.252.204.0 mask 22
+ address 21 132.252.254.0 mask 23
+ address 22 132.254.64.0 mask 20
+ address 23 132.252.20.0 mask 22
+ address 24 132.252.194.0 mask 23
+#
+ip address-set iboc_TYY_JiS_addr01 type object
+ description iBOC_TYY_JiS_address
+ address 0 132.254.0.0 mask 18
+#
+ip address-set iboc_TYY_JiS_addr02 type object
+ description iBOC_TYY_JiS_address
+ address 0 10.149.0.0 mask 20
+ address 1 10.149.16.0 mask 24
+ address 2 10.149.17.0 mask 24
+ address 3 10.149.18.0 mask 24
+#
+ip address-set iboc_YiZ_303_addr01 type object
+ description iBOC_YiZ_303_node_address
+ address 0 132.254.164.0 mask 22
+ address 1 132.254.168.0 mask 21
+ address 2 132.254.176.0 mask 21
+ address 3 132.254.184.0 mask 22
+ address 4 132.254.188.0 mask 23
+#
+ip address-set Deny_DCN_Attack_address_group01 type object
+ address 0 8.8.8.8 0
+ address 1 132.252.225.225 0
+ address 2 range 10.130.108.50 10.130.108.51
+#
+ip address-set Deny_DCN_Attack_address_group02 type object
+ address 0 8.8.8.8 0
+#
+ip address-set Deny_DCN_Attack_address_group03 type object
+ address 0 8.8.8.8 0
+#
+ip address-set Deny_Inside_address_group01 type object
+ address 0 8.8.8.8 0
+#
+ip address-set Deny_Inside_address_group02 type object
+ address 0 8.8.8.8 0
+#
+ip address-set Deny_Inside_address_group03 type object
+ address 0 8.8.8.8 0
+#
+ip address-set iboc_YiZ_403_XJZYC_addr01 type object
+ description iBOC_YZ_YiZ_403_XuJiZiYuanChi_address
+ address 0 132.254.136.0 mask 22
+#
+ip address-set iboc_JSNJS_TYY4.0_addr01 type object
+ description JSNJIT_TYY4.0_address
+ address 0 132.252.0.0 mask 20
+#
+ time-range worktime
+  period-range 08:00:00 to 18:00:00 working-day   
+#
+acl number 2577 vpn-instance VPN_YiZ_Management
+ description ACL_Permit_NTP_Server
+ rule 1010 permit source 132.254.160.130 0 
+ rule 1020 permit source 132.254.160.131 0 
+ rule 20000 deny 
+acl number 2578 vpn-instance VPN_YiZ_Management
+ description aclPermitSNMP
+ rule 601 permit source 132.252.37.37 0 
+ rule 602 permit source 132.252.138.243 0 
+ rule 701 permit source 132.252.138.85 0 
+ rule 702 permit source 132.252.138.97 0 
+ rule 703 permit source 132.252.138.98 0 
+ rule 704 permit source 132.252.138.139 0 
+ rule 705 permit source 132.252.138.140 0 
+ rule 706 permit source 132.252.138.141 0 
+ rule 707 permit source 132.252.138.70 0 
+ rule 708 permit source 132.252.138.200 0 
+ rule 711 permit source 132.252.206.124 0 
+ rule 20000 deny 
+#
+acl number 3001 vpn-instance VPN_YiZ_Management
+ description For_login_limit
+ rule 601 permit ip source 132.228.47.178 0 
+ rule 602 permit ip source 132.228.47.188 0 
+ rule 603 permit ip source 132.252.206.50 0 
+ rule 604 permit ip source 132.224.69.0 0.0.0.255 
+ rule 608 permit ip source 132.254.28.94 0 
+ rule 609 permit ip source 132.254.28.95 0 
+ rule 610 permit ip source 132.252.197.217 0 
+ rule 611 permit ip source 132.252.197.218 0 
+ rule 612 permit ip source 132.254.208.0 0.0.0.255 
+ rule 613 permit ip source 132.254.88.128 0.0.0.127 
+ rule 614 permit ip source 132.254.89.0 0.0.0.3 
+ rule 701 permit ip source 132.254.160.0 0.0.0.255 
+ rule 702 permit ip source 132.254.164.0 0.0.0.255 
+ rule 801 permit ip source 132.252.37.52 0.0.0.1 
+ rule 802 permit ip source 132.252.138.178 0.0.0.1 
+#
+ike proposal default
+ encryption-algorithm aes-256 aes-192 aes-128 
+ dh group2 
+ authentication-algorithm sha2-512 sha2-384 sha2-256 
+ authentication-method pre-share
+ integrity-algorithm hmac-sha2-256 
+ prf hmac-sha2-256 
+#
+aaa
+ authentication-scheme default
+ authentication-scheme admin_local
+ authentication-scheme admin_radius_local
+ authentication-scheme admin_hwtacacs_local
+ authentication-scheme admin_ad_local
+ authentication-scheme admin_ldap_local
+ authentication-scheme admin_radius
+ authentication-scheme admin_hwtacacs
+ authentication-scheme admin_ad
+ authentication-scheme admin_ldap
+ authorization-scheme default
+ accounting-scheme default
+ domain default
+  service-type internetaccess ssl-vpn l2tp ike
+  internet-access mode password
+  reference user current-domain
+ manager-user secoperator 
+  password cipher @%@%+)p:'hE_<:o^5(0n1+`(V9F@l2NpQAZO~#-@[AI}7+hA9FCV@%@%
+  service-type ssh 
+  level 15 
+  authentication-scheme admin_local 
+
+ manager-user yunwei_cyu 
+  password cipher @%@%"e:y,xN]}X&(lHN5z{MJecrg6F-RWUk3U=(A%DM8IBS4crje@%@%
+  service-type web terminal ssh 
+  level 15 
+
+ manager-user audit-admin 
+  password cipher @%@%<Bq[>p.+yFe^&VF{ugx:)SK_yJrhR'GFEIa(WMYl^PNFSKb)@%@%
+  service-type web terminal 
+  level 15 
+  state block 
+
+ manager-user yunwei_zbiti 
+  password cipher @%@%s^{[:S~Wo#Sr&gEb-{}Ih8B/+nv):Y=[^WCG3`>qOYz=8B2h@%@%
+  service-type web terminal ssh 
+  level 15 
+
+ manager-user admin_lpc 
+  password cipher @%@%nrTUIS^[r.#;/HEM*tE/5Mv(xEGIO.<\#TxwErKoh"=1Mv+5@%@%
+  service-type web terminal ssh 
+  level 15 
+
+ manager-user admin 
+  password cipher @%@%hqO9E"x|:9e@qh5+m>ACf.<bkEa=PDw(YG*"u>"VeadB.<ef@%@%
+  service-type web terminal ssh 
+  level 15 
+  state block 
+
+ manager-user OAM_cfgbackup 
+  password cipher @%@%ze(s)6}1a3x&t)QG#m2AhGN2=;bv+/:L_3}LR8Xozb'$GN5h@%@%
+  service-type ssh 
+  level 15 
+  authentication-scheme admin_local 
+
+ manager-user admin_WindY 
+  password cipher @%@%j5<09E1\$Pumjk::njl/k,UdcK3~Umjc\Dgp:\K1mNGV,Ugk@%@%
+  service-type web terminal ssh 
+  level 15 
+
+ role system-admin
+ role device-admin
+ role device-admin(monitor)
+ role audit-admin
+ role it_auto_oam
+  description IT_Auto_OAM_YJFD
+  dashboard none
+  monitor none
+  policy none
+  object read-write address
+  object none certificate geo-location service application security-group user-manage authen-server device-list ip-pool time-range url-category keyword-group mime-header-group mail-address-group signature av ips aapt url-filter file-filter data-filter app-control mail-filter healthcheck sms
+  network none
+  system none
+ role cfgbackup
+  dashboard read-only
+  monitor read-only log-traffic log-threat log-url log-content log-user-activity log-policy-matching log-mail-filtering log-sandbox report traffic-map threat-map session statistic statistic-acl ssa
+  monitor none log
+  policy read-only
+  object read-only certificate address geo-location service application user-manage authen-server device-list ip-pool time-range url-category keyword-group mime-header-group mail-address-group signature av ips aapt url-filter file-filter data-filter app-control mail-filter healthcheck sms
+  object none security-group
+  network read-only
+  system read-only
+ bind manager-user audit-admin role audit-admin
+ bind manager-user admin role system-admin
+ bind manager-user secoperator role it_auto_oam
+ bind manager-user OAM_cfgbackup role cfgbackup
+#
+ntp-service server disable
+ntp-service ipv6 server disable
+ntp-service source-interface GigabitEthernet0/0/0 vpn-instance VPN_YiZ_Management
+ntp-service access peer 2577
+ntp-service unicast-server 132.254.160.130 vpn-instance VPN_YiZ_Management preference
+ntp-service unicast-server 132.254.160.131 vpn-instance VPN_YiZ_Management
+#
+interface Eth-Trunk1
+ description pT:YZ-YiZ-D7U31-FW-2.DCN.Edu1000E(HA)Eth-Trunk1
+ ip address 172.172.172.201 255.255.255.252
+ mode lacp-static
+ service-manage https permit
+ service-manage ping permit
+ service-manage ssh permit
+ service-manage snmp permit
+#
+interface Eth-Trunk21
+ description pT:YZ-YiZ-C8&D7-DCSW-1.DCN.S12508:(132.254.160.133)BAGG21
+ mode lacp-static
+ service-manage snmp permit
+#
+interface Eth-Trunk21.101
+ vlan-type dot1q 101
+ description pT:YZ-YiZ-C8&D7-DCSW-1.DCN.S12508:(VPN_YiZ_DCN)VLAN101
+ ipv6 enable
+ ip address 132.254.164.13 255.255.255.248
+ vrrp vrid 101 virtual-ip 132.254.164.12 active
+ service-manage ping permit
+#
+interface Eth-Trunk21.102
+ vlan-type dot1q 102
+ description pT:YZ-YiZ-C8&D7-DCSW-1.DCN.S12508:(VPN_YiZ_TEST)VLAN102
+ ipv6 enable
+ ip address 132.254.164.21 255.255.255.248
+ vrrp vrid 102 virtual-ip 132.254.164.20 active
+ service-manage ping permit
+#
+interface Eth-Trunk21.103
+ vlan-type dot1q 103
+ description pT:YZ-YiZ-C8&D7-DCSW-1.DCN.S12508:(VPN_YiZ_BACKUP)VLAN103
+ ipv6 enable
+ ip address 132.254.164.29 255.255.255.248
+ vrrp vrid 103 virtual-ip 132.254.164.28 active
+ service-manage ping permit
+#
+interface Eth-Trunk21.104
+ vlan-type dot1q 104
+ description pT:YZ-YiZ-C8&D7-DCSW-1.DCN.S12508:(VPN_YiZ_PROD)VLAN104
+ ipv6 enable
+ ip address 132.254.164.37 255.255.255.248
+ vrrp vrid 104 virtual-ip 132.254.164.36 active
+ service-manage ping permit
+#
+interface Eth-Trunk21.105
+ vlan-type dot1q 105
+ description pT:YZ-YiZ-C8&D7-DCSW-1.DCN.S12508:(VPN_YiZ_CONSOLE)VLAN105
+ ipv6 enable
+ ip address 132.254.164.45 255.255.255.248
+ vrrp vrid 105 virtual-ip 132.254.164.44 active
+ service-manage ping permit
+ service-manage ssh permit
+#
+l2tp-group default-lns
+#
+interface GigabitEthernet0/0/0
+ description uT:YZ-YiZ-C9U43-MSW-15.M.S5500:(132.254.160.185)GE1/0/7
+ undo shutdown
+ ip binding vpn-instance VPN_YiZ_Management
+ ip address 132.254.160.136 255.255.255.128
+ lldp enable
+ lldp tlv-enable basic-tlv all
+ service-manage https permit
+ service-manage ping permit
+ service-manage ssh permit
+ service-manage snmp permit
+#
+interface GigabitEthernet1/0/0
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/1
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/2
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/3
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/4
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+ undo service-manage enable
+#
+interface GigabitEthernet1/0/5
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/6
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet1/0/7
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet3/0/0
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet3/0/1
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet3/0/2
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet3/0/3
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet3/0/4
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet3/0/5
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet3/0/6
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet3/0/7
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet3/0/8
+ description pT:YZ-YiZ-C8-DCSW.DCN.S12508:(132.254.160.133)TenGE1/8/0/7
+ undo shutdown
+ eth-trunk 21
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet3/0/9
+ description pT:YZ-YiZ-D7U31-FW-2.DCN.Edu1000E:(HA)GE3/0/9
+ undo shutdown
+ eth-trunk 1
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet4/0/0
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet4/0/1
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet4/0/2
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet4/0/3
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet4/0/4
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet4/0/5
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet4/0/6
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet4/0/7
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet4/0/8
+ description pT:YZ-YiZ-C8-DCSW.DCN.S12508:(132.254.160.133)TenGE1/8/0/8
+ undo shutdown
+ eth-trunk 21
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet4/0/9
+ description pT:YZ-YiZ-D7U31-FW-2.DCN.Edu1000E:(HA)GE4/0/9
+ undo shutdown
+ eth-trunk 1
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet5/0/0
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet5/0/1
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet5/0/2
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet5/0/3
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet5/0/4
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet5/0/5
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet5/0/6
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet5/0/7
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet5/0/8
+ description pT:YZ-YiZ-D7-DCSW.DCN.S12508:(132.254.160.133)TenGE3/8/0/11
+ undo shutdown
+ eth-trunk 21
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet5/0/9
+ description pT:YZ-YiZ-D7U31-FW-2.DCN.Edu1000E:(HA)GE5/0/9
+ undo shutdown
+ eth-trunk 1
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet6/0/0
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet6/0/1
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet6/0/2
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet6/0/3
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet6/0/4
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet6/0/5
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet6/0/6
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet6/0/7
+ shutdown
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet6/0/8
+ description pT:YZ-YiZ-D7-DCSW.DCN.S12508:(132.254.160.133)TenGE3/8/0/12
+ undo shutdown
+ eth-trunk 21
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface GigabitEthernet6/0/9
+ description pT:YZ-YiZ-D7U31-FW-2.DCN.Edu1000E:(HA)GE6/0/9
+ undo shutdown
+ eth-trunk 1
+ lldp enable
+ lldp tlv-enable basic-tlv all
+#
+interface Virtual-if0
+#
+interface NULL0
+#
+firewall zone local
+ set priority 100
+#
+firewall zone trust
+ set priority 85
+ add interface Eth-Trunk1
+#
+firewall zone untrust
+ set priority 5
+#
+firewall zone dmz
+ set priority 50
+#
+firewall zone name QXDCN id 4
+ set priority 10
+ add interface Eth-Trunk21.101
+#
+firewall zone name QXTEST id 5
+ set priority 15
+ add interface Eth-Trunk21.102
+#
+firewall zone name QXBACKUP id 6
+ set priority 20
+ add interface Eth-Trunk21.103
+#
+firewall zone name QXPROD id 7
+ set priority 25
+ add interface Eth-Trunk21.104
+#
+firewall zone name QXCONSOLE id 8
+ set priority 30
+ add interface Eth-Trunk21.105
+#
+firewall zone name MGMT id 9
+ set priority 35
+ add interface GigabitEthernet0/0/0
+#
+ip route-static default-preference 1
+#
+ip route-static 0.0.0.0 0.0.0.0 Eth-Trunk21.101 132.254.164.9 description For_DCN_Default_Route
+ip route-static 132.254.164.128 255.255.255.248 Eth-Trunk21.105 132.254.164.41 description IPS_LOG
+ip route-static 132.254.165.0 255.255.255.0 Eth-Trunk21.102 132.254.164.17 description For_TEST_APP01
+ip route-static 132.254.166.0 255.255.255.0 Eth-Trunk21.102 132.254.164.17 description For_TEST_DB01
+ip route-static 132.254.167.0 255.255.255.0 Eth-Trunk21.102 132.254.164.17 description For_TEST_PAAS01
+ip route-static 132.254.168.0 255.255.255.0 Eth-Trunk21.102 132.254.164.17 description For_TEST_DOCKER01
+ip route-static 132.254.169.0 255.255.255.0 Eth-Trunk21.102 132.254.164.17 description For_TEST_F5_01
+ip route-static 132.254.170.0 255.255.255.0 Eth-Trunk21.103 132.254.164.25 description For_BACKUP_APP01
+ip route-static 132.254.171.0 255.255.255.0 Eth-Trunk21.103 132.254.164.25 description For_BACKUP_APP02
+ip route-static 132.254.172.0 255.255.255.0 Eth-Trunk21.103 132.254.164.25 description For_BACKUP_DB01
+ip route-static 132.254.173.0 255.255.255.0 Eth-Trunk21.103 132.254.164.25 description For_BACKUP_DB02
+ip route-static 132.254.174.0 255.255.255.0 Eth-Trunk21.103 132.254.164.25 description For_BACKUP_PAAS01
+ip route-static 132.254.175.0 255.255.255.0 Eth-Trunk21.103 132.254.164.25 description For_BACKUP_PAAS02
+ip route-static 132.254.176.0 255.255.255.0 Eth-Trunk21.103 132.254.164.25 description For_BACKUP_DOCKER01
+ip route-static 132.254.177.0 255.255.255.0 Eth-Trunk21.103 132.254.164.25 description For_BACKUP_DOCKER02
+ip route-static 132.254.178.0 255.255.255.0 Eth-Trunk21.103 132.254.164.25 description For_BACKUP_F5_01
+ip route-static 132.254.179.0 255.255.255.0 Eth-Trunk21.103 132.254.164.25 description For_BACKUP_F5_02
+ip route-static 132.254.180.0 255.255.255.0 Eth-Trunk21.104 132.254.164.33 description For_PROD_APP01
+ip route-static 132.254.181.0 255.255.255.0 Eth-Trunk21.104 132.254.164.33 description For_PROD_DB01
+ip route-static 132.254.182.0 255.255.255.0 Eth-Trunk21.104 132.254.164.33 description For_PROD_PAAS01
+ip route-static 132.254.183.0 255.255.255.0 Eth-Trunk21.104 132.254.164.33 description For_PROD_DOCKER01
+ip route-static 132.254.184.0 255.255.255.0 Eth-Trunk21.104 132.254.164.33 description For_PROD_F5_01
+ip route-static 132.254.185.0 255.255.255.0 Eth-Trunk21.105 132.254.164.41 description For_VT_CONSOLE01
+ip route-static 132.254.186.0 255.255.255.0 Eth-Trunk21.102 132.254.164.17 description For_TEST_APP02
+ip route-static 132.254.187.0 255.255.255.0 Eth-Trunk21.102 132.254.164.17 description For_TEST_APP03
+ip route-static vpn-instance VPN_YiZ_Management 132.224.0.0 255.224.0.0 GigabitEthernet0/0/0 132.254.160.129
+#
+ipv6 route-static default-preference 1
+#
+snmp-agent
+snmp-agent local-engineid 800007DB03AC751D951C1E
+snmp-agent community read cipher %^%#:>"l$u<g#.I!Wn7iaE3Py$^`WI{>O9-nd4:BU@`,MB"EE\#_*O5,qeBM9ASOKHFA<I`VMSv&6VR4P#06%^%# acl 2578
+snmp-agent sys-info version v2c v3
+snmp-agent group v3 snmp_admin authentication acl 2578
+snmp-agent group v3 mbossv3group authentication read-view mboss
+snmp-agent mib-view included mboss iso
+snmp-agent usm-user v3 snmp_1503
+snmp-agent usm-user v3 snmp_1503 group snmp_admin
+snmp-agent usm-user v3 snmp_1503 authentication-mode sha cipher %^%#[R"g;1Lt<X$yQY%:-F_B'G1eEY-bx;lcFuSD>ypO%^%#
+snmp-agent usm-user v3 snmp_1503 acl 2578
+snmp-agent trap source GigabitEthernet0/0/0
+#
+undo ssh server compatible-ssh1x enable
+stelnet server enable
+ssh user OAM_cfgbackup
+ssh user OAM_cfgbackup authentication-type password
+ssh user OAM_cfgbackup service-type all
+ssh user OAM_cfgbackup sftp-directory hda1:
+ssh user admin_WindY
+ssh user admin_WindY authentication-type password
+ssh user admin_WindY service-type stelnet
+ssh user admin_lpc
+ssh user admin_lpc authentication-type password
+ssh user admin_lpc service-type stelnet
+ssh user secoperator
+ssh user secoperator authentication-type password
+ssh user secoperator service-type all
+ssh user secoperator sftp-directory hda1:
+ssh user yunwei_cyu
+ssh user yunwei_cyu authentication-type password
+ssh user yunwei_cyu service-type stelnet
+ssh user yunwei_zbiti
+ssh user yunwei_zbiti authentication-type password
+ssh user yunwei_zbiti service-type stelnet
+ssh client first-time enable
+ssh server acl 3001
+#
+header login information "*******************************************         WARNING!!!! WARNING!!!!        **    Unauthorized Access Prohibited!!    *******************************************"
+#
+ firewall log session log-type syslog
+#
+ firewall session aging-time service-set tcp 40000
+ firewall session aging-time service-set udp 10
+ firewall session aging-time service-set http 3600
+ firewall session aging-time service-set dns 10
+ firewall session aging-time service-set sqlnet 60000
+ firewall session aging-time service-set sqlnet-data 60000
+ firewall session aging-time service-set ssh 36000
+#
+user-interface con 0
+ authentication-mode aaa
+ user privilege level 3
+ idle-timeout 5 0
+user-interface vty 0 4
+ acl 3001 inbound
+ authentication-mode aaa
+ protocol inbound ssh
+user-interface vty 16 20
+ undo shell
+#
+sa
+#
+location
+#
+ slb
+#
+multi-interface
+ mode proportion-of-weight
+#
+right-manager server-group
+#
+agile-network 
+#
+api
+#
+device-classification
+ device-group pc
+ device-group mobile-terminal
+ device-group undefined-group
+#
+user-manage server-sync tsm
+#
+security-policy
+ rule name Firewall_Manage_policy01
+  description Firewall log upload syslog_server
+  source-zone local
+  destination-zone MGMT
+  destination-address 132.224.41.122 0.0.0.0
+  service protocol udp destination-port 8555 
+  action permit
+ rule name WLZ_policy_001
+  description WLZTBJ access YiZ
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  destination-zone QXPROD
+  destination-zone QXCONSOLE
+  source-address 132.228.47.178 0.0.0.0
+  source-address 132.228.47.188 0.0.0.0
+  source-address 132.252.206.50 0.0.0.0
+  destination-address address-set iboc_YiZ_303_addr01
+  action permit
+ rule name PING
+  service icmp
+  service icmpv6
+  action permit
+ rule name Deny_GWDK_policy_001
+  description Deny GaoWeiDuanKou_Destination
+  policy logging
+  session logging
+  service protocol tcp destination-port 135 
+  service protocol tcp destination-port 137 to 139 
+  service protocol tcp destination-port 445 
+  service protocol udp destination-port 135 
+  service protocol udp destination-port 137 to 139 
+  service protocol udp destination-port 445 
+  service protocol tcp destination-port 4899 
+  service protocol tcp destination-port 5631 to 5632 
+  service protocol tcp destination-port 5938 
+  service protocol udp destination-port 4899 
+  service protocol udp destination-port 5631 to 5632 
+  service protocol udp destination-port 5938 
+  action deny
+ rule name Deny_GWDK_policy_002
+  description Deny GaoWeiDuanKou_Source
+  policy logging
+  session logging
+  service protocol tcp source-port 135 
+  service protocol tcp source-port 137 to 139 
+  service protocol tcp source-port 445 
+  service protocol udp source-port 135 
+  service protocol udp source-port 137 to 139 
+  service protocol udp source-port 445 
+  action deny
+ rule name policy_Deny_DCN_Attack_Source
+  description This policy is used to deny DCN_host access YiZ_303
+  source-zone QXDCN
+  source-address address-set Deny_DCN_Attack_address_group01
+  source-address address-set Deny_DCN_Attack_address_group02
+  source-address address-set Deny_DCN_Attack_address_group03
+  source-address 8.8.8.8 0.0.0.0
+  action deny
+ rule name policy_Deny_Inside_Attack_Source
+  description This policy is used to deny YiZ_303_host access other_host
+  source-address address-set Deny_Inside_address_group01
+  source-address address-set Deny_Inside_address_group02
+  source-address address-set Deny_Inside_address_group03
+  source-address 8.8.8.8 0.0.0.0
+  action deny
+ rule name YiZ303_policy_101
+  description ProxyAgent access YiZ
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  destination-zone QXPROD
+  destination-zone QXCONSOLE
+  source-address range 132.252.197.217 132.252.197.218
+  source-address range 132.254.28.94 132.254.28.95
+  destination-address 132.254.164.0 mask 255.255.252.0
+  destination-address 132.254.168.0 mask 255.255.248.0
+  destination-address 132.254.176.0 mask 255.255.248.0
+  destination-address 132.254.184.0 mask 255.255.252.0
+  destination-address 132.254.188.0 mask 255.255.254.0
+  action permit
+ rule name YiZ303_policy_102
+  description ZJZ_TBJ access YiZ
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  destination-zone QXPROD
+  destination-zone QXCONSOLE
+  source-address range 132.252.37.52 132.252.37.53
+  source-address range 132.252.137.178 132.252.137.179
+  source-address range 132.252.197.144 132.252.197.146
+  source-address 132.252.197.136 0.0.0.0
+  source-address 132.252.197.211 0.0.0.0
+  destination-address 132.254.164.0 mask 255.255.252.0
+  destination-address 132.254.168.0 mask 255.255.248.0
+  destination-address 132.254.176.0 mask 255.255.248.0
+  destination-address 132.254.184.0 mask 255.255.252.0
+  destination-address 132.254.188.0 mask 255.255.254.0
+  action permit
+ rule name YiZ303_policy_103
+  description IBOC_YiZ303 access IBOC_External_IT_Node
+  source-zone QXTEST
+  source-zone QXBACKUP
+  source-zone QXPROD
+  source-zone QXCONSOLE
+  destination-zone QXDCN
+  source-address address-set iboc_YiZ_303_addr01
+  destination-address address-set iboc_YiZ_403_RZBF_addr01
+  destination-address address-set iboc_GL4F_addr01
+  destination-address address-set iboc_CZLiY_addr01
+  destination-address address-set iboc_JiS_addr01
+  destination-address address-set iboc_TYY_JiS_addr01
+  destination-address address-set iboc_TYY_JiS_addr02
+  destination-address address-set iboc_YiZ_403_XJZYC_addr01
+  destination-address address-set iboc_JSNJS_TYY4.0_addr01
+  action permit
+ rule name YiZ303_policy_104
+  description JiS and YiZ_403 DMZ access YiZ_303
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  destination-zone QXPROD
+  destination-zone QXCONSOLE
+  source-address 132.228.185.0 mask 255.255.255.0
+  source-address 132.252.45.0 mask 255.255.255.0
+  source-address 132.254.211.128 mask 255.255.255.128
+  destination-address address-set iboc_YiZ_303_addr01
+  action permit
+ rule name YiZ303_policy_105
+  description YiZ_303 access JiS and YiZ_403 DMZ
+  source-zone QXTEST
+  source-zone QXBACKUP
+  source-zone QXPROD
+  source-zone QXCONSOLE
+  destination-zone QXDCN
+  source-address address-set iboc_YiZ_303_addr01
+  destination-address 132.228.185.0 mask 255.255.255.0
+  destination-address 132.252.45.0 mask 255.255.255.0
+  destination-address 132.254.211.128 mask 255.255.255.128
+  action permit
+ rule name YiZ303_policy_106
+  description UMC access YiZ_303_IPS
+  source-zone QXDCN
+  destination-zone QXCONSOLE
+  source-address 132.252.138.205 0.0.0.0
+  destination-address range 132.254.164.132 132.254.164.133
+  action permit
+ rule name YiZ303_policy_107
+  description YiZ_303_IPS access UMC
+  source-zone QXCONSOLE
+  destination-zone QXDCN
+  source-address range 132.254.164.132 132.254.164.133
+  destination-address 132.252.138.205 0.0.0.0
+  action permit
+ rule name YiZ303_policy_108
+  description VPN_132.224.69 access YiZ_303
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  destination-zone QXPROD
+  destination-zone QXCONSOLE
+  source-address 132.224.69.0 mask 255.255.255.0
+  destination-address address-set iboc_YiZ_303_addr01
+  action permit
+ rule name YiZ303_policy_109
+  description aTrust access YiZ_303
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  destination-zone QXPROD
+  destination-zone QXCONSOLE
+  source-address 132.254.64.0 mask 255.255.240.0
+  source-address 132.254.240.0 mask 255.255.240.0
+  destination-address address-set iboc_YiZ_303_addr01
+  action permit
+ rule name YiZ303_policy_110
+  description RongHe_4A access YiZ_303
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  destination-zone QXPROD
+  destination-zone QXCONSOLE
+  source-address 132.254.208.0 mask 255.255.255.0
+  source-address range 132.254.88.130 132.254.88.254
+  source-address range 132.254.89.1 132.254.89.3
+  destination-address address-set iboc_YiZ_303_addr01
+  action permit
+ rule name YiZ303_policy_111
+  description AIops access YiZ_303(NETACC_20241014_442086)
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  destination-zone QXPROD
+  destination-zone QXCONSOLE
+  source-address range 132.252.37.52 132.252.37.53
+  source-address range 132.252.138.178 132.252.138.179
+  source-address range 132.252.197.140 132.252.197.141
+  destination-address address-set iboc_YiZ_303_addr01
+  service protocol tcp destination-port 22 
+  action permit
+ rule name YiZ303_policy_112
+  description iboc_DNS access YiZ_303
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  destination-zone QXPROD
+  destination-zone QXCONSOLE
+  source-address 132.228.127.248 mask 255.255.255.248
+  source-address 132.228.176.240 mask 255.255.255.248
+  source-address 132.252.19.248 mask 255.255.255.248
+  destination-address address-set iboc_YiZ_303_addr01
+  action permit
+ rule name YiZ303_policy_1001
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.252.32.151 0.0.0.0
+  source-address 132.252.138.198 0.0.0.0
+  source-address 132.254.28.107 0.0.0.0
+  destination-address 132.254.168.0 mask 255.255.255.0
+  service protocol tcp destination-port 10050 
+  service protocol tcp destination-port 22 
+  action permit
+ rule name YiZ303_policy_1002
+  description NETACC_20240705_387162
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.197.168 132.252.197.172
+  source-address range 132.252.197.219 132.252.197.221
+  source-address range 132.252.197.227 132.252.197.228
+  source-address range 132.252.206.78 132.252.206.82
+  destination-address range 132.254.168.10 132.254.168.41
+  action permit
+ rule name YiZ303_policy_1003
+  description NETACC_20240705_387162
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.197.236 132.252.197.237
+  destination-address range 132.254.168.10 132.254.168.41
+  service protocol tcp destination-port 5443 
+  service protocol tcp destination-port 6443 
+  action permit
+ rule name YiZ303_policy_1004
+  description NETACC_20240723_398583
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.252.32.216 0.0.0.0
+  source-address 132.252.138.77 0.0.0.0
+  destination-address range 132.254.168.10 132.254.168.41
+  action permit
+ rule name YiZ303_policy_1005
+  description NETACC_20240816_409618
+  source-zone QXDCN
+  destination-zone QXCONSOLE
+  source-address range 132.252.197.144 132.252.197.146
+  source-address 132.252.197.155 0.0.0.0
+  destination-address 132.254.185.194 0.0.0.0
+  service protocol tcp destination-port 22 
+  service protocol tcp destination-port 443 
+  action permit
+ rule name YiZ303_policy_1006
+  description NETACC_20240826_412965
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 10.128.91.38 0.0.0.0
+  destination-address 10.142.244.170 0.0.0.0
+  service protocol tcp destination-port 20501 
+  action permit
+ rule name YiZ303_policy_1007
+  description NETACC_20240826_412965
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 10.128.90.2 0.0.0.0
+  destination-address 10.128.90.194 0.0.0.0
+  service protocol tcp destination-port 8201 
+  action permit
+ rule name YiZ303_policy_1008
+  description NETACC_20240828_413963
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 10.149.4.53 10.149.4.60
+  source-address range 132.254.8.103 132.254.8.104
+  destination-address range 132.254.165.17 132.254.165.18
+  action permit
+ rule name YiZ303_policy_1009
+  description NETACC_20241016_443408
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.197.168 132.252.197.172
+  source-address range 132.252.197.219 132.252.197.221
+  source-address range 132.252.197.227 132.252.197.228
+  source-address range 132.252.206.78 132.252.206.82
+  destination-address 132.254.168.7 0.0.0.0
+  action permit
+ rule name YiZ303_policy_1010
+  description NETACC_20241016_443408
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.197.236 132.252.197.237
+  destination-address 132.254.168.7 0.0.0.0
+  service protocol tcp destination-port 5443 
+  service protocol tcp destination-port 6443 
+  action permit
+ rule name YiZ303_policy_1011
+  description NETACC_20241016_443734
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.252.32.216 0.0.0.0
+  source-address 132.252.138.77 0.0.0.0
+  destination-address 132.254.168.7 0.0.0.0
+  action permit
+ rule name YiZ303_policy_1012
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address range 132.254.32.170 132.254.32.171
+  destination-address 132.254.170.18 0.0.0.0
+  service protocol tcp destination-port 22 
+  service protocol tcp destination-port 9000 
+  action permit
+ rule name YiZ303_policy_1013
+  description NETACC_20241024_449003
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.165.20 0.0.0.0
+  destination-address 132.254.89.67 0.0.0.0
+  service protocol tcp destination-port 10087 
+  action permit
+ rule name YiZ303_policy_1014
+  description NETACC_20241114_461529
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.10 132.254.168.41
+  destination-address range 132.254.220.6 132.254.220.10
+  service protocol tcp destination-port 19201 
+  action permit
+ rule name YiZ303_policy_1015
+  description NETACC_20241126_471949
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address range 132.252.27.231 132.252.27.232
+  source-address range 132.252.142.189 132.252.142.192
+  destination-address range 132.254.170.19 132.254.170.20
+  service protocol tcp destination-port 8599 
+  service protocol tcp destination-port 8699 
+  action permit
+ rule name YiZ303_policy_1016
+  description NETACC_20241203_476425
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address 132.254.7.160 0.0.0.0
+  destination-address range 132.254.170.19 132.254.170.20
+  service protocol tcp destination-port 8995 
+  action permit
+ rule name YiZ303_policy_1017
+  description NETACC_20241203_476531
+  source-zone QXTEST
+  source-zone QXBACKUP
+  source-zone QXPROD
+  source-zone QXCONSOLE
+  destination-zone QXDCN
+  source-address address-set iboc_YiZ_303_addr01
+  destination-address 132.254.113.124 0.0.0.0
+  service protocol tcp destination-port 80 
+  action permit
+ rule name YiZ303_policy_1018
+  description NETACC_20241205_481039
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address range 132.252.197.205 132.252.197.207
+  source-address range 132.252.206.78 132.252.206.82
+  destination-address range 132.254.170.25 132.254.170.31
+  service protocol tcp destination-port 49152 
+  action permit
+ rule name YiZ303_policy_1019
+  description NETACC_20241205_481039
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address range 132.252.40.28 132.252.40.29
+  source-address 132.252.40.52 0.0.0.0
+  destination-address range 132.254.170.25 132.254.170.31
+  action permit
+ rule name YiZ303_policy_1021
+  description NETACC_20241211_486181
+  source-zone QXBACKUP
+  destination-zone QXDCN
+  source-address range 132.254.170.21 132.254.170.24
+  destination-address 132.224.219.177 0.0.0.0
+  service protocol tcp destination-port 8088 
+  action permit
+ rule name YiZ303_policy_1022
+  description NETACC_20241212_487641
+  source-zone QXDCN
+  destination-zone QXCONSOLE
+  source-address range 132.254.29.48 132.254.29.56
+  source-address range 132.254.29.58 132.254.29.59
+  destination-address 132.254.185.194 0.0.0.0
+  action permit
+ rule name YiZ303_policy_1023
+  description NETACC_20241212_487662
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.206.96 132.252.206.98
+  destination-address 132.254.165.20 0.0.0.0
+  service protocol tcp destination-port 9906 
+  service protocol tcp destination-port 8104 
+  service protocol tcp destination-port 7001 to 7007 
+  action permit
+ rule name YiZ303_policy_1024
+  description NETACC_20241219_492317
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.252.138.0 mask 255.255.255.0
+  source-address 132.252.197.0 mask 255.255.255.0
+  source-address 132.252.206.0 mask 255.255.255.0
+  source-address 132.254.33.0 mask 255.255.255.0
+  source-address range 132.224.1.218 132.224.1.219
+  source-address range 132.224.60.97 132.224.60.98
+  source-address range 132.254.49.16 132.254.49.17
+  source-address range 132.254.49.218 132.254.49.219
+  source-address range 132.254.115.66 132.254.115.68
+  source-address range 132.254.115.76 132.254.115.78
+  destination-address range 132.254.165.23 132.254.165.25
+  action permit
+ rule name YiZ303_policy_1025
+  description NETACC_20241219_492855
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address 132.252.197.192 mask 255.255.255.192
+  source-address range 132.252.206.78 132.252.206.82
+  destination-address range 132.254.170.25 132.254.170.28
+  service protocol tcp destination-port 49152 
+  action permit
+ rule name YiZ303_policy_1026
+  description NETACC_20250102_502777
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.10 132.254.168.41
+  destination-address 132.224.255.129 0.0.0.0
+  service protocol tcp destination-port 1081 
+  action permit
+ rule name YiZ303_policy_1027
+  description NETACC_20250102_502777
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.10 132.254.168.41
+  destination-address 132.254.222.202 0.0.0.0
+  service protocol tcp destination-port 9081 
+  service protocol tcp destination-port 9094 
+  action permit
+ rule name YiZ303_policy_1028
+  description NETACC_20250102_502777
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.10 132.254.168.41
+  destination-address 132.224.218.13 0.0.0.0
+  service protocol tcp destination-port 8081 
+  action permit
+ rule name YiZ303_policy_1029
+  description NETACC_20250113_511144
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.40.36 132.252.40.37
+  destination-address range 132.254.168.15 132.254.168.17
+  service protocol tcp destination-port 10000 to 50000 
+  action permit
+ rule name YiZ303_policy_1030
+  description NETACC_20241225_497349
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.224.85.0 mask 255.255.255.0
+  source-address 132.252.27.0 mask 255.255.255.0
+  source-address 132.252.130.0 mask 255.255.255.0
+  source-address 132.252.142.0 mask 255.255.255.0
+  source-address 132.252.199.0 mask 255.255.255.0
+  source-address 132.252.206.0 mask 255.255.255.0
+  source-address 132.254.7.0 mask 255.255.255.0
+  source-address 132.254.8.0 mask 255.255.255.0
+  destination-address range 132.254.165.23 132.254.165.25
+  service protocol tcp destination-port 8422 
+  action permit
+ rule name YiZ303_policy_1031
+  description NETACC_20250103_503814
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.254.14.166 132.254.14.167
+  source-address 132.254.28.92 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.41
+  action permit
+ rule name YiZ303_policy_1032
+  description NETACC_20250103_503814
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.15 132.254.168.41
+  destination-address 10.128.91.38 0.0.0.0
+  action permit
+ rule name YiZ303_policy_1033
+  description NETACC_20250106_505485
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.32.208 132.252.32.209
+  destination-address range 132.254.165.23 132.254.165.25
+  service protocol tcp destination-port 19092 
+  action permit
+ rule name YiZ303_policy_1034
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address 132.252.197.252 0.0.0.0
+  destination-address range 132.254.170.21 132.254.170.24
+  service protocol tcp destination-port 22 
+  action permit
+ rule name YiZ303_policy_1035
+  description NETACC_20250113_511144
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.254.15.17 0.0.0.0
+  destination-address range 132.254.168.10 132.254.168.14
+  destination-address 132.254.168.7 0.0.0.0
+  service protocol tcp destination-port 5443 
+  service protocol tcp destination-port 6443 
+  action permit
+ rule name YiZ303_policy_1036
+  description NETACC_20250113_511144
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 10.128.91.38 0.0.0.0
+  source-address 132.252.129.160 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.17
+  service protocol tcp destination-port 30064 
+  service protocol tcp destination-port 30067 
+  service protocol tcp destination-port 30070 
+  service protocol tcp destination-port 30254 
+  service protocol tcp destination-port 30266 
+  action permit
+ rule name YiZ303_policy_1037
+  description NETACC_20250113_511144
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.252.40.43 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.17
+  service protocol tcp destination-port 1000 to 65535 
+  action permit
+ rule name YiZ303_policy_1038
+  description NETACC_20250113_511144
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.252.128.218 0.0.0.0
+  destination-address 132.254.168.0 mask 255.255.255.0
+  service protocol tcp destination-port 30064 
+  service protocol tcp destination-port 30067 
+  service protocol tcp destination-port 30070 
+  service protocol tcp destination-port 30254 
+  service protocol tcp destination-port 30266 
+  action permit
+ rule name YiZ303_policy_1039
+  description NETACC_20250113_511144
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.228.91.43 0.0.0.0
+  service protocol tcp destination-port 8001 
+  action permit
+ rule name YiZ303_policy_1040
+  description NETACC_20250113_511144
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.228.198.63 0.0.0.0
+  destination-address 132.254.206.155 0.0.0.0
+  service protocol tcp destination-port 8080 
+  action permit
+ rule name YiZ303_policy_1041
+  description NETACC_20250113_511144
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address range 132.254.154.190 132.254.154.192
+  service protocol tcp destination-port 9200 
+  action permit
+ rule name YiZ303_policy_1043
+  description NETACC_20250113_511144
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.224.219.180 0.0.0.0
+  service protocol tcp destination-port 30002 
+  action permit
+ rule name YiZ303_policy_1044
+  description NETACC_20250113_511144
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.228.166.233 0.0.0.0
+  service protocol tcp destination-port 28888 
+  action permit
+ rule name YiZ303_policy_1045
+  description NETACC_20250328_560114
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.252.184.0 mask 255.255.255.224
+  destination-address 132.252.190.16 mask 255.255.255.240
+  destination-address 132.252.191.80 mask 255.255.255.240
+  destination-address 132.254.196.64 mask 255.255.255.240
+  destination-address 132.254.205.192 mask 255.255.255.192
+  destination-address 132.252.103.180 0.0.0.0
+  service protocol tcp destination-port 18080 
+  action permit
+ rule name YiZ303_policy_1046
+  description NETACC_20250113_511144
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.252.119.117 0.0.0.0
+  service protocol tcp destination-port 18081 
+  action permit
+ rule name YiZ303_policy_1047
+  description NETACC_20250113_511144
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.252.189.51 0.0.0.0
+  service protocol tcp destination-port 4104 
+  service protocol tcp destination-port 18888 
+  service protocol tcp destination-port 29008 
+  service protocol tcp destination-port 29010 
+  service protocol tcp destination-port 48888 
+  service protocol tcp destination-port 58888 
+  service protocol tcp destination-port 29011 
+  service protocol tcp destination-port 29009 
+  service protocol tcp destination-port 29888 
+  action permit
+ rule name YiZ303_policy_1048
+  description NETACC_20250113_511144
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.254.89.100 0.0.0.0
+  service protocol tcp destination-port 7070 
+  service protocol tcp destination-port 15301 
+  action permit
+ rule name YiZ303_policy_1049
+  description NETACC_20250113_511192
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.40.63 132.252.40.64
+  source-address 132.224.1.158 0.0.0.0
+  source-address 132.252.32.204 0.0.0.0
+  destination-address 132.254.168.0 mask 255.255.255.0
+  action permit
+ rule name YiZ303_policy_1050
+  description NETACC_20250115_514303
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address range 132.254.138.62 132.254.138.63
+  destination-address range 132.254.170.21 132.254.170.24
+  service protocol tcp destination-port 8181 to 8183 
+  service protocol tcp destination-port 8192 
+  service protocol tcp destination-port 9008 
+  action permit
+ rule name YiZ303_policy_1051
+  description NETACC_20250117_515522
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.27.125 132.252.27.127
+  destination-address range 132.254.168.15 132.254.168.20
+  action permit
+ rule name YiZ303_policy_1052
+  description 20250208
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.165.26 132.254.165.27
+  destination-address 132.224.129.204 0.0.0.0
+  service protocol tcp destination-port 8090 
+  action permit
+ rule name YiZ303_policy_1053
+  description NETACC_20250217_528209
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.228.237.160 0.0.0.0
+  service protocol tcp destination-port 8081 
+  action permit
+ rule name YiZ303_policy_1054
+  description NETACC_20250226_533983
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.40.36 132.252.40.37
+  destination-address range 132.254.168.10 132.254.168.41
+  service protocol tcp destination-port 9999 
+  service protocol tcp destination-port 30000 
+  service protocol tcp destination-port 3001 
+  service protocol tcp destination-port 30001 
+  action permit
+ rule name YiZ303_policy_1055
+  description NETACC_20250227_534739
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 10.140.29.185 0.0.0.0
+  destination-address 10.142.101.156 0.0.0.0
+  service protocol tcp destination-port 80 
+  action permit
+ rule name YiZ303_policy_1056
+  description NETACC_20250228_536018
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.27.128 132.252.27.130
+  source-address range 132.254.8.72 132.254.8.79
+  source-address 132.252.27.109 0.0.0.0
+  source-address 132.252.27.248 0.0.0.0
+  destination-address 132.254.167.73 0.0.0.0
+  destination-address 132.254.167.87 0.0.0.0
+  destination-address 132.254.167.95 0.0.0.0
+  service protocol tcp destination-port 8200 to 8203 
+  action permit
+ rule name YiZ303_policy_1057
+  description NETACC_20250303_536970
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.138.224 132.252.138.226
+  source-address range 132.252.197.181 132.252.197.184
+  source-address 132.252.136.70 0.0.0.0
+  source-address 132.252.138.237 0.0.0.0
+  source-address 132.252.190.201 0.0.0.0
+  source-address 132.252.215.165 0.0.0.0
+  source-address 132.252.215.171 0.0.0.0
+  source-address 132.254.20.152 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.17
+  action permit
+ rule name YiZ303_policy_1058
+  description NETACC_20250303_537045
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 10.128.86.64 0.0.0.0
+  destination-address 10.130.225.185 0.0.0.0
+  destination-address 10.142.129.14 0.0.0.0
+  service protocol tcp destination-port 8000 
+  action permit
+ rule name YiZ303_policy_1059
+  description NETACC_20250304_537842
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 10.130.154.233 0.0.0.0
+  service protocol tcp destination-port 30000 
+  action permit
+ rule name YiZ303_policy_1060
+  description NETACC_20250312_542906
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.252.102.249 0.0.0.0
+  destination-address 132.254.203.214 0.0.0.0
+  service protocol tcp destination-port 8090 
+  action permit
+ rule name YiZ303_policy_1061
+  description NETACC_20250313_543034
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.254.15.28 132.254.15.29
+  source-address 132.254.14.10 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.17
+  service protocol tcp destination-port 30000 to 40000 
+  action permit
+ rule name YiZ303_policy_1062
+  description NETACC_20250313_543816
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.15 132.254.168.41
+  destination-address 132.122.36.9 0.0.0.0
+  service protocol tcp destination-port 4443 
+  action permit
+ rule name YiZ303_policy_1063
+  description NETACC_20250313_543816
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.252.128.218 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.41
+  service protocol tcp destination-port 39073 
+  service protocol tcp destination-port 39074 
+  action permit
+ rule name YiZ303_policy_1064
+  description NETACC_20250317_545566
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.254.90.186 0.0.0.0
+  service protocol tcp destination-port 30488 
+  action permit
+ rule name YiZ303_policy_1065
+  description NETACC_20250318_546637
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.254.14.6 0.0.0.0
+  source-address 132.254.14.9 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.19
+  service protocol tcp destination-port 30000 to 40000 
+  action permit
+ rule name YiZ303_policy_1066
+  description NETACC_20250320_550509
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.252.101.242 0.0.0.0
+  service protocol tcp destination-port 19012 
+  action permit
+ rule name YiZ303_policy_1067
+  description NETACC_20250328_559984
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.10 132.254.168.41
+  destination-address 132.252.114.55 0.0.0.0
+  service protocol tcp destination-port 3306 
+  action permit
+ rule name YiZ303_policy_1068
+  description NETACC_20250326_556615
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.10 132.254.168.41
+  destination-address 132.224.219.114 0.0.0.0
+  service protocol tcp destination-port 8083 
+  action permit
+ rule name YiZ303_policy_1069
+  description NETACC_20250326_556831
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.10 132.254.168.41
+  destination-address 132.228.145.9 0.0.0.0
+  service protocol tcp destination-port 9084 
+  action permit
+ rule name YiZ303_policy_1070
+  description NETACC_20250326_556615
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.224.85.20 132.224.85.24
+  source-address range 132.224.85.45 132.224.85.49
+  source-address range 132.254.7.118 132.254.7.119
+  source-address range 132.254.7.121 132.254.7.124
+  source-address range 132.254.8.42 132.254.8.44
+  source-address range 132.254.8.133 132.254.8.140
+  source-address range 132.254.8.155 132.254.8.156
+  source-address 132.252.130.235 0.0.0.0
+  source-address 132.254.7.112 0.0.0.0
+  source-address 132.254.7.115 0.0.0.0
+  destination-address range 132.254.168.10 132.254.168.14
+  action permit
+ rule name YiZ303_policy_1071
+  description NETACC_20250326_556831
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.10 132.254.168.41
+  destination-address 132.252.114.55 0.0.0.0
+  service protocol tcp destination-port 8080 
+  action permit
+ rule name YiZ303_policy_1072
+  description NETACC_20250326_556974
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address range 132.252.38.119 132.252.38.122
+  destination-address range 132.254.170.21 132.254.170.24
+  service protocol tcp destination-port 7070 
+  service protocol tcp destination-port 9008 
+  action permit
+ rule name YiZ303_policy_1073
+  description NETACC_20250327_558087
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 10.128.90.2 0.0.0.0
+  source-address 10.130.153.124 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.19
+  service protocol tcp destination-port 28084 
+  service protocol tcp destination-port 32083 
+  service protocol tcp destination-port 32084 
+  action permit
+ rule name YiZ303_policy_1074
+  description NETACC_20250327_558087
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 10.2.15.92 0.0.0.0
+  service protocol tcp destination-port 9001 
+  action permit
+ rule name YiZ303_policy_1075
+  description NETACC_20250327_558087
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 10.229.47.140 0.0.0.0
+  service protocol tcp destination-port 8073 
+  action permit
+ rule name YiZ303_policy_1076
+  description NETACC_20250327_558087
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address range 132.224.132.53 132.224.132.54
+  destination-address 132.224.132.51 0.0.0.0
+  service protocol tcp destination-port 19091 
+  action permit
+ rule name YiZ303_policy_1077
+  description NETACC_20250327_558087
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.224.132.56 0.0.0.0
+  service protocol tcp destination-port 19090 
+  service protocol tcp destination-port 19091 
+  action permit
+ rule name YiZ303_policy_1078
+  description NETACC_20250327_558087
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.224.23.10 0.0.0.0
+  service protocol tcp destination-port 7001 
+  action permit
+ rule name YiZ303_policy_1079
+  description NETACC_20250327_558087
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.228.114.172 0.0.0.0
+  destination-address 132.252.187.129 0.0.0.0
+  service protocol tcp destination-port 9000 
+  action permit
+ rule name YiZ303_policy_1080
+  description NETACC_20250327_558087
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.228.134.154 0.0.0.0
+  service protocol tcp destination-port 18080 to 18082 
+  action permit
+ rule name YiZ303_policy_1081
+  description NETACC_20250328_559291
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.165.33 0.0.0.0
+  destination-address 10.141.72.77 0.0.0.0
+  destination-address 10.141.72.79 0.0.0.0
+  destination-address 10.141.72.88 0.0.0.0
+  service protocol tcp destination-port 465 
+  action permit
+ rule name YiZ303_policy_1082
+  description NETACC_20250331_561406
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.40.28 132.252.40.29
+  source-address range 132.252.40.41 132.252.40.42
+  destination-address 132.254.165.33 0.0.0.0
+  action permit
+ rule name YiZ303_policy_1083
+  description NETACC_20250331_561810
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.128.235 132.252.128.236
+  destination-address range 132.254.168.15 132.254.168.17
+  service protocol tcp destination-port 32780 
+  service protocol tcp destination-port 31449 
+  action permit
+ rule name YiZ303_policy_1084
+  description NETACC_20250331_562145
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.252.128.218 0.0.0.0
+  destination-address 132.254.168.10 0.0.0.0
+  service protocol tcp destination-port 30230 
+  action permit
+ rule name YiZ303_policy_1085
+  description NETACC_20250402_564254
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.165.21 0.0.0.0
+  destination-address 132.224.219.177 0.0.0.0
+  service protocol tcp destination-port 8088 
+  action permit
+ rule name YiZ303_policy_1086
+  description NETACC_20250402_564497
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.254.7.68 0.0.0.0
+  destination-address range 132.254.168.10 132.254.168.14
+  service protocol tcp destination-port 32060 
+  action permit
+ rule name YiZ303_policy_1087
+  description NETACC_20250403_565702
+  source-zone QXBACKUP
+  destination-zone QXDCN
+  source-address range 132.254.170.32 132.254.170.33
+  destination-address 10.140.9.6 0.0.0.0
+  service protocol tcp destination-port 80 
+  action permit
+ rule name YiZ303_policy_1088
+  description NETACC_20250403_565702
+  source-zone QXBACKUP
+  destination-zone QXDCN
+  source-address range 132.254.170.32 132.254.170.33
+  destination-address 10.141.146.216 0.0.0.0
+  service protocol tcp destination-port 13380 
+  service protocol tcp destination-port 12807 
+  action permit
+ rule name YiZ303_policy_1089
+  description NETACC_20250403_565702
+  source-zone QXBACKUP
+  destination-zone QXDCN
+  source-address range 132.254.170.32 132.254.170.33
+  destination-address 10.141.134.245 0.0.0.0
+  service protocol tcp destination-port 12152 
+  action permit
+ rule name YiZ303_policy_1090
+  description NETACC_20250407_566605
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.224.4.190 132.224.4.202
+  source-address range 132.252.138.185 132.252.138.195
+  source-address 132.252.128.218 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.17
+  service protocol tcp destination-port 32246 
+  action permit
+ rule name YiZ303_policy_1091
+  description NETACC_20250408_567865
+  source-zone QXBACKUP
+  destination-zone QXDCN
+  source-address range 132.254.170.32 132.254.170.33
+  destination-address 10.141.145.179 0.0.0.0
+  service protocol tcp destination-port 11610 
+  action permit
+ rule name YiZ303_policy_1092
+  description NETACC_20250408_568193
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  destination-zone QXCONSOLE
+  source-address 132.252.32.0 mask 255.255.255.0
+  source-address 132.252.138.0 mask 255.255.255.0
+  source-address range 132.254.28.106 132.254.28.107
+  source-address 132.252.24.90 0.0.0.0
+  source-address 132.252.199.94 0.0.0.0
+  source-address 132.252.204.10 0.0.0.0
+  source-address 132.254.15.108 0.0.0.0
+  source-address 132.254.24.42 0.0.0.0
+  source-address 132.254.28.99 0.0.0.0
+  destination-address 132.254.167.0 mask 255.255.255.0
+  destination-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.254.170.0 mask 255.255.255.0
+  destination-address 132.254.185.0 mask 255.255.255.0
+  destination-address 132.254.186.0 mask 255.255.255.0
+  destination-address 132.254.187.0 mask 255.255.255.0
+  service protocol tcp destination-port 22 
+  service protocol tcp destination-port 10050 
+  action permit
+ rule name YiZ303_policy_1093
+  description NETACC_20250409_569438
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 10.149.9.44 0.0.0.0
+  source-address 132.252.32.204 0.0.0.0
+  destination-address 132.254.167.91 0.0.0.0
+  destination-address 132.254.167.99 0.0.0.0
+  service protocol tcp destination-port 22 
+  service protocol tcp destination-port 1621 
+  action permit
+ rule name YiZ303_policy_1094
+  description NETACC_20250409_569635
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address range 132.252.197.205 132.252.197.207
+  source-address range 132.252.206.78 132.252.206.82
+  destination-address range 132.254.170.29 132.254.170.30
+  action permit
+ rule name YiZ303_policy_1095
+  description NETACC_20250409_569690
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 10.130.153.124 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.19
+  service protocol tcp destination-port 37143 
+  action permit
+ rule name YiZ303_policy_1096
+  description NETACC_20250410_570185
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.224.86.152 132.224.86.155
+  source-address range 132.252.40.80 132.252.40.82
+  source-address range 132.252.128.218 132.252.128.219
+  destination-address 132.254.165.33 0.0.0.0
+  service protocol tcp destination-port 12021 
+  service protocol tcp destination-port 12022 
+  action permit
+ rule name YiZ303_policy_1097
+  description NETACC_20250410_570092
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.254.205.124 0.0.0.0
+  service protocol tcp destination-port 18001 
+  action permit
+ rule name YiZ303_policy_1098
+  description NETACC_20250411_571320
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.165.33 0.0.0.0
+  destination-address 132.228.5.242 0.0.0.0
+  destination-address 132.228.5.244 0.0.0.0
+  destination-address 132.228.44.186 0.0.0.0
+  destination-address 132.228.114.232 0.0.0.0
+  service protocol tcp destination-port 8889 
+  action permit
+ rule name YiZ303_policy_1099
+  description NETACC_20250411_571320
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.165.33 0.0.0.0
+  destination-address 132.228.5.242 0.0.0.0
+  destination-address 132.228.44.187 0.0.0.0
+  service protocol tcp destination-port 8899 
+  action permit
+ rule name YiZ303_policy_1100
+  description NETACC_20250414_572304
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.165.33 0.0.0.0
+  destination-address 132.254.232.96 0.0.0.0
+  service protocol tcp destination-port 8080 
+  action permit
+ rule name YiZ303_policy_1101
+  description NETACC_20250415_573238
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.252.128.218 0.0.0.0
+  destination-address range 132.254.165.26 132.254.165.27
+  service protocol tcp destination-port 8888 
+  action permit
+ rule name YiZ303_policy_1102
+  description NETACC_20250415_573618
+  source-zone QXDCN
+  destination-zone QXTEST
+  destination-zone QXBACKUP
+  source-address range 132.252.206.78 132.252.206.82
+  destination-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.254.170.0 mask 255.255.255.0
+  action permit
+ rule name YiZ303_policy_1103
+  description NETACC_20250416_574263
+  source-zone QXBACKUP
+  destination-zone QXDCN
+  source-address range 132.254.170.25 132.254.170.28
+  destination-address 132.224.64.194 0.0.0.0
+  destination-address 132.224.66.2 0.0.0.0
+  destination-address 132.224.66.34 0.0.0.0
+  destination-address 132.224.129.2 0.0.0.0
+  destination-address 132.224.129.34 0.0.0.0
+  destination-address 132.224.129.146 0.0.0.0
+  destination-address 132.228.107.98 0.0.0.0
+  destination-address 132.228.144.178 0.0.0.0
+  service protocol tcp destination-port 3000 
+  action permit
+ rule name YiZ303_policy_1104
+  description NETACC_20250416_574263
+  source-zone QXBACKUP
+  destination-zone QXDCN
+  source-address range 132.254.170.25 132.254.170.28
+  destination-address range 132.232.169.146 132.232.169.147
+  destination-address range 132.232.250.86 132.232.250.87
+  service protocol tcp destination-port 7777 
+  action permit
+ rule name YiZ303_policy_1105
+  description NETACC_20250507_590034
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address range 10.128.24.81 10.128.24.98
+  source-address range 10.128.86.211 10.128.86.240
+  source-address range 10.130.157.2 10.130.157.25
+  source-address range 10.142.129.36 10.142.129.45
+  source-address range 10.142.129.60 10.142.129.67
+  destination-address 132.254.170.31 0.0.0.0
+  service protocol tcp destination-port 30888 
+  service protocol tcp destination-port 80 
+  action permit
+ rule name YiZ303_policy_1106
+  description NETACC_20250416_574263
+  source-zone QXDCN
+  destination-zone QXBACKUP
+  source-address range 132.224.86.11 132.224.86.15
+  source-address range 132.224.86.136 132.224.86.139
+  source-address range 132.224.86.152 132.224.86.163
+  source-address range 132.252.40.71 132.252.40.90
+  source-address 132.252.128.219 0.0.0.0
+  destination-address 132.254.170.31 0.0.0.0
+  service protocol tcp destination-port 80 
+  action permit
+ rule name YiZ303_policy_1107
+  description NETACC_20250416_575216
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.103.23 132.252.103.25
+  source-address range 132.254.220.141 132.254.220.143
+  source-address 132.252.102.70 0.0.0.0
+  source-address 132.254.220.139 0.0.0.0
+  destination-address 132.254.168.15 0.0.0.0
+  service protocol tcp destination-port 31632 
+  action permit
+ rule name YiZ303_policy_1108
+  description NETACC_20250417_575622
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.15 132.254.168.41
+  destination-address range 10.150.4.242 10.150.4.244
+  service protocol tcp destination-port 8094 
+  action permit
+ rule name YiZ303_policy_1109
+  description NETACC_20250417_575622
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.15 132.254.168.41
+  destination-address 10.130.237.40 0.0.0.0
+  service protocol tcp destination-port 2600 
+  action permit
+ rule name YiZ303_policy_1110
+  description NETACC_20250417_576047
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.254.87.210 0.0.0.0
+  service protocol tcp destination-port 30704 
+  service protocol tcp destination-port 31592 
+  action permit
+ rule name YiZ303_policy_1111
+  description NETACC_20250418_577679
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.165.26 132.254.165.27
+  destination-address 132.254.208.43 0.0.0.0
+  service protocol tcp destination-port 9010 
+  action permit
+ rule name YiZ303_policy_1112
+  description NETACC_20250421_578065
+  source-zone QXBACKUP
+  destination-zone QXDCN
+  source-address range 132.254.170.32 132.254.170.33
+  destination-address 132.252.216.196 0.0.0.0
+  destination-address 132.252.216.198 0.0.0.0
+  destination-address 132.252.216.200 0.0.0.0
+  service protocol tcp destination-port 6872 
+  action permit
+ rule name YiZ303_policy_1113
+  description NETACC_20250424_581539
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.252.189.34 0.0.0.0
+  service protocol tcp destination-port 29008 
+  action permit
+ rule name YiZ303_policy_1114
+  description NETACC_20250424_582587
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.28.40 132.252.28.43
+  source-address range 132.254.8.9 132.254.8.10
+  source-address 132.252.130.180 0.0.0.0
+  destination-address 132.254.167.91 0.0.0.0
+  service protocol tcp destination-port 1621 
+  action permit
+ rule name YiZ303_policy_1115
+  description NETACC_20250425_583321
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address 132.254.20.173 0.0.0.0
+  destination-address range 132.254.165.34 132.254.165.37
+  destination-address range 132.254.165.40 132.254.165.41
+  action permit
+ rule name YiZ303_policy_1116
+  description NETACC_20250507_589437
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.168.0 mask 255.255.255.0
+  destination-address 132.252.188.17 0.0.0.0
+  service protocol tcp destination-port 29888 
+  action permit
+ rule name YiZ303_policy_1117
+  description NETACC_20250522_605777
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.18 132.254.168.41
+  destination-address range 132.254.87.210 132.254.87.212
+  service protocol tcp destination-port 20000 to 40000 
+  action permit
+ rule name YiZ303_policy_1118
+  description NETACC_20250512_593815
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address 132.254.165.38 0.0.0.0
+  destination-address range 132.254.87.210 132.254.87.212
+  service protocol tcp destination-port 30282 
+  action permit
+ rule name YiZ303_policy_1119
+  description NETACC_20250515_597579
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.224.201.8 132.224.201.9
+  source-address range 132.252.33.221 132.252.33.223
+  source-address range 132.252.33.225 132.252.33.242
+  source-address range 132.254.20.95 132.254.20.96
+  source-address range 132.254.20.132 132.254.20.133
+  source-address range 132.254.20.169 132.254.20.172
+  source-address range 132.254.32.6 132.254.32.10
+  source-address range 132.254.32.24 132.254.32.27
+  source-address range 132.254.32.38 132.254.32.42
+  source-address range 132.254.32.48 132.254.32.57
+  source-address 132.224.1.49 0.0.0.0
+  source-address 132.252.33.44 0.0.0.0
+  source-address 132.252.33.215 0.0.0.0
+  source-address 132.252.204.15 0.0.0.0
+  destination-address range 132.254.165.34 132.254.165.37
+  destination-address range 132.254.165.40 132.254.165.41
+  service protocol tcp destination-port 9030 
+  action permit
+ rule name YiZ303_policy_1120
+  description NETACC_20250515_599067
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.254.20.200 132.254.20.206
+  destination-address 132.254.165.38 0.0.0.0
+  service protocol tcp destination-port 8080 
+  action permit
+ rule name YiZ303_policy_1121
+  description NETACC_20250520_603947
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.15 132.254.168.41
+  destination-address range 132.254.85.186 132.254.85.187
+  destination-address range 132.254.222.191 132.254.222.192
+  service protocol tcp destination-port 80 
+  service protocol tcp destination-port 443 
+  action permit
+ rule name YiZ303_policy_1122
+  description NETACC_20250520_603947
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.254.28.72 132.254.28.85
+  source-address 132.254.32.20 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.17
+  service protocol tcp destination-port 37100 
+  action permit
+ rule name YiZ303_policy_1123
+  description NETACC_20250520_603947
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.254.85.186 132.254.85.189
+  source-address range 132.254.207.104 132.254.207.107
+  source-address range 132.254.222.191 132.254.222.192
+  source-address 132.254.82.7 0.0.0.0
+  source-address 132.254.82.26 0.0.0.0
+  source-address 132.254.82.29 0.0.0.0
+  source-address 132.254.207.100 0.0.0.0
+  destination-address range 132.254.168.15 132.254.168.17
+  service protocol tcp destination-port 37101 
+  action permit
+ rule name YiZ303_policy_1124
+  description NETACC_20250520_603947
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.15 132.254.168.17
+  destination-address 132.254.85.188 0.0.0.0
+  destination-address 132.254.225.15 0.0.0.0
+  service protocol tcp destination-port 8085 
+  action permit
+ rule name YiZ303_policy_1125
+  description NETACC_20250521_604758
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.254.8.72 132.254.8.79
+  destination-address range 132.254.167.64 132.254.167.65
+  destination-address 132.254.167.72 0.0.0.0
+  service protocol tcp destination-port 5100 
+  service protocol tcp destination-port 5200 
+  service protocol tcp destination-port 5300 
+  action permit
+ rule name YiZ303_policy_1126
+  description NETACC_20250521_605072
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.197.213 132.252.197.214
+  destination-address 132.254.168.15 0.0.0.0
+  service protocol tcp destination-port 23534 
+  action permit
+ rule name YiZ303_policy_1127
+  description NETACC_20250523_606981
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.197.213 132.252.197.214
+  destination-address 132.254.168.27 0.0.0.0
+  service protocol tcp destination-port 37580 
+  action permit
+ rule name YiZ303_policy_1128
+  description NETACC_20250526_610420
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.252.197.213 132.252.197.214
+  destination-address range 132.254.168.15 132.254.168.17
+  service protocol tcp destination-port 37580 
+  action permit
+ rule name YiZ303_policy_1129
+  description NETACC_20250527_611828
+  source-zone QXDCN
+  destination-zone QXTEST
+  source-address range 132.254.12.246 132.254.12.247
+  destination-address range 132.254.167.64 132.254.167.65
+  destination-address range 132.254.167.72 132.254.167.73
+  destination-address 132.254.167.87 0.0.0.0
+  destination-address 132.254.167.95 0.0.0.0
+  service protocol tcp destination-port 9000 to 9099 
+  action permit
+ rule name YiZ303_policy_1130
+  description NETACC_20250528_612799
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.18 132.254.168.21
+  source-address range 132.254.168.23 132.254.168.30
+  source-address range 132.254.168.32 132.254.168.41
+  destination-address 10.141.72.77 0.0.0.0
+  service protocol tcp destination-port 25 
+  action permit
+ rule name YiZ303_policy_1131
+  description NETACC_20250528_612799
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.18 132.254.168.21
+  source-address range 132.254.168.23 132.254.168.30
+  source-address range 132.254.168.32 132.254.168.41
+  destination-address 10.2.14.141 0.0.0.0
+  service protocol tcp destination-port 18801 
+  action permit
+ rule name YiZ303_policy_1132
+  description NETACC_20250528_612799
+  source-zone QXTEST
+  destination-zone QXDCN
+  source-address range 132.254.168.18 132.254.168.21
+  source-address range 132.254.168.23 132.254.168.30
+  source-address range 132.254.168.32 132.254.168.41
+  destination-address 10.2.14.162 0.0.0.0
+  service protocol tcp destination-port 6000 
+  service protocol tcp destination-port 6002 
+  action permit
+#
+auth-policy
+#
+traffic-policy
+#
+policy-based-route
+#
+nat-policy
+#
+proxy-policy
+#
+quota-policy
+#
+pcp-policy
+#
+dns-transparent-policy
+ mode based-on-multi-interface
+#
+rightm-policy
+#
+ sms
+#
+return
+HRP_M<YZ-YiZ-C8U31-FW-1.DCN.Edu1000E>

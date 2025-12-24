@@ -1,0 +1,7 @@
+name: platformExtract
+inputField: versionCollect#value
+outputField: platform
+dataType: map[string]string
+expectedType: string
+operation: Regex
+pattern: NAME="?(\w+)

@@ -1,0 +1,1050 @@
+***********************************************************************
+*      ©2011-2024 Sangfor Technologies. All rights reserved           *
+*                                                                     * 
+***********************************************************************
+Last login: Wed Nov 26 09:52:11 2025 from 192.168.100.122
+AF8.0.95.2062 Build20240712
+admin# show running-configuration 
+config                                                                                                                                                                                                                                       
+ipgroup "192.168.113.0" ipv4
+type ip
+importance ordinary
+ipentry 192.168.113.0-192.168.113.255
+end
+
+config
+ipgroup "WOF20251120005_policy_10000_DST_172.32.2.11" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.11
+end
+
+config
+ipgroup "NAT_112.25_policy_10000_SRC_182.168.112.25" ipv4
+type ip
+importance ordinary
+ipentry 182.168.112.25
+end
+
+config
+ipgroup "1.1.1.1" ipv4
+type ip
+importance ordinary                                                                                                                                                                                                                           
+ipentry 1.1.1.1
+end
+
+config
+ipgroup "192.168.112.254-32" ipv4
+type ip
+importance ordinary
+ipentry 192.168.112.254-192.168.112.254
+end
+
+config
+ipgroup "192.168.113.254-32" ipv4
+type ip
+importance ordinary
+ipentry 192.168.113.254-192.168.113.254
+end
+
+config
+ipgroup "192.168.114.254-32" ipv4
+type ip
+importance ordinary
+ipentry 192.168.114.254-192.168.114.254
+end
+                                                                                                                                                                                                                                              
+config
+ipgroup "192.168.115.254-32" ipv4
+type ip
+importance ordinary
+ipentry 192.168.115.254-192.168.115.254
+end
+
+config
+ipgroup "192.168.116.254-32" ipv4
+type ip
+importance ordinary
+ipentry 192.168.116.254-192.168.116.254
+end
+
+config
+ipgroup "192.168.112.1-10" ipv4
+type ip
+importance ordinary
+ipentry 192.168.112.1-192.168.112.10
+end
+
+config
+ipgroup "192.168.113.1-10" ipv4
+type ip                                                                                                                                                                                                                                       
+importance ordinary
+ipentry 192.168.113.1-192.168.113.10
+end
+
+config
+ipgroup "192.168.114.1-10" ipv4
+type ip
+importance ordinary
+ipentry 192.168.114.1-192.168.114.10
+end
+
+config
+ipgroup "192.168.115.1-10" ipv4
+type ip
+importance ordinary
+ipentry 192.168.115.1-192.168.115.10
+end
+
+config
+ipgroup "192.168.116.1-10" ipv4
+type ip
+importance ordinary
+ipentry 192.168.116.1-192.168.116.10
+end                                                                                                                                                                                                                                           
+
+config
+ipgroup "192.168.112.16-28" ipv4
+type ip
+importance ordinary
+ipentry 192.168.112.16-192.168.112.31
+end
+
+config
+ipgroup "192.168.113.32-28" ipv4
+type ip
+importance ordinary
+ipentry 192.168.113.32-192.168.113.47
+end
+
+config
+ipgroup "172.32.2.1-32" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.1-172.32.2.1
+end
+
+config
+ipgroup "172.32.2.2-32" ipv4                                                                                                                                                                                                                  
+type ip
+importance ordinary
+ipentry 172.32.2.2-172.32.2.2
+end
+
+config
+ipgroup "172.32.2.5-10" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.5-172.32.2.10
+end
+
+config
+ipgroup "172.32.2.4-32" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.4-172.32.2.4
+end
+
+config
+ipgroup "172.32.2.20-32" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.20-172.32.2.20                                                                                                                                                                                                               
+end
+
+config
+ipgroup "172.32.2.16-28" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.16-172.32.2.31
+end
+
+config
+ipgroup "172.32.2.32/28" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.32-172.32.2.47
+end
+
+config
+ipgroup "two" ipv4
+type business
+description "testtwo"
+importance key
+sensitive-data not-exist
+ipentry 11.1.1.1
+ipentry 22.2.2.1                                                                                                                                                                                                                              
+end
+
+config
+ipgroup "three" ipv4
+type business
+description "testthree"
+importance ordinary
+sensitive-data auto
+ipentry 11.1.1.2
+ipentry 22.2.2.2
+end
+
+config
+ipgroup "four" ipv4
+type user
+description "testfour"
+importance key
+ipentry 33.3.3.3
+ipentry 11.0.0.1-11.0.0.8
+end
+
+config
+ipgroup "five" ipv4
+type user                                                                                                                                                                                                                                     
+description "testfive"
+importance ordinary
+ipentry 33.3.3.4
+ipentry 11.0.0.9-11.0.0.16
+end
+
+config
+ipgroup "WOF20251124001_policy_SRC_192.168.112.96_28" ipv4
+type ip
+importance ordinary
+ipentry 192.168.112.96-192.168.112.111
+end
+
+config
+ipgroup "WOF20251124001_policy_DST_172.32.2.96_28" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.96-172.32.2.111
+end
+
+config
+ipgroup "172.32.2.129" ipv4
+type ip
+importance ordinary                                                                                                                                                                                                                           
+ipentry 172.32.2.129
+end
+
+config
+ipgroup "172.32.100.129" ipv4
+type ip
+importance ordinary
+ipentry 172.32.100.129
+end
+
+config
+ipgroup "172.32.2.129_172.32.2.138" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.129-172.32.2.138
+end
+
+config
+ipgroup "192.168.112.128" ipv4
+type ip
+importance ordinary
+ipentry 192.168.112.128
+end
+                                                                                                                                                                                                                                              
+config
+ipgroup "192.168.117.100" ipv4
+type ip
+importance ordinary
+ipentry 192.168.117.100
+end
+
+config
+ipgroup "WOF20251124011_policy_10000_SRC_192.168.112.128_28" ipv4
+type ip
+importance ordinary
+ipentry 192.168.112.128-192.168.112.143
+end
+
+config
+ipgroup "WOF20251124011_policy_10000_SRC_192.168.113.128_192.168.113.139" ipv4
+type ip
+importance ordinary
+ipentry 192.168.113.128-192.168.113.139
+end
+
+config
+ipgroup "WOF20251124011_policy_10000_SRC_group" ipv4
+type addrgroup                                                                                                                                                                                                                                
+importance ordinary
+member "WOF20251124011_policy_10000_SRC_192.168.112.128_28"
+member "WOF20251124011_policy_10000_SRC_192.168.113.128_192.168.113.139"
+end
+
+config
+ipgroup "WOF20251124011_policy_10000_DST_172.32.2.100" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.100
+end
+
+config
+ipgroup "WOF20251124011_policy_10000_DST_group" ipv4
+type addrgroup
+importance ordinary
+member "WOF20251124011_policy_10000_DST_172.32.2.100"
+member "172.32.2.129_172.32.2.138"
+end
+
+config
+ipgroup "SRC_group" ipv4
+type addrgroup
+importance ordinary                                                                                                                                                                                                                           
+member "WOF20251124011_policy_10000_SRC_192.168.112.128_28"
+member "WOF20251124011_policy_10000_SRC_192.168.113.128_192.168.113.139"
+end
+
+config
+ipgroup "DST_group" ipv4
+type addrgroup
+importance ordinary
+member "WOF20251124011_policy_10000_DST_172.32.2.100"
+member "172.32.2.129_172.32.2.138"
+end
+
+config
+ipgroup "172.32.100.128_28" ipv4
+type ip
+importance ordinary
+ipentry 172.32.100.128-172.32.100.143
+end
+
+config
+ipgroup "172.32.2.133_172.32.2.141" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.133-172.32.2.141                                                                                                                                                                                                             
+end
+
+config
+ipgroup "SRC_group_01" ipv4
+type addrgroup
+importance ordinary
+member "WOF20251124001_policy_DST_172.32.2.96_28"
+member "172.32.2.133_172.32.2.141"
+end
+
+config
+ipgroup "192.168.117.130" ipv4
+type ip
+importance ordinary
+ipentry 192.168.117.130
+end
+
+config
+ipgroup "192.168.113.129" ipv4
+type ip
+importance ordinary
+ipentry 192.168.113.129
+end
+                                                                                                                                                                                                                                              
+config
+ipgroup "WOF20251124013_policy_10001_SRC_group" ipv4
+type addrgroup
+importance ordinary
+member "WOF20251124001_policy_DST_172.32.2.96_28"
+member "172.32.2.133_172.32.2.141"
+end
+
+config
+ipgroup "WOF20251125015_policy_10000_SRC_172.32.2.128_27" ipv4
+type ip
+importance ordinary
+ipentry 172.32.2.128-172.32.2.159
+end
+
+config
+ipgroup "WOF20251125015_policy_10000_SRC_group" ipv4
+type addrgroup
+importance ordinary
+member "172.32.2.4-32"
+member "WOF20251125015_policy_10000_SRC_172.32.2.128_27"
+end
+
+config                                                                                                                                                                                                                                        
+ipgroup "WOF20251126006_policy_10000_SRC_192.168.112.140_192.168.112.150" ipv4
+type ip
+importance ordinary
+ipentry 192.168.112.140-192.168.112.150
+end
+
+config
+ipgroup "WOF20251126006_policy_10000_SRC_192.168.113.128_28" ipv4
+type ip
+importance ordinary
+ipentry 192.168.113.128-192.168.113.143
+end
+
+config
+ipgroup "WOF20251126006_policy_10000_SRC_group" ipv4
+type addrgroup
+importance ordinary
+member "WOF20251126006_policy_10000_SRC_192.168.112.140_192.168.112.150"
+member "WOF20251126006_policy_10000_SRC_192.168.113.128_28"
+end
+
+config
+ipgroup "WOF20251126006_policy_10000_DST_172.32.2.128_28" ipv4
+type ip                                                                                                                                                                                                                                       
+importance ordinary
+ipentry 172.32.2.128-172.32.2.143
+end
+
+config
+ipgroup "one" ipv4
+type ip
+description "testone"
+importance ordinary
+ipentry 44.4.4.4
+ipentry 22.0.0.1-22.0.0.8
+end
+
+config
+service "TCP_888"
+icmp type 6  code 8
+protocol 55
+tcp src-port 0-65535 dst-port 8888,999-1005
+udp src-port 0-65535 dst-port 5555
+end
+
+config
+service "TCP_22"
+tcp src-port 0-65535 dst-port 22,443,8443                                                                                                                                                                                                     
+end
+
+config
+service "TCP_22_01"
+tcp src-port 0-65535 dst-port 22,8443
+end
+
+config
+service "TCP_8443"
+tcp src-port 0-65535 dst-port 8443
+end
+
+config
+service "TCP_2443"
+tcp src-port 0-65535 dst-port 2443
+end
+
+config
+service "TCP_8080"
+tcp src-port 0-65535 dst-port 8080
+end
+
+config
+service "TCP_161-162"                                                                                                                                                                                                                         
+tcp src-port 0-65535 dst-port 161-162
+end
+
+config
+service "TCP_1521"
+tcp src-port 0-65535 dst-port 1521
+end
+
+config
+servgroup "SRV_GP1"
+service "TCP_888"
+service "ssh"
+end
+
+config
+servgroup "text10_SRV_GROUP"
+service "ssh"
+service "https"
+service "TCP_8443"
+end
+
+config
+servgroup "WOF20251121014_policy_SRV_GROUP"
+service "dns-t"                                                                                                                                                                                                                               
+service "http"
+service "TCP_2443"
+service "TCP_8080"
+end
+
+config
+servgroup "TEXT-11_SRV_GROUP"
+service "dns-t"
+service "http"
+service "TCP_2443"
+service "TCP_8080"
+end
+
+config
+servgroup "WOF20251121016_policy_SRV_GROUP"
+service "dns-t"
+service "http"
+service "TCP_2443"
+service "TCP_8080"
+end
+
+config
+servgroup "WOF20251121017_policy_SRV_GROUP"
+service "dns-t"                                                                                                                                                                                                                               
+service "http"
+service "TCP_2443"
+service "TCP_8080"
+end
+
+config
+servgroup "TEXT-11_SRV_GROUP_01"
+service "ssh"
+service "local_https"
+service "TCP_8443"
+end
+
+config
+servgroup "WOF20251126006_policy_10000_SRV_GROUP"
+service "https"
+service "TCP_1521"
+end
+
+config
+out-of-band disable
+end
+
+config
+interface eth0                                                                                                                                                                                                                                
+wan disable
+no shutdown
+default-gateway 192.168.100.254
+reverse-route disable
+manage ssh enable
+manage ping enable
+manage https enable
+manage snmp enable
+bandwidth upstream 0
+bandwidth downstream 0
+ip address 192.168.100.107/24
+end
+
+config
+interface eth1
+wan disable
+no shutdown
+reverse-route enable
+manage ssh enable
+manage ping enable
+manage https enable
+manage snmp enable
+ip address 172.32.100.1/24
+end                                                                                                                                                                                                                                           
+
+config
+interface eth2
+wan disable
+no shutdown
+reverse-route disable
+manage ssh enable
+manage ping enable
+manage snmp enable
+ip address 172.32.101.254/24
+end
+
+config
+interface eth3
+wan disable
+no shutdown
+end
+
+config
+interface eth4
+wan disable
+no shutdown
+end
+                                                                                                                                                                                                                                              
+config
+interface eth5
+wan disable
+no shutdown
+end
+
+config
+interface eth6
+wan disable
+no shutdown
+end
+
+config
+interface eth7
+wan disable
+no shutdown
+end
+
+config
+interface vpntun
+wan disable
+no shutdown
+manage https enable
+ipv6 enable                                                                                                                                                                                                                                   
+end
+
+config
+interface veth.0
+no shutdown
+ipv6 enable
+end
+
+config
+zone "L2_trust_A"
+forward-type switch
+end
+
+config
+zone "L2_trust_B"
+forward-type switch
+end
+
+config
+zone "L2_untrust_A"
+forward-type switch
+end
+
+config                                                                                                                                                                                                                                        
+zone "L2_untrust_B"
+forward-type switch
+end
+
+config
+zone "L3_manage"
+forward-type route
+interfaces eth0
+end
+
+config
+zone "L3_trust_A"
+forward-type route
+end
+
+config
+zone "L3_trust_B"
+forward-type route
+interfaces eth2
+end
+
+config
+zone "L3_trust_C"
+forward-type route                                                                                                                                                                                                                            
+end
+
+config
+zone "L3_untrust_A"
+forward-type route
+end
+
+config
+zone "L3_untrust_B"
+forward-type route
+interfaces eth1
+end
+
+config
+zone "L3_untrust_C"
+forward-type route
+end
+
+config
+zone "Virtual_trust_A"
+forward-type virtual
+end
+
+config                                                                                                                                                                                                                                        
+zone "Virtual_trust_B"
+forward-type virtual
+end
+
+config
+zone "Virtual_untrust_A"
+forward-type virtual
+end
+
+config
+zone "Virtual_untrust_B"
+forward-type virtual
+end
+
+config
+policy-label "LabelThree"
+end
+
+config
+policy-label "LabelTwo"
+end
+
+config
+policy-label "LabelOne"                                                                                                                                                                                                                       
+end
+
+config
+policy "outside_1" bottom
+enable
+description "outside_policy"
+group "default-policygroup"
+src-zone "L3_trust_B"
+src-ipgroup "192.168.112.254-32"
+user-group "/"
+dst-zone "L3_manage"
+dst-ipgroup "172.32.2.1-32"
+service "ssh"
+service "https"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "outside_2" bottom
+enable                                                                                                                                                                                                                                        
+description "outside_policy"
+group "default-policygroup"
+src-zone "L3_trust_B"
+src-ipgroup "192.168.115.254-32"
+dst-zone "L3_untrust_B"
+dst-ipgroup "172.32.2.5-10"
+service "TCP_8080"
+service "http"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "outside_3" bottom
+enable
+description "outside_policy"
+group "default-policygroup"
+src-zone "L3_trust_B"
+src-ipgroup "192.168.114.1-10"
+src-ipgroup "192.168.112.16-28"
+dst-zone "L3_untrust_B"                                                                                                                                                                                                                       
+dst-ipgroup "172.32.2.4-32"
+dst-ipgroup "172.32.2.16-28"
+service "TCP_1521"
+service "telnet"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "outside_4" bottom
+enable
+description "outside_policy"
+group "default-policygroup"
+src-zone "L3_trust_B"
+src-ipgroup "192.168.114.1-10"
+dst-zone "L3_untrust_B"
+dst-ipgroup "172.32.2.5-10"
+service "ssh"
+service "https"
+application "全部"
+action permit                                                                                                                                                                                                                                 
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "outside_5" bottom
+enable
+description "outside_policy"
+group "default-policygroup"
+src-zone "L3_trust_B"
+src-ipgroup "192.168.116.254-32"
+src-ipgroup "192.168.113.32-28"
+src-ipgroup "192.168.116.1-10"
+dst-zone "L3_untrust_B"
+dst-ipgroup "172.32.2.16-28"
+dst-ipgroup "172.32.2.32/28"
+dst-ipgroup "172.32.2.2-32"
+service "TCP_8080"
+service "http"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable                                                                                                                                                                                                                     
+log session-end disable
+end
+
+config
+policy "outside_6" bottom
+enable
+description "outside_policy"
+group "default-policygroup"
+src-zone "L3_trust_B"
+src-ipgroup "192.168.112.1-10"
+dst-zone "L3_untrust_B"
+dst-ipgroup "172.32.2.2-32"
+dst-ipgroup "172.32.2.20-32"
+service "TCP_1521"
+service "telnet"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "inside_1" bottom                                                                                                                                                                                                                      
+enable
+description "inside_policy"
+group "default-policygroup"
+src-zone "L3_untrust_B"
+src-ipgroup "172.32.2.1-32"
+dst-zone "L3_trust_B"
+dst-ipgroup "192.168.114.1-10"
+dst-ipgroup "192.168.112.16-28"
+service "https"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "inside_2" bottom
+enable
+description "inside_policy"
+group "default-policygroup"
+src-zone "L3_untrust_B"
+src-ipgroup "172.32.2.5-10"
+dst-zone "L3_trust_B"                                                                                                                                                                                                                         
+dst-ipgroup "192.168.114.1-10"
+service "TCP_8080"
+service "http"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "inside_3" bottom
+enable
+description "inside_policy"
+group "default-policygroup"
+src-zone "L3_untrust_B"
+src-ipgroup "172.32.2.4-32"
+src-ipgroup "172.32.2.16-28"
+dst-zone "L3_trust_B"
+dst-ipgroup "192.168.112.254-32"
+service "telnet"
+application "全部"
+action permit
+schedule "all-week"                                                                                                                                                                                                                           
+log session-start disable
+log session-end disable
+end
+
+config
+policy "inside_4" bottom
+enable
+description "inside_policy"
+group "default-policygroup"
+src-zone "L3_untrust_B"
+src-ipgroup "172.32.2.5-10"
+dst-zone "L3_trust_B"
+dst-ipgroup "192.168.115.254-32"
+service "https"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "inside_5" bottom
+enable                                                                                                                                                                                                                                        
+description "inside_policy"
+group "default-policygroup"
+src-zone "L3_untrust_B"
+src-ipgroup "172.32.2.16-28"
+src-ipgroup "172.32.2.32/28"
+src-ipgroup "172.32.2.2-32"
+dst-zone "L3_trust_B"
+dst-ipgroup "192.168.114.1-10"
+dst-ipgroup "192.168.112.16-28"
+service "TCP_8080"
+service "http"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "inside_6" bottom
+enable
+description "inside_policy"
+group "default-policygroup"
+src-zone "L3_untrust_B"                                                                                                                                                                                                                       
+src-ipgroup "172.32.2.2-32"
+src-ipgroup "172.32.2.20-32"
+dst-zone "L3_trust_B"
+dst-ipgroup "192.168.116.254-32"
+dst-ipgroup "192.168.113.32-28"
+dst-ipgroup "192.168.116.1-10"
+service "telnet"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "NAT_112.25_policy_10000" bottom
+enable
+group "default-policygroup"
+src-zone "L3_trust_B"
+src-ipgroup "NAT_112.25_policy_10000_SRC_182.168.112.25"
+user-group "/"
+dst-zone "L3_untrust_B"
+dst-ipgroup "All"
+service "TCP_8443"                                                                                                                                                                                                                            
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+
+config
+policy "带外管理-1" bottom
+enable
+group "default-policygroup"
+src-zone "L3_manage"
+src-ipgroup "WOF20251120005_policy_10000_DST_172.32.2.11"
+user-group "/"
+dst-ipgroup "192.168.113.0"
+service "TCP_22"
+service "SRV_GP1"
+application "全部"
+action permit
+schedule "all-week"
+log session-start disable
+log session-end disable
+end
+                                                                                                                                                                                                                                              
+config
+policy "default-policy" bottom
+end
+
+config
+dnat-rule "Dnat_inside_2" bottom
+enable
+src-zone "L3_untrust_B"
+schedule "all-week"
+src-ipgroup "172.32.2.16-28"
+src-ipgroup "172.32.2.20-32"
+src-ipgroup "172.32.2.32/28"
+dst-ip 192.168.117.2
+ignore-acl enable
+log bypass-acl disable
+service TCP_2443
+transfer ip 192.168.116.2 port 443
+end
+
+config
+dnat-rule "Dnat_inside_1" bottom
+enable
+src-zone "L3_untrust_B"
+schedule "all-week"                                                                                                                                                                                                                           
+src-ipgroup "172.32.2.4-32"
+src-ipgroup "172.32.2.5-10"
+dst-ip 192.168.117.1
+ignore-acl enable
+log bypass-acl disable
+service TCP_8443
+transfer ip 192.168.116.1 port 443
+end
+
+config
+snat-rule "Snat_outside_2" bottom
+enable
+src-zone "L3_trust_B"
+schedule "all-week"
+src-ipgroup "192.168.113.32-28"
+src-ipgroup "192.168.113.254-32"
+dst-zone L3_untrust_B
+dst-ipgroup "172.32.2.20-32"
+dst-ipgroup "172.32.2.32/28"
+service any
+transfer iprange 172.32.100.10-172.32.100.20 dynamic
+end
+
+config                                                                                                                                                                                                                                        
+snat-rule "Snat_outside_1" bottom
+enable
+src-zone "L3_trust_B"
+schedule "all-week"
+src-ipgroup "192.168.112.1-10"
+src-ipgroup "192.168.112.16-28"
+dst-zone L3_untrust_B
+dst-ipgroup "172.32.2.1-32"
+service any
+transfer ip 172.32.100.254
+end
+
+config
+ip route 192.168.101.0/24 192.168.100.254 interface eth0 description "meg" metric 0 tag 0
+ip route 0.0.0.0/0 172.32.100.254 interface eth1 metric 0 tag 0
+ip route 192.168.112.0/24 172.32.101.1 interface eth2 description "下联" metric 0 tag 0
+ip route 192.168.113.0/24 172.32.101.1 interface eth2 description "下联" metric 0 tag 0
+ip route 192.168.114.0/24 172.32.101.1 interface eth2 description "下联" metric 0 tag 0
+ip route 192.168.115.0/24 172.32.101.1 interface eth2 description "下联" metric 0 tag 0
+ip route 192.168.116.0/24 172.32.101.1 interface eth2 description "下联" metric 0 tag 0
+ip route 192.168.222.0/24 192.168.100.254 interface eth0 description "meg" metric 0 tag 0
+ip route 192.168.117.0/24 172.32.101.1 interface eth2 description "dnat_ip" metric 0 tag 0
+ip route 172.32.2.0/24 172.32.100.254 interface eth1 metric 0 tag 0
+end                                                                                                                                                                                                                                           
+
+config
+lldp enable
+end
+
+config
+snmp-server host name "uniops" net 192.168.0.0/16 community admin@123 privilege ro
+end
+
+config
+snmp-server manager
+end
+
+config
+decrypt-whitelist disable
+decrypt-whitelist HSTS enable
+end
+
+
+config
+ssh port 22345
+https port 443
+web-manager
+devname "SANGFOR_01"                                                                                                                                                                                                                          
+robot enable
+dynamic-verification-code enable
+throwing-screen disable
+max-concurrent-session 50
+max-login-failure 10
+per-user-max-login 10
+timeout 10
+ssl-version tls1-0 disable
+ssl-version tls1-1 disable
+end

@@ -1,0 +1,1752 @@
+package secpath
+
+import (
+	"fmt"
+	"strconv"
+	"strings"
+	"testing"
+
+	"github.com/influxdata/telegraf/controller/pkg/nodemap/api"
+	"github.com/influxdata/telegraf/controller/pkg/nodemap/node"
+	"github.com/influxdata/telegraf/controller/pkg/nodemap/node/device/firewall"
+	"github.com/influxdata/telegraf/controller/pkg/nodemap/node/device/firewall/common"
+	"github.com/netxops/utils/network"
+	"github.com/netxops/utils/policy"
+	"github.com/netxops/utils/service"
+	"github.com/stretchr/testify/assert"
+)
+
+func NewTestSecPathNode() *SecPathNode {
+	// 先创建 DeviceNode，然后创建 SecPathNode
+	deviceNode := node.NewDeviceNode("test-secpath-id", "test-secpath", api.FIREWALL)
+	node := &SecPathNode{
+		DeviceNode: deviceNode,
+		PolicySet: &PolicySet{
+			ipv4NameAcl:       make(map[string]*PolicyGroup),
+			ipv6NameAcl:       make(map[string]*PolicyGroup),
+			securityPolicyAcl: []*Policy{},
+		},
+		Nats:   &Nats{},
+		AclSet: &ACLSet{Sets: []*ACL{}},
+	}
+	node.ObjectSet = NewSecPathObjectSet(node)
+	node.PolicySet.node = node
+	node.PolicySet.objects = node.ObjectSet
+	node.AclSet.objects = node.ObjectSet
+	node.Nats.objects = node.ObjectSet
+	node.Nats.node = node
+
+	// 添加一些示例地址对象
+	node.ObjectSet.ZoneNetworkMap = map[ZoneName]map[string]firewall.FirewallNetworkObject{
+		"trust": {
+			"internal_network": &secpathNetwork{
+				ObjName:      "internal_network",
+				NetworkGroup: network.NewNetworkGroupFromStringMust("192.168.1.0/24"),
+			},
+			"dmz_network": &secpathNetwork{
+				ObjName:      "dmz_network",
+				NetworkGroup: network.NewNetworkGroupFromStringMust("172.16.0.0/16"),
+			},
+		},
+		"untrust": {
+			"external_network": &secpathNetwork{
+				ObjName:      "external_network",
+				NetworkGroup: network.NewNetworkGroupFromStringMust("10.0.0.0/8"),
+			},
+		},
+	}
+
+	// 添加一些示例服务对象
+	node.ObjectSet.ServiceMap = map[string]firewall.FirewallServiceObject{
+		"HTTP": &secpathService{
+			name:    "HTTP",
+			service: service.NewServiceMust("tcp:80"),
+		},
+		"HTTPS": &secpathService{
+			name:    "HTTPS",
+			service: service.NewServiceMust("tcp:443"),
+		},
+		"DNS": &secpathService{
+			name:    "DNS",
+			service: service.NewServiceMust("udp:53"),
+		},
+	}
+
+	// 添加一些示例安全策略
+	node.PolicySet.securityPolicyAcl = []*Policy{
+		{
+			id:     1,
+			name:   "allow_http_to_dmz",
+			ipType: network.IPv4,
+			policyEntry: policy.NewPolicyEntryWithAll(
+				network.NewNetworkGroupFromStringMust("192.168.1.0/24"),
+				network.NewNetworkGroupFromStringMust("172.16.0.0/16"),
+				service.NewServiceMust("tcp:80"),
+			),
+			node:      node,
+			srcZone:   []string{"trust"},
+			dstZone:   []string{"dmz"},
+			srcAddr:   []string{"192.168.1.0/24"},
+			srcObject: []string{"internal_network"},
+			dstAddr:   []string{"172.16.0.0/16"},
+			dstObject: []string{"dmz_network"},
+			srv:       []string{"tcp:80"},
+			srvObject: []string{"HTTP"},
+			action:    firewall.POLICY_PERMIT,
+			status:    firewall.POLICY_ACTIVE,
+			objects:   node.ObjectSet,
+		},
+		{
+			id:     2,
+			name:   "allow_https_to_external",
+			ipType: network.IPv4,
+			policyEntry: policy.NewPolicyEntryWithAll(
+				network.NewNetworkGroupFromStringMust("192.168.1.0/24"),
+				network.NewNetworkGroupFromStringMust("10.0.0.0/8"),
+				service.NewServiceMust("tcp:443"),
+			),
+			node:      node,
+			srcZone:   []string{"trust"},
+			dstZone:   []string{"untrust"},
+			srcAddr:   []string{"192.168.1.0/24"},
+			srcObject: []string{"internal_network"},
+			dstAddr:   []string{"10.0.0.0/8"},
+			dstObject: []string{"external_network"},
+			srv:       []string{"tcp:443"},
+			srvObject: []string{"HTTPS"},
+			action:    firewall.POLICY_PERMIT,
+			status:    firewall.POLICY_ACTIVE,
+			objects:   node.ObjectSet,
+		},
+	}
+
+	return node
+}
+
+func TestMakeNetworkObjectCli(t *testing.T) {
+	// 使用 NewTestSecPathNode 创建测试节点
+	node := NewTestSecPathNode()
+
+	// 创建源端口和目标端口
+	from := NewSecPathPort("eth0", "tenant1", map[network.IPFamily][]string{
+		network.IPv4: {"192.168.1.1/24"},
+	}, []api.Member{})
+	out := NewSecPathPort("eth1", "tenant1", map[network.IPFamily][]string{
+		network.IPv4: {"10.0.0.1/24"},
+	}, []api.Member{})
+
+	// 设置端口的区域
+	from.WithZone("trust")
+	out.WithZone("untrust")
+
+	// 创建网络组
+	net, err := network.NewNetworkGroupFromString("192.168.2.0/24,10.0.1.1-10.0.1.10")
+	assert.NoError(t, err)
+
+	// 创建策略上下文
+	ctx := &firewall.PolicyContext{
+		Node:      node,
+		Variables: make(map[string]interface{}),
+	}
+
+	data := map[string]interface{}{
+		// 添加网络对象命名模板
+		// MakeNetworkObjectCli 直接调用时，需要使用 network_object_name_template 而不是 securitypolicy.src_object_name_template
+		"network_object_name_template": "{policy_name}",
+		"policy_name":                  "TestPolicy", // 添加策略名称，用于命名模板
+	}
+
+	// 创建 SecPathTemplates
+	templates := common.NewCommonTemplates(node, ctx, common.NewSecPathTemplates(), data)
+
+	// 调用被测试的方法
+	result := templates.MakeNetworkObjectCli("trust", "untrust", net, "", "TestPolicy", true, ctx, data)
+
+	// 断言
+	assert.True(t, result.IsValid())
+	assert.NotEmpty(t, result.Keys)
+	assert.NotEmpty(t, result.CLIString)
+
+	// 检查生成的 CLI 命令
+	assert.Contains(t, result.CLIString, "object-group ip address")
+	assert.Contains(t, result.CLIString, "network subnet 192.168.2.0 255.255.255.0")
+	assert.Contains(t, result.CLIString, "network range 10.0.1.1 10.0.1.10")
+
+	// 检查生成的对象名称
+	// assert.Len(t, result.CLIs, 4) // 应该只生成一个新对象名称，因为这是一个新的网络组
+
+	node.FlyConfig(result.FlyObject)
+
+	// 检查新对象是否已添加到节点
+	for _, name := range result.Keys {
+		obj, exists := node.Network("", name)
+		assert.True(t, exists, "Object %s should exist in the node", name)
+		assert.NotNil(t, obj)
+		assert.True(t, obj.Same(net), "The network in the object should match the input network")
+	}
+
+	// 测试已存在的网络对象
+	existingNet := network.NewNetworkGroupFromStringMust("192.168.1.0/24")
+	existingResult := templates.MakeNetworkObjectCli("trust", "untrust", existingNet, "internal_network", "TestExistingPolicy", true, ctx, data)
+
+	assert.True(t, existingResult.IsValid())
+	assert.Len(t, existingResult.Keys, 1)
+	assert.Equal(t, "internal_network", existingResult.Keys[0], "Should use existing object name")
+	assert.Empty(t, existingResult.CLIString, "Should not generate CLI for existing object")
+}
+
+func TestMakeServiceObjectCli(t *testing.T) {
+	// 使用 NewTestSecPathNode 创建测试节点
+	node := NewTestSecPathNode()
+
+	// 创建策略上下文
+	ctx := &firewall.PolicyContext{
+		Node:      node,
+		Variables: make(map[string]interface{}),
+	}
+	data := map[string]interface{}{}
+	// 创建 SecPathTemplates
+	templates := common.NewCommonTemplates(node, ctx, common.NewSecPathTemplates(), data)
+
+	// 测试创建新的服务对象
+	t.Run("NewServiceObject", func(t *testing.T) {
+		srv := service.NewServiceMust("tcp:8080,8081")
+		result := templates.MakeServiceObjectCli(srv, "", "TestPolicy", data)
+
+		assert.True(t, result.IsValid())
+		assert.NotEmpty(t, result.Keys)
+		assert.NotEmpty(t, result.CLIString)
+
+		// 检查生成的 CLI 命令
+		assert.Contains(t, result.CLIString, "object-group service")
+		assert.Contains(t, result.CLIString, "service tcp destination range 8080 8081")
+
+		// 检查生成的对象名称
+		assert.Len(t, result.Keys, 1)
+
+		node.FlyConfig(result.FlyObject)
+
+		// 检查新对象是否已添加到节点
+		for _, name := range result.Keys {
+			obj, exists := node.Service(name)
+			assert.True(t, exists, "Service object %s should exist in the node", name)
+			assert.NotNil(t, obj)
+			assert.True(t, obj.Same(srv), "The service in the object should match the input service")
+		}
+	})
+
+	// 测试使用已存在的服务对象
+
+	t.Run("ExistingServiceObject", func(t *testing.T) {
+		existingSrv := service.NewServiceMust("tcp:80")
+		existingResult := templates.MakeServiceObjectCli(existingSrv, "HTTP", "TestExistingPolicy", data)
+
+		assert.True(t, existingResult.IsValid())
+		assert.Len(t, existingResult.Keys, 1)
+		assert.Equal(t, "HTTP", existingResult.Keys[0], "Should use existing object name")
+		assert.Empty(t, existingResult.CLIString, "Should not generate CLI for existing object")
+	})
+
+	// 测试创建复杂服务对象（包含多个协议和端口）
+	t.Run("ComplexServiceObject", func(t *testing.T) {
+		complexSrv := service.NewServiceMust("tcp:80,443;udp:53,123")
+		result := templates.MakeServiceObjectCli(complexSrv, "TestComplexPolicy_SERVICE", "TestComplexPolicy", data)
+
+		assert.True(t, result.IsValid())
+		assert.NotEmpty(t, result.Keys)
+		assert.NotEmpty(t, result.CLIString)
+
+		// 检查生成的 CLI 命令
+		assert.Contains(t, result.CLIString, "object-group service")
+		assert.Contains(t, result.CLIString, "service tcp destination eq 80")
+		assert.Contains(t, result.CLIString, "service tcp destination eq 443")
+		assert.Contains(t, result.CLIString, "service udp destination eq 53")
+		assert.Contains(t, result.CLIString, "service udp destination eq 123")
+
+		node.FlyConfig(result.FlyObject)
+
+		// 检查新对象是否已添加到节点
+		for _, name := range result.Keys {
+			obj, exists := node.Service(name)
+			assert.True(t, exists, "Service object %s should exist in the node", name)
+			assert.NotNil(t, obj)
+			assert.True(t, obj.Same(complexSrv), "The service in the object should match the input service")
+		}
+	})
+}
+
+func TestMakePolicyRuleCli(t *testing.T) {
+	// 使用 NewTestSecPathNode 创建测试节点
+	node := NewTestSecPathNode()
+
+	// 创建源端口和目标端口
+	from := NewSecPathPort("eth0", "tenant1", map[network.IPFamily][]string{
+		network.IPv4: {"192.168.1.1/24"},
+	}, []api.Member{})
+	to := NewSecPathPort("eth1", "tenant1", map[network.IPFamily][]string{
+		network.IPv4: {"10.0.0.1/24"},
+	}, []api.Member{})
+
+	// 设置端口的区域
+	from.WithZone("trust")
+	to.WithZone("untrust")
+
+	// 创建策略意图
+	intent := &policy.Intent{
+		TicketNumber: "TK001",
+		SubTicket:    "ST001",
+		PolicyEntry: *policy.NewPolicyEntryWithAll(
+			network.NewNetworkGroupFromStringMust("192.168.1.0/24"),
+			network.NewNetworkGroupFromStringMust("10.0.0.0/24"),
+			service.NewServiceMust("tcp:80,443"),
+		),
+		MetaData: map[string]string{
+			"system_name": "TestSystem",
+			"app_name":    "TestApp",
+		},
+	}
+
+	// 创建策略上下文
+	ctx := &firewall.PolicyContext{
+		Node:      node,
+		Intent:    intent,
+		Variables: make(map[string]interface{}),
+	}
+	ctx.WithValue("policy_name_template", `POLICY_{VAR:site}_{SEQ:id:4:1000:1:MAIN}_{DATE:date:YYYYMMDD}`)
+	ctx.WithValue("site", "TestSite")
+	ctx.WithValue("UUID", "1234567890abcdef")
+	ctx.WithValue("policyType", "security-policy ip")
+	data := map[string]interface{}{
+		"policy_name_template": `POLICY_{VAR:site}_{SEQ:id:4:1000:1:MAIN}_{DATE:date:YYYYMMDD}`,
+	}
+
+	// 创建 SecPathTemplates
+	templates := common.NewCommonTemplates(node, ctx, common.NewSecPathTemplates(), data)
+
+	opts := &common.PolicyOptions{}
+	common.WithObjectStyle(true)(opts)
+	common.WithSourceObjects(true)(opts)
+	common.WithDestinationObjects(true)(opts)
+	common.WithServiceObjects(true)(opts)
+
+	// 测试对象样式的策略规则
+	t.Run("ObjectStyle", func(t *testing.T) {
+		// 为对象样式添加必要的data字段
+		objectData := map[string]interface{}{
+			"policy_name_template": `POLICY_{VAR:site}_{SEQ:id:4:1000:1:MAIN}_{DATE:date:YYYYMMDD}}`,
+			"make_source":          "true",
+			"make_destination":     "true",
+			"make_service":         "true",
+			"securitypolicy.src_object_name_template":     "{policy_name}",
+			"securitypolicy.dst_object_name_template":     "{policy_name}",
+			"securitypolicy.service_object_name_template": "{policy_name}_{protocol}_{compact_port}",
+		}
+		result := templates.MakePolicyRuleCli(from, to, intent, ctx, opts, objectData)
+
+		assert.True(t, result.IsValid())
+		assert.NotEmpty(t, result.CLIs)
+		// assert.NotEmpty(t, result.Keys)
+		assert.NotEmpty(t, result.CLIString)
+
+		// 检查生成的 CLI 命令
+		assert.Contains(t, result.CLIString, "rule 1000 name POLICY_TestSite_")
+		assert.Contains(t, result.CLIString, "source-zone trust")
+		assert.Contains(t, result.CLIString, "destination-zone untrust")
+		assert.Contains(t, result.CLIString, "source-ip")
+		assert.Contains(t, result.CLIString, "destination-ip")
+		assert.Contains(t, result.CLIString, "service")
+		assert.Contains(t, result.CLIString, "action pass")
+
+		// 检查 Keys
+		assert.Contains(t, result.FlyObject, "SECURITY_POLICY")
+		assert.Contains(t, result.FlyObject, "NETWORK")
+		assert.Contains(t, result.FlyObject, "SERVICE")
+
+		// 应用 FlyConfig
+		node.FlyConfig(result.FlyObject)
+
+		matchResult := node.InputPolicy(intent, from, to)
+		// InputPolicy返回空（nil）是测试错误
+		if !assert.NotNil(t, matchResult, "InputPolicy不应该返回空，策略应该匹配") {
+			t.Fatalf("InputPolicy返回nil，测试失败")
+			return
+		}
+		assert.True(t, int(firewall.POLICY_PERMIT) == matchResult.Action())
+
+	})
+
+	opts = &common.PolicyOptions{}
+	common.WithObjectStyle(false)(opts)
+	// 测试非对象样式的策略规则
+	t.Run("NonObjectStyle", func(t *testing.T) {
+		// 非对象样式也需要make_source, make_destination, make_service标志
+		nonObjectData := map[string]interface{}{
+			"policy_name_template": `POLICY_{VAR:site}_{SEQ:id:4:1000:1:MAIN}_{DATE:date:YYYYMMDD}}`,
+			"make_source":          "true",
+			"make_destination":     "true",
+			"make_service":         "true",
+		}
+		result := templates.MakePolicyRuleCli(from, to, intent, ctx, opts, nonObjectData)
+
+		assert.True(t, result.IsValid())
+		assert.NotEmpty(t, result.CLIs)
+		assert.NotEmpty(t, result.CLIString)
+
+		// 检查生成的 CLI 命令
+		assert.Contains(t, result.CLIString, "rule 1001 name POLICY_TestSite_")
+		assert.Contains(t, result.CLIString, "source-zone trust")
+		assert.Contains(t, result.CLIString, "destination-zone untrust")
+		assert.Contains(t, result.CLIString, "source-ip-subnet 192.168.1.0 255.255.255.0")
+		assert.Contains(t, result.CLIString, "destination-ip-subnet 10.0.0.0 255.255.255.0")
+		assert.Contains(t, result.CLIString, "service-port tcp destination eq 80")
+		assert.Contains(t, result.CLIString, "service-port tcp destination eq 443")
+		assert.Contains(t, result.CLIString, "action pass")
+
+		// 检查 Keys
+		assert.Contains(t, result.FlyObject, "SECURITY_POLICY")
+		assert.NotContains(t, result.Keys, "NETWORK")
+		assert.NotContains(t, result.Keys, "SERVICE")
+
+		// 应用 FlyConfig
+		node.FlyConfig(result.FlyObject)
+		matchResult := node.InputPolicy(intent, from, to)
+		// InputPolicy返回空（nil）是测试错误
+		if !assert.NotNil(t, matchResult, "InputPolicy不应该返回空，策略应该匹配") {
+			t.Fatalf("InputPolicy返回nil，测试失败")
+			return
+		}
+		assert.Equal(t, int(firewall.POLICY_PERMIT), matchResult.Action())
+
+	})
+}
+
+func TestCommonTemplatesCross(t *testing.T) {
+	// 使用 NewTestSecPathNode 创建测试节点
+	node := NewTestSecPathNode()
+
+	// 创建策略意图
+	intent := &policy.Intent{
+		TicketNumber: "TK001",
+		SubTicket:    "ST001",
+		PolicyEntry: *policy.NewPolicyEntryWithAll(
+			network.NewNetworkGroupFromStringMust("192.168.1.0/24,192.168.2.0/24"),
+			network.NewNetworkGroupFromStringMust("10.0.0.0/24,10.0.2.0/24"),
+			service.NewServiceMust("tcp:80,443"),
+		),
+		MetaData: map[string]string{
+			"system_name": "TestSystem",
+			"app_name":    "TestApp",
+		},
+	}
+
+	// 创建策略上下文
+	ctx := &firewall.PolicyContext{
+		Node:      node,
+		Intent:    intent,
+		Variables: make(map[string]interface{}),
+	}
+	ctx.WithValue("acl_name_template", "ACL_TestSite{SEQ:id:4:3000:1:MAIN:NORENDER}")
+	data := map[string]interface{}{
+		"acl_name_template": "ACL_TestSite{SEQ:id:4:3000:1:MAIN:NORENDER}",
+	}
+
+	// 创建 SecPathTemplates
+	templates := common.NewCommonTemplates(node, ctx, common.NewSecPathTemplates(), data)
+
+	// 执行 Cross 方法
+	_, _, result, err := templates.MakeAdvancedAclCli(intent, ctx)
+
+	// 断言
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+	assert.NotEmpty(t, result)
+
+	// 检查结果中是否包含所有预期的组合
+	expectedCombinations := []string{
+		"acl advanced 3000 name ACL_TestSite",
+		"rule permit tcp source 192.168.1.0 0.0.0.255 destination 10.0.0.0 0.0.0.255 destination-port range 80 80",
+		"rule permit tcp source 192.168.1.0 0.0.0.255 destination 10.0.0.0 0.0.0.255 destination-port range 443 443",
+		"rule permit tcp source 192.168.1.0 0.0.0.255 destination 10.0.2.0 0.0.0.255 destination-port range 80 80",
+		"rule permit tcp source 192.168.1.0 0.0.0.255 destination 10.0.2.0 0.0.0.255 destination-port range 443 443",
+		"rule permit tcp source 192.168.2.0 0.0.0.255 destination 10.0.0.0 0.0.0.255 destination-port range 80 80",
+		"rule permit tcp source 192.168.2.0 0.0.0.255 destination 10.0.0.0 0.0.0.255 destination-port range 443 443",
+		"rule permit tcp source 192.168.2.0 0.0.0.255 destination 10.0.2.0 0.0.0.255 destination-port range 80 80",
+		"rule permit tcp source 192.168.2.0 0.0.0.255 destination 10.0.2.0 0.0.0.255 destination-port range 443 443",
+	}
+
+	for _, expected := range expectedCombinations {
+		assert.Contains(t, strings.Join(result, "\n"), expected)
+	}
+
+	// 检查结果的长度是否正确（源IP数量 * 目标IP数量 * 服务数量）
+	assert.Len(t, result, 2*2*2+1+1)
+
+	// 测试对象样式
+	ctx.Variables["objectStyle"] = "true"
+	ctx.Variables["sourceAddressObject"] = "SRC_OBJ"
+	ctx.Variables["destinationAddressObject"] = "DST_OBJ"
+	_, _, resultWithObjects, err := templates.MakeAdvancedAclCli(intent, ctx)
+	assert.NoError(t, err)
+	assert.NotNil(t, resultWithObjects)
+	assert.NotEmpty(t, resultWithObjects)
+
+	// 检查对象样式的结果
+	for i, r := range resultWithObjects {
+		if i == 0 {
+			continue
+		}
+		if r == "#" {
+			continue
+		}
+		assert.Contains(t, r, "source object-group")
+		assert.Contains(t, r, "destination object-group")
+	}
+
+	// 测试 "any" 情况
+	anyIntent := &policy.Intent{
+		PolicyEntry: *policy.NewPolicyEntryWithAll(
+			network.NewAny4Group(),
+			network.NewAny4Group(),
+			service.NewServiceMust("tcp:80"),
+		),
+	}
+	ctx = &firewall.PolicyContext{
+		Node:      node,
+		Intent:    intent,
+		Variables: make(map[string]interface{}),
+	}
+	ctx.Intent = anyIntent
+	_, _, resultWithAny, err := templates.MakeAdvancedAclCli(anyIntent, ctx)
+	assert.NoError(t, err)
+	assert.NotNil(t, resultWithAny)
+	assert.NotEmpty(t, resultWithAny)
+
+	// 检查 "any" 的结果
+	for i, r := range resultWithAny {
+		if i == 0 {
+			continue
+		}
+		if r == "#" {
+			continue
+		}
+		assert.NotContains(t, r, "source any")
+		assert.NotContains(t, r, "destination any")
+	}
+
+	// 测试 ICMP 服务
+	icmpIntent := &policy.Intent{
+		PolicyEntry: *policy.NewPolicyEntryWithAll(
+			network.NewNetworkGroupFromStringMust("192.168.1.0/24"),
+			network.NewNetworkGroupFromStringMust("10.0.0.0/24"),
+			service.NewServiceMust("icmp:8"),
+		),
+	}
+	ctx = &firewall.PolicyContext{
+		Node:      node,
+		Intent:    intent,
+		Variables: make(map[string]interface{}),
+	}
+	ctx.Intent = icmpIntent
+	_, _, resultWithICMP, err := templates.MakeAdvancedAclCli(icmpIntent, ctx)
+	assert.NoError(t, err)
+	assert.NotNil(t, resultWithICMP)
+	assert.NotEmpty(t, resultWithICMP)
+
+	// 检查 ICMP 的结果
+	for i, r := range resultWithICMP {
+		if i == 0 {
+			continue
+		}
+		if r == "#" {
+			continue
+		}
+		assert.Contains(t, r, "rule permit icmp")
+		assert.Contains(t, r, "icmp-type")
+	}
+}
+
+func TestMakePolicyBaseNatRuleCli(t *testing.T) {
+	// 使用 NewTestSecPathNode 创建测试节点
+	node := NewTestSecPathNode()
+
+	// 创建源端口和目标端口
+	from := NewSecPathPort("eth0", "tenant1", map[network.IPFamily][]string{
+		network.IPv4: {"192.168.1.1/24"},
+	}, []api.Member{})
+	to := NewSecPathPort("eth1", "tenant1", map[network.IPFamily][]string{
+		network.IPv4: {"10.0.0.1/24"},
+	}, []api.Member{})
+
+	// 设置端口的区域
+	from.WithZone("trust")
+	to.WithZone("untrust")
+
+	// 创建策略意图
+	intent := &policy.Intent{
+		TicketNumber: "TK001",
+		SubTicket:    "ST001",
+		PolicyEntry: *policy.NewPolicyEntryWithAll(
+			network.NewNetworkGroupFromStringMust("192.168.1.0/24"),
+			network.NewNetworkGroupFromStringMust("10.0.0.0/24"),
+			service.NewServiceMust("tcp:80,443"),
+		),
+		MetaData: map[string]string{
+			"system_name": "TestSystem",
+			"app_name":    "TestApp",
+		},
+		Snat: "203.0.113.1",
+	}
+
+	// 创建策略上下文
+	ctx := &firewall.PolicyContext{
+		Node:      node,
+		Intent:    intent,
+		Variables: make(map[string]interface{}),
+	}
+	ctx.WithValue("policy_name_template", "NAT_{site}_{UUID}")
+	ctx.WithValue("site", "TestSite")
+	ctx.WithValue("UUID", "1234567890abcdef")
+	data := map[string]interface{}{
+		"policy_name_template": "NAT_{site}_{UUID}",
+	}
+
+	// 创建 NatTemplates
+
+	// 创建 SecPathTemplates
+	templates := common.NewCommonTemplates(node, ctx, common.NewSecPathTemplates(), data)
+
+	testCases := []struct {
+		name                       string
+		generateSourceObjects      bool
+		generateDestinationObjects bool
+		expectedSourcePattern      string
+		expectedDestinationPattern string
+	}{
+		{
+			name:                       "AllObjectsGenerated",
+			generateSourceObjects:      true,
+			generateDestinationObjects: true,
+			expectedSourcePattern:      "source-ip NAT_",
+			expectedDestinationPattern: "destination-ip NAT_",
+		},
+		{
+			name:                       "OnlySourceObjectGenerated",
+			generateSourceObjects:      true,
+			generateDestinationObjects: false,
+			expectedSourcePattern:      "source-ip NAT_",
+			expectedDestinationPattern: "destination-ip subnet",
+		},
+		{
+			name:                       "OnlyDestinationObjectGenerated",
+			generateSourceObjects:      false,
+			generateDestinationObjects: true,
+			expectedSourcePattern:      "source-ip subnet",
+			expectedDestinationPattern: "destination-ip NAT_",
+		},
+		{
+			name:                       "NoObjectsGenerated",
+			generateSourceObjects:      false,
+			generateDestinationObjects: false,
+			expectedSourcePattern:      "source-ip subnet",
+			expectedDestinationPattern: "destination-ip subnet",
+		},
+	}
+
+	for i, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			opts := &common.PolicyOptions{}
+			common.WithObjectStyle(true)(opts)
+			common.WithNatType(firewall.DYNAMIC_NAT)(opts)
+			common.WithSourceObjects(tc.generateSourceObjects)(opts)
+			common.WithDestinationObjects(tc.generateDestinationObjects)(opts)
+			common.WithServiceObjects(true)(opts)
+
+			// 为NAT规则添加必要的data字段
+			// 通过 securitypolicy.* 控制是否生成对象
+			natData := map[string]interface{}{
+				"policy_name_template": "NAT_{site}_{UUID}",
+				"make_source":          strconv.FormatBool(tc.generateSourceObjects),
+				"make_destination":     strconv.FormatBool(tc.generateDestinationObjects),
+				"make_service":         "true",
+			}
+
+			// 只有当需要生成对象时，才设置对应的模板
+			if tc.generateSourceObjects {
+				natData["securitypolicy.src_object_name_template"] = "{policy_name}"
+			}
+			if tc.generateDestinationObjects {
+				natData["securitypolicy.dst_object_name_template"] = "{policy_name}"
+			}
+			natData["securitypolicy.service_object_name_template"] = "{protocol:upper}_{compact_port}"
+
+			result := templates.MakePolicyBaseNatRuleCli(from, to, intent, ctx, opts, natData)
+
+			assert.True(t, result.IsValid())
+			assert.NotEmpty(t, result.CLIs)
+			assert.NotEmpty(t, result.CLIString)
+
+			// 检查生成的 CLI 命令
+			assert.Contains(t, result.CLIString, "nat global-policy")
+			assert.Contains(t, result.CLIString, "rule name NAT_TestSite_")
+			assert.Contains(t, result.CLIString, "source-zone trust")
+			assert.Contains(t, result.CLIString, "destination-zone untrust")
+			assert.Contains(t, result.CLIString, tc.expectedSourcePattern)
+			assert.Contains(t, result.CLIString, tc.expectedDestinationPattern)
+			assert.Contains(t, result.CLIString, "service TCP_")
+			assert.Contains(t, result.CLIString, "action snat address-group")
+
+			// 检查 FlyObject
+			assert.Contains(t, result.FlyObject, "POOL")
+			assert.Contains(t, result.FlyObject["POOL"], "nat address-group")
+			assert.Contains(t, result.FlyObject["POOL"], "203.0.113.1 203.0.113.1")
+
+			// 检查服务对象是否总是生成
+			assert.Contains(t, result.FlyObject, "SERVICE")
+			assert.Contains(t, result.FlyObject["SERVICE"], "object-group service")
+
+			// 只在最后一次执行 FlyConfig
+			if i == len(testCases)-1 {
+				node.FlyConfig(result.FlyObject)
+
+				// 验证 NAT 规则是否正确应用
+				outputNatResult := node.OutputNat(intent, from, to)
+				// OutputNat返回空（nil）是测试错误
+				if !assert.NotNil(t, outputNatResult, "OutputNat不应该返回空，NAT规则应该匹配") {
+					t.Fatalf("OutputNat返回nil，测试失败")
+					return
+				}
+				assert.Equal(t, int(firewall.NAT_MATCHED), outputNatResult.Action(), "OutputNat should match the applied SNAT rule")
+
+				// 检查 SNAT 转换后的地址
+				natResult, ok := outputNatResult.(*firewall.NatMatchResult)
+				assert.True(t, ok, "OutputNat result should be of type *firewall.NatMatchResult")
+				if ok {
+					assert.Equal(t, "203.0.113.1-203.0.113.1", natResult.TranslateTo().Src().String(), "SNAT should translate to the correct address")
+				}
+			}
+		})
+	}
+
+	// 测试 DNAT
+	t.Run("DNAT", func(t *testing.T) {
+		intent.Snat = ""
+		intent.RealIp = "192.168.1.100"
+		intent.RealPort = "8080"
+		opts := &common.PolicyOptions{}
+		common.WithObjectStyle(true)(opts)
+		common.WithNatType(firewall.DESTINATION_NAT)(opts)
+		common.WithSourceObjects(true)(opts)
+		common.WithDestinationObjects(true)(opts)
+		common.WithServiceObjects(true)(opts)
+
+		// 为DNAT规则添加必要的data字段
+		dnatData := map[string]interface{}{
+			"policy_name_template": "NAT_{site}_{UUID}",
+			"make_source":          "true",
+			"make_destination":     "true",
+			"make_service":         "true",
+			"securitypolicy.src_object_name_template":     "{policy_name}",
+			"securitypolicy.dst_object_name_template":     "{policy_name}",
+			"securitypolicy.service_object_name_template": "{protocol:upper}_{compact_port}",
+		}
+
+		result := templates.MakePolicyBaseNatRuleCli(from, to, intent, ctx, opts, dnatData)
+
+		assert.True(t, result.IsValid())
+		assert.NotEmpty(t, result.CLIs)
+		assert.NotEmpty(t, result.CLIString)
+
+		// 检查生成的 CLI 命令
+		assert.Contains(t, result.CLIString, "nat global-policy")
+		assert.Contains(t, result.CLIString, "rule name NAT_TestSite_")
+		assert.Contains(t, result.CLIString, "source-zone trust")
+		assert.Contains(t, result.CLIString, "destination-zone untrust")
+		assert.Contains(t, result.CLIString, "source-ip NAT_")
+		assert.Contains(t, result.CLIString, "destination-ip NAT_")
+		assert.Contains(t, result.CLIString, "service TCP_")
+		assert.Contains(t, result.CLIString, "action dnat ip-address 192.168.1.100")
+		assert.Contains(t, result.CLIString, "local-port 8080")
+
+		node.FlyConfig(result.FlyObject)
+
+		// 验证 DNAT 规则是否正确应用
+		inputNatResult := node.InputNat(intent, from)
+		// InputNat返回空（nil）是测试错误
+		if !assert.NotNil(t, inputNatResult, "InputNat不应该返回空，NAT规则应该匹配") {
+			t.Fatalf("InputNat返回nil，测试失败")
+			return
+		}
+		assert.Equal(t, int(firewall.NAT_MATCHED), inputNatResult.Action(), "InputNat should match the applied DNAT rule")
+
+		// 检查 DNAT 转换后的地址和端口
+		natResult, ok := inputNatResult.(*firewall.NatMatchResult)
+		assert.True(t, ok, "InputNat result should be of type *firewall.NatResult")
+		if ok {
+			fmt.Println("translate: ", natResult.TranslateTo().String())
+			assert.Equal(t, "192.168.1.100/32", natResult.TranslateTo().Dst().String(), "DNAT should translate to the correct address")
+			assert.Contains(t, natResult.TranslateTo().Service().String(), "8080", "DNAT should translate to the correct port")
+		}
+
+		// // 验证 OutputNat 不应匹配 DNAT 规则
+		// outputNatResult := node.OutputNat(intent, from, to)
+		// assert.Equal(t, firewall.NAT_NOMATCHED, outputNatResult.Action(), "OutputNat should not match the DNAT rule")
+
+	})
+
+}
+
+func TestMakeStaticNatCli(t *testing.T) {
+	// 创建一个测试 SecPathNode
+	node := NewTestSecPathNode()
+
+	// 创建策略上下文
+	ctx := &firewall.PolicyContext{
+		Node:      node,
+		Variables: make(map[string]interface{}),
+	}
+	ctx.WithValue("nat_rule_name", "RULE_1")
+	ctx.WithValue("description", "Test Static NAT Rule")
+
+	// 创建端口
+	from := NewSecPathPort("eth1", "trust", nil, nil)
+	out := NewSecPathPort("eth2", "untrust", nil, nil)
+
+	// 创建意图
+	intent := &policy.Intent{
+		TicketNumber: "TICKET123",
+		SubTicket:    "SUB456",
+		PolicyEntry: policy.PolicyEntry{
+			PolicyEntrySrc:     mustNetworkGroup("1.1.1.1/32"),
+			PolicyEntryDst:     mustNetworkGroup("203.0.113.100/32"),
+			PolicyEntryService: mustNewService("tcp:80"),
+		},
+		RealIp:   "192.168.1.100",
+		RealPort: "8080",
+		MetaData: map[string]string{
+			"system_name": "SYS",
+			"app_name":    "APP",
+			"server_name": "SERVER",
+		},
+	}
+	data := map[string]interface{}{}
+
+	// 创建 SecPathTemplates
+	templates := common.NewCommonTemplates(node, ctx, common.NewSecPathTemplates(), data)
+
+	// 调用MakeStaticNatCli方法
+	result := templates.MakeNatCli(from, out, intent, ctx, data, common.WithNatProcessMode(common.StaticNat), common.WithNatDirection(common.InOut))
+
+	// 断言
+	// assert.True(t, result.IsValid())
+	assert.NotEmpty(t, result)
+
+	// 验证生成的CLI命令
+	expectedCLI := `interface eth1
+ nat server protocol tcp global 203.0.113.100 80 local 192.168.1.100 8080 rule RULE_1 description Test Static NAT Rule
+#`
+	assert.Equal(t, expectedCLI, result.CLIString)
+
+	// 验证FlyObject
+	assert.Contains(t, result.FlyObject, "NAT")
+	assert.Contains(t, result.CLIString, expectedCLI)
+
+	// 应用配置
+	node.FlyConfig(result.FlyObject)
+
+	// 验证NAT规则是否正确应用
+	inputNatResult := node.InputNat(intent, from)
+	// InputNat返回空（nil）是测试错误
+	if !assert.NotNil(t, inputNatResult, "InputNat不应该返回空，NAT规则应该匹配") {
+		t.Fatalf("InputNat返回nil，测试失败")
+		return
+	}
+	assert.Equal(t, int(firewall.NAT_MATCHED), inputNatResult.Action(), "InputNat should match the applied static NAT rule")
+
+	// 检查NAT转换后的地址和端口
+	natResult, ok := inputNatResult.(*firewall.NatMatchResult)
+	assert.True(t, ok, "InputNat result should be of type *firewall.NatMatchResult")
+	if ok {
+		assert.Equal(t, "192.168.1.100/32", natResult.TranslateTo().Dst().String(), "Static NAT should translate to the correct address")
+		assert.Contains(t, natResult.TranslateTo().Service().String(), "8080", "Static NAT should translate to the correct port")
+	}
+
+	// 测试没有端口映射的情况
+	intentWithoutPort := &policy.Intent{
+		PolicyEntry: policy.PolicyEntry{
+			PolicyEntrySrc:     network.NewAny4Group(),
+			PolicyEntryDst:     mustNetworkGroup("203.0.113.101/32"),
+			PolicyEntryService: mustNewService("tcp"),
+		},
+		RealIp: "192.168.1.101",
+	}
+
+	ctx.WithValue("nat_rule_name", "RULE_2")
+	ctx.WithValue("description", "Test Static NAT Rule2")
+
+	resultWithoutPort := templates.MakeNatCli(from, out, intentWithoutPort, ctx, data, common.WithNatProcessMode(common.StaticNat), common.WithNatDirection(common.InOut))
+	assert.True(t, resultWithoutPort.IsValid())
+	assert.NotEmpty(t, resultWithoutPort.CLIString)
+	assert.Contains(t, resultWithoutPort.CLIString, "nat server protocol tcp global 203.0.113.101 local 192.168.1.101")
+	assert.NotContains(t, resultWithoutPort.CLIString, "8080")
+
+	// 应用配置并验证
+	node.FlyConfig(resultWithoutPort.FlyObject)
+	inputNatResultWithoutPort := node.InputNat(intentWithoutPort, from)
+	// InputNat返回空（nil）是测试错误
+	if !assert.NotNil(t, inputNatResultWithoutPort, "InputNat不应该返回空，NAT规则应该匹配") {
+		t.Fatalf("InputNat返回nil，测试失败")
+		return
+	}
+	assert.Equal(t, int(firewall.NAT_MATCHED), inputNatResultWithoutPort.Action(), "InputNat should match the applied static NAT rule without port")
+
+	natResultWithoutPort, ok := inputNatResultWithoutPort.(*firewall.NatMatchResult)
+	assert.True(t, ok, "InputNat result should be of type *firewall.NatMatchResult")
+	if ok {
+		assert.Equal(t, "192.168.1.101/32", natResultWithoutPort.TranslateTo().Dst().String(), "Static NAT should translate to the correct address")
+		assert.Equal(t, "TCP", natResultWithoutPort.TranslateTo().Service().Protocol().String(), "Static NAT should maintain the correct protocol")
+	}
+
+	// 在 TestMakeStaticNatCli 函数中，修改 OutputNat 测试部分
+
+	// 为不带端口的 Static NAT 创建出向 Intent
+	outboundIntentWithoutPort := &policy.Intent{
+		PolicyEntry: policy.PolicyEntry{
+			PolicyEntrySrc:     mustNetworkGroup("192.168.1.101/32"),
+			PolicyEntryDst:     network.NewAny4Group(),
+			PolicyEntryService: mustNewService("tcp"),
+		},
+	}
+
+	outputNatResultWithoutPort := node.OutputNat(outboundIntentWithoutPort, out, from)
+	assert.Equal(t, int(firewall.NAT_MATCHED), outputNatResultWithoutPort.Action(), "OutputNat should match the applied static NAT rule without port")
+
+	outputNatResult, ok := outputNatResultWithoutPort.(*firewall.NatMatchResult)
+	assert.True(t, ok, "OutputNat result should be of type *firewall.NatMatchResult")
+	if ok {
+		assert.Equal(t, "203.0.113.101/32", outputNatResult.TranslateTo().Src().String(), "Static NAT should translate the source address correctly for outbound traffic")
+		assert.Equal(t, "TCP", outputNatResult.TranslateTo().Service().Protocol().String(), "Static NAT should maintain the correct protocol for outbound traffic")
+	}
+
+	// // 为带端口的 Static NAT 创建出向 Intent
+	outboundIntent := &policy.Intent{
+		PolicyEntry: policy.PolicyEntry{
+			PolicyEntrySrc:     mustNetworkGroup("192.168.1.101/32"),
+			PolicyEntryDst:     network.NewAny4Group(),
+			PolicyEntryService: mustNewService("tcp:8080|--"),
+		},
+		Snat: "203.0.113.101",
+	}
+
+	outputNatResult2 := node.OutputNat(outboundIntent, out, from)
+	assert.Equal(t, int(firewall.NAT_MATCHED), outputNatResult2.Action(), "OutputNat should match the applied Static NAT rule")
+
+	outputNatMatchResult, ok := outputNatResult2.(*firewall.NatMatchResult)
+	assert.True(t, ok, "OutputNat result should be of type *firewall.NatMatchResult")
+	if ok {
+		assert.Equal(t, "203.0.113.101/32", outputNatMatchResult.TranslateTo().Src().String(), "Static NAT should translate the source address correctly for outbound traffic")
+		assert.Contains(t, outputNatMatchResult.TranslateTo().Service().String(), "80", "Static NAT should translate to the correct port for outbound traffic")
+	}
+
+}
+
+// 辅助函数
+func mustNetworkGroup(cidr string) *network.NetworkGroup {
+	ng, err := network.NewNetworkGroupFromString(cidr)
+	if err != nil {
+		panic(err)
+	}
+	return ng
+}
+
+func mustNewService(svcStr string) *service.Service {
+	svc, err := service.NewServiceFromString(svcStr)
+	if err != nil {
+		panic(err)
+	}
+	return svc
+}
+
+func TestMakeNatCli(t *testing.T) {
+	setupTest := func() (*SecPathNode, *firewall.PolicyContext, *common.CommonTemplates) {
+		node := NewTestSecPathNode()
+		ctx := &firewall.PolicyContext{
+			Node:      node,
+			Variables: make(map[string]interface{}),
+		}
+		ctx.WithValue("policy_name_template", "NAT_{site}_{UUID}")
+		ctx.WithValue("site", "TestSite")
+		ctx.WithValue("UUID", "1234567890abcdef")
+		ctx.WithValue("aclBaseNumber", "3000")
+		ctx.WithValue("acl_name_template", "ACL_TestSite{SEQ:id:4:3000:1:MAIN:NORENDER}")
+		data := map[string]interface{}{
+			"policy_name_template": "NAT_{site}_{UUID}",
+			"acl_name_template":    "ACL_TestSite{SEQ:id:4:3000:1:MAIN:NORENDER}",
+		}
+
+		templates := common.NewCommonTemplates(node, ctx, common.NewSecPathTemplates(), data)
+
+		return node, ctx, templates
+	}
+
+	t.Run("SNAT", func(t *testing.T) {
+		node, ctx, templates := setupTest()
+		from := NewSecPathPort("eth1", "trust", nil, nil).WithZone("trust")
+		out := NewSecPathPort("eth2", "untrust", nil, nil).WithZone("untrust")
+
+		// 创建 SNAT 意图
+		snatIntent := &policy.Intent{
+			TicketNumber: "TICKET123",
+			SubTicket:    "SUB456",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+				PolicyEntryDst:     mustNetworkGroup("10.0.0.0/24"),
+				PolicyEntryService: mustNewService("tcp:80,443"),
+			},
+			Snat: "203.0.113.1-203.0.113.10",
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		data := map[string]interface{}{
+			// 设置空的 sourceObjects 和 destinationObjects，避免在 {for:item in intent} 循环中重复生成
+			"sourceObjects":      []string{},
+			"destinationObjects": []string{},
+			"make_source":        "true",
+			"make_destination":   "true",
+			"make_service":       "true",
+			"securitypolicy.src_object_name_template":     "{policy_name}{if:exist:is_source==\"true\"}_src{else}_dst{endif}",
+			"securitypolicy.dst_object_name_template":     "{policy_name}{if:exist:is_source==\"true\"}_src{else}_dst{endif}",
+			"securitypolicy.service_object_name_template": "{protocol:upper}_{compact_port}",
+		}
+
+		result := templates.MakeNatCli(from, out, snatIntent, ctx, data, common.WithObjectStyle(true), common.WithSourceObjects(true), common.WithDestinationObjects(true), common.WithServiceObjects(true))
+
+		assert.True(t, result.IsValid())
+		assert.NotEmpty(t, result.CLIString)
+		assert.Contains(t, result.CLIString, "nat global-policy")
+		assert.Contains(t, result.CLIString, "rule name NAT_TestSite_")
+		assert.Contains(t, result.CLIString, "source-zone trust")
+		assert.Contains(t, result.CLIString, "destination-zone untrust")
+		assert.Contains(t, result.CLIString, "action snat address-group")
+
+		node.FlyConfig(result.FlyObject)
+
+		// 验证 SNAT 规则是否正确应用
+		outputNatResult := node.OutputNat(snatIntent, from, out)
+		assert.Equal(t, int(firewall.NAT_MATCHED), outputNatResult.Action(), "OutputNat should match the applied SNAT rule")
+
+		natResult, ok := outputNatResult.(*firewall.NatMatchResult)
+		assert.True(t, ok, "OutputNat result should be of type *firewall.NatMatchResult")
+		if ok {
+			assert.Equal(t, "203.0.113.1-203.0.113.10", natResult.TranslateTo().Src().String(), "SNAT should translate to the correct address range")
+		}
+	})
+
+	t.Run("DNAT", func(t *testing.T) {
+		node, ctx, templates := setupTest()
+		from := NewSecPathPort("eth1", "trust", nil, nil).WithZone("trust")
+		out := NewSecPathPort("eth2", "untrust", nil, nil).WithZone("untrust")
+
+		// 创建 DNAT 意图
+		dnatIntent := &policy.Intent{
+			TicketNumber: "TICKET123",
+			SubTicket:    "SUB456",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("10.0.0.0/24"),
+				PolicyEntryDst:     mustNetworkGroup("203.0.113.100/32"),
+				PolicyEntryService: mustNewService("tcp:80"),
+			},
+			RealIp:   "192.168.1.100",
+			RealPort: "8080",
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		data := map[string]interface{}{
+			// 设置空的 sourceObjects 和 destinationObjects，避免在 {for:item in intent} 循环中重复生成
+			"sourceObjects":      []string{},
+			"destinationObjects": []string{},
+			"make_source":        "true",
+			"make_destination":   "true",
+			"make_service":       "true",
+			"securitypolicy.src_object_name_template":     "{policy_name}{if:exist:is_source==\"true\"}_src{else}_dst{endif}",
+			"securitypolicy.dst_object_name_template":     "{policy_name}{if:exist:is_source==\"true\"}_src{else}_dst{endif}",
+			"securitypolicy.service_object_name_template": "{protocol:upper}_{compact_port}",
+		}
+
+		result := templates.MakeNatCli(from, out, dnatIntent, ctx, data, common.WithNatType(firewall.DESTINATION_NAT), common.WithObjectStyle(true), common.WithSourceObjects(true), common.WithDestinationObjects(true), common.WithServiceObjects(true))
+
+		assert.True(t, result.IsValid())
+		assert.NotEmpty(t, result.CLIString)
+		assert.Contains(t, result.CLIString, "nat global-policy")
+		assert.Contains(t, result.CLIString, "rule name NAT_TestSite_")
+		assert.Contains(t, result.CLIString, "source-zone trust")
+		assert.Contains(t, result.CLIString, "destination-zone untrust")
+		assert.Contains(t, result.CLIString, "action dnat ip-address 192.168.1.100")
+		assert.Contains(t, result.CLIString, "local-port 8080")
+
+		node.FlyConfig(result.FlyObject)
+
+		// 验证 DNAT 规则是否正确应用
+		inputNatResult := node.InputNat(dnatIntent, from)
+		assert.Equal(t, int(firewall.NAT_MATCHED), inputNatResult.Action(), "InputNat should match the applied DNAT rule")
+
+		natResult, ok := inputNatResult.(*firewall.NatMatchResult)
+		assert.True(t, ok, "InputNat result should be of type *firewall.NatMatchResult")
+		if ok && natResult != nil {
+			translateTo := natResult.TranslateTo()
+			if translateTo != nil {
+				assert.Equal(t, "192.168.1.100/32", translateTo.Dst().String(), "DNAT should translate to the correct address")
+				assert.Contains(t, translateTo.Service().String(), "8080", "DNAT should translate to the correct port")
+			}
+		}
+	})
+
+	t.Run("StaticNAT", func(t *testing.T) {
+		node, ctx, templates := setupTest()
+		from := NewSecPathPort("eth1", "trust", nil, nil).WithZone("trust")
+		out := NewSecPathPort("eth2", "untrust", nil, nil).WithZone("untrust")
+
+		// 创建 Static NAT 意图
+		staticNatIntent := &policy.Intent{
+			TicketNumber: "TICKET123",
+			SubTicket:    "SUB456",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     network.NewAny4Group(),
+				PolicyEntryDst:     mustNetworkGroup("203.0.113.100/32"),
+				PolicyEntryService: mustNewService("tcp:80"),
+			},
+			RealIp:   "192.168.1.100",
+			RealPort: "8080",
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		data := map[string]interface{}{
+			// Static NAT 不需要对象样式，但需要设置 make_xxx 标志
+			"make_source":      "true",
+			"make_destination": "true",
+			"make_service":     "true",
+		}
+
+		result := templates.MakeNatCli(from, out, staticNatIntent, ctx, data, common.WithNatProcessMode(common.StaticNat), common.WithNatDirection(common.InOut))
+
+		assert.True(t, result.IsValid())
+		assert.NotEmpty(t, result.CLIString)
+		assert.Contains(t, result.CLIString, "nat server protocol tcp global 203.0.113.100 80 local 192.168.1.100 8080")
+
+		node.FlyConfig(result.FlyObject)
+
+		// 验证 Static NAT 规则是否正确应用
+		inputNatResult := node.InputNat(staticNatIntent, from)
+		assert.Equal(t, int(firewall.NAT_MATCHED), inputNatResult.Action(), "InputNat should match the applied Static NAT rule")
+
+		natResult, ok := inputNatResult.(*firewall.NatMatchResult)
+		assert.True(t, ok, "InputNat result should be of type *firewall.NatMatchResult")
+		if ok && natResult != nil {
+			translateTo := natResult.TranslateTo()
+			if translateTo != nil {
+				assert.Equal(t, "192.168.1.100/32", translateTo.Dst().String(), "Static NAT should translate to the correct address")
+				assert.Contains(t, translateTo.Service().String(), "8080", "Static NAT should translate to the correct port")
+			}
+		}
+	})
+
+	t.Run("OutboundNat", func(t *testing.T) {
+		node, ctx, templates := setupTest()
+		from := NewSecPathPort("eth1", "trust", nil, nil).WithZone("trust")
+		out := NewSecPathPort("eth2", "untrust", nil, nil).WithZone("untrust")
+
+		outboundNatIntent := &policy.Intent{
+			TicketNumber: "TICKET789",
+			SubTicket:    "SUB101",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.0.1/32"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp:0-65535"),
+			},
+			Snat: "203.0.113.200",
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		data := map[string]interface{}{
+			"description":      "Outbound NAT Test",
+			"vpn_instance":     "VPN1",
+			"nat_rule_name":    "RULE1",
+			"make_source":      "true",
+			"make_destination": "true",
+			"make_service":     "true",
+		}
+
+		result := templates.MakeNatCli(from, out, outboundNatIntent, ctx, data,
+			common.WithNatProcessMode(common.StaticNat),
+			common.WithNatDirection(common.OutboundNat))
+
+		assert.True(t, result.IsValid())
+		expectedCLI := "nat static outbound 192.168.0.1 203.0.113.200 vpn-instance VPN1 rule RULE1 description Outbound NAT Test"
+		assert.Contains(t, result.CLIString, expectedCLI)
+
+		// 应用配置
+		node.FlyConfig(result.FlyObject)
+
+		// 验证 OutputNat 规则是否正确应用
+		outputNatResult := node.OutputNat(outboundNatIntent, from, out)
+		assert.Equal(t, int(firewall.NAT_MATCHED), outputNatResult.Action(), "OutputNat should match the applied Outbound NAT rule")
+
+		natResult, ok := outputNatResult.(*firewall.NatMatchResult)
+		assert.True(t, ok, "OutputNat result should be of type *firewall.NatMatchResult")
+		if ok {
+			assert.Equal(t, "203.0.113.200/32", natResult.TranslateTo().Src().String(), "Outbound NAT should translate to the correct address")
+			assert.Equal(t, "TCP:--|--", natResult.TranslateTo().Service().String(), "Outbound NAT should maintain the correct service")
+		}
+
+		// 测试不匹配的情况
+		nonMatchingIntent := &policy.Intent{
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.0.2/32"), // 不同的源地址
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp:0-65535"),
+			},
+		}
+		nonMatchingResult := node.OutputNat(nonMatchingIntent, from, out)
+		assert.Equal(t, int(firewall.NAT_NOMATCHED), nonMatchingResult.Action(), "OutputNat should not match for non-matching intent")
+
+		// 测试没有可选字段的情况
+		minimalData := map[string]interface{}{}
+		minimalResult := templates.MakeNatCli(from, out, outboundNatIntent, ctx, minimalData,
+			common.WithNatProcessMode(common.StaticNat),
+			common.WithNatDirection(common.OutboundNat))
+
+		assert.True(t, minimalResult.IsValid())
+		minimalExpectedCLI := "nat static outbound 192.168.0.1 203.0.113.200"
+		assert.Contains(t, minimalResult.CLIString, minimalExpectedCLI)
+		assert.NotContains(t, minimalResult.CLIString, "vpn-instance")
+		assert.NotContains(t, minimalResult.CLIString, "acl")
+		assert.NotContains(t, minimalResult.CLIString, "rule")
+		assert.NotContains(t, minimalResult.CLIString, "description")
+	})
+
+	t.Run("InboundNat", func(t *testing.T) {
+		node, ctx, templates := setupTest()
+		from := NewSecPathPort("eth1", "trust", nil, nil).WithZone("trust")
+		out := NewSecPathPort("eth2", "untrust", nil, nil).WithZone("untrust")
+
+		inboundNatIntent := &policy.Intent{
+			TicketNumber: "TICKET123",
+			SubTicket:    "SUB456",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     network.NewAny4Group(),
+				PolicyEntryDst:     mustNetworkGroup("203.0.113.10/32"),
+				PolicyEntryService: mustNewService("tcp:80"),
+			},
+			RealIp: "192.168.1.10",
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		data := map[string]interface{}{
+			"description":   "Inbound NAT Test",
+			"vpn_instance":  "VPN1",
+			"nat_rule_name": "RULE1",
+		}
+
+		result := templates.MakeNatCli(from, out, inboundNatIntent, ctx, data,
+			common.WithNatProcessMode(common.StaticNat),
+			common.WithNatDirection(common.InboundNat))
+
+		assert.True(t, result.IsValid())
+		expectedCLI := "nat static inbound 203.0.113.10 192.168.1.10 vpn-instance VPN1 rule RULE1 description Inbound NAT Test"
+		assert.Contains(t, result.CLIString, expectedCLI)
+
+		// 应用配置
+		node.FlyConfig(result.FlyObject)
+
+		// 验证 InputNat 规则是否正确应用
+		inputNatResult := node.InputNat(inboundNatIntent, out)
+		// InputNat返回空（nil）是测试错误
+		if !assert.NotNil(t, inputNatResult, "InputNat不应该返回空，NAT规则应该匹配") {
+			t.Fatalf("InputNat返回nil，测试失败")
+			return
+		}
+		assert.Equal(t, int(firewall.NAT_MATCHED), inputNatResult.Action(), "InputNat should match the applied Inbound NAT rule")
+
+		natResult, ok := inputNatResult.(*firewall.NatMatchResult)
+		assert.True(t, ok, "InputNat result should be of type *firewall.NatMatchResult")
+		if ok {
+			assert.Equal(t, "192.168.1.10/32", natResult.TranslateTo().Dst().String(), "Inbound NAT should translate to the correct address")
+			assert.Equal(t, "TCP:--|80", natResult.TranslateTo().Service().String(), "Inbound NAT should translate to the correct service")
+		}
+
+	})
+
+	t.Run("ACLBasedDynamicNAT", func(t *testing.T) {
+		node, ctx, templates := setupTest()
+		from := NewSecPathPort("eth1", "trust", nil, nil).WithZone("trust")
+		out := NewSecPathPort("eth2", "untrust", nil, nil).WithZone("untrust")
+
+		// 创建动态 NAT 意图
+		dynamicNatIntent := &policy.Intent{
+			TicketNumber: "TICKET789",
+			SubTicket:    "SUB202",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.0.0/24"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp"),
+			},
+			Snat: "203.0.113.1-203.0.113.10",
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		data := map[string]interface{}{
+			"description": "ACL Based Dynamic NAT Test",
+			// "acl_id":      "3000",
+			"poolName": "POOL1",
+		}
+
+		result := templates.MakeNatCli(from, out, dynamicNatIntent, ctx, data,
+			common.WithNatType(firewall.DYNAMIC_NAT),
+			common.WithNatProcessMode(common.DynamicNat),
+			common.WithObjectStyle(true),
+			common.WithServiceObjects(true),
+			common.WithAclGeneration(true))
+
+		assert.True(t, result.IsValid())
+		assert.NotEmpty(t, result.CLIString)
+
+		clis := result.MergeFlyObjectAndCLIString()
+
+		// 检查 ACL 配置
+		assert.Contains(t, clis, "acl advanced 3000")
+		assert.Contains(t, clis, "rule permit tcp source 192.168.0.0 0.0.0.255")
+
+		// 检查 NAT 配置
+		assert.Contains(t, clis, "nat outbound 3000")
+		assert.Contains(t, clis, "address-group")
+		// assert.Contains(t, clis, "203.0.113.1 203.0.113.10")
+
+		// 应用配置
+		node.FlyConfig(result.FlyObject)
+
+		// 验证动态 NAT 规则是否正确应用
+		outputNatResult := node.OutputNat(dynamicNatIntent, from, out)
+		assert.Equal(t, int(firewall.NAT_MATCHED), outputNatResult.Action(), "OutputNat should match the applied ACL-based Dynamic NAT rule")
+
+		natResult, ok := outputNatResult.(*firewall.NatMatchResult)
+		assert.True(t, ok, "OutputNat result should be of type *firewall.NatMatchResult")
+		if ok {
+			assert.Equal(t, "203.0.113.1-203.0.113.10", natResult.TranslateTo().Src().String(), "Dynamic NAT should translate to the correct address range")
+			assert.Equal(t, "TCP", natResult.TranslateTo().Service().String(), "Dynamic NAT should maintain the correct service")
+		}
+
+	})
+
+}
+
+// TestCreateOrReuseNatAddressGroup 测试 CreateOrReuseNatAddressGroup 函数
+func TestCreateOrReuseNatAddressGroup(t *testing.T) {
+	node := NewTestSecPathNode()
+	ctx := &firewall.PolicyContext{
+		Node:      node,
+		Variables: make(map[string]interface{}),
+	}
+	ctx.WithValue("policy_name_template", "POLICY_{site}_{UUID}")
+	ctx.WithValue("site", "TestSite")
+	ctx.WithValue("UUID", "1234567890abcdef")
+
+	data := map[string]interface{}{
+		"policy_name_template": "POLICY_{site}_{UUID}",
+	}
+
+	templates := common.NewCommonTemplates(node, ctx, common.NewSecPathTemplates(), data)
+
+	t.Run("Create new address group when no matching pool exists", func(t *testing.T) {
+		intent := &policy.Intent{
+			TicketNumber: "TICKET001",
+			SubTicket:    "SUB001",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp"),
+			},
+			Snat: "203.0.113.1-203.0.113.10", // 新的地址池，不存在匹配的
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		params := map[string]interface{}{
+			"description": "Test pool",
+		}
+
+		poolId, poolCli, err := templates.CreateOrReuseNatAddressGroup(intent, ctx, params)
+		assert.NoError(t, err, "Should not return error")
+		assert.NotEmpty(t, poolId, "Pool ID should not be empty")
+		assert.NotEmpty(t, poolCli, "Pool CLI should not be empty")
+		assert.Contains(t, poolCli, "nat address-group", "Pool CLI should contain nat address-group")
+		assert.Contains(t, poolCli, "203.0.113.1", "Pool CLI should contain start IP")
+		assert.Contains(t, poolCli, "203.0.113.10", "Pool CLI should contain end IP")
+	})
+
+	t.Run("Reuse existing address group when matching pool exists", func(t *testing.T) {
+		// 先创建一个地址组
+		config := `nat address-group 1
+address 192.168.1.1 192.168.1.10
+#`
+		node.Nats.parseAddressGroupCli(config)
+
+		// 现在尝试创建或重用相同的地址组
+		intent := &policy.Intent{
+			TicketNumber: "TICKET002",
+			SubTicket:    "SUB002",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp"),
+			},
+			Snat: "192.168.1.1-192.168.1.10", // 匹配已存在的地址组
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		params := map[string]interface{}{
+			"description": "Test pool",
+		}
+
+		poolId, poolCli, err := templates.CreateOrReuseNatAddressGroup(intent, ctx, params)
+		assert.NoError(t, err, "Should not return error")
+		assert.NotEmpty(t, poolId, "Pool ID should not be empty")
+		assert.Contains(t, poolCli, "# Reusing existing address group", "Should reuse existing address group")
+		assert.Contains(t, poolCli, "1", "Should reuse pool with ID 1")
+
+		// 验证 ctx 中设置了 pool_id
+		poolIdFromCtx, ok := ctx.GetStringValue("pool_id")
+		assert.True(t, ok, "pool_id should be set in context")
+		assert.Equal(t, poolId, poolIdFromCtx, "pool_id in context should match returned pool_id")
+	})
+
+	t.Run("Error when Snat is empty", func(t *testing.T) {
+		intent := &policy.Intent{
+			TicketNumber: "TICKET003",
+			SubTicket:    "SUB003",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp"),
+			},
+			Snat: "", // 空的 Snat
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		params := map[string]interface{}{}
+
+		poolId, poolCli, err := templates.CreateOrReuseNatAddressGroup(intent, ctx, params)
+		assert.Error(t, err, "Should return error when Snat is empty")
+		assert.Empty(t, poolId, "Pool ID should be empty on error")
+		assert.Empty(t, poolCli, "Pool CLI should be empty on error")
+	})
+
+	t.Run("Error when Snat is invalid", func(t *testing.T) {
+		intent := &policy.Intent{
+			TicketNumber: "TICKET004",
+			SubTicket:    "SUB004",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp"),
+			},
+			Snat: "invalid-ip-range", // 无效的 IP 范围
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		params := map[string]interface{}{}
+
+		poolId, poolCli, err := templates.CreateOrReuseNatAddressGroup(intent, ctx, params)
+		assert.Error(t, err, "Should return error when Snat is invalid")
+		assert.Empty(t, poolId, "Pool ID should be empty on error")
+		assert.Empty(t, poolCli, "Pool CLI should be empty on error")
+	})
+
+	t.Run("Create pool with custom pool_name in params", func(t *testing.T) {
+		intent := &policy.Intent{
+			TicketNumber: "TICKET005",
+			SubTicket:    "SUB005",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.2.0/24"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp"),
+			},
+			Snat: "203.0.113.20-203.0.113.30",
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		params := map[string]interface{}{
+			"pool_name": "CUSTOM_POOL_NAME",
+		}
+
+		poolId, poolCli, err := templates.CreateOrReuseNatAddressGroup(intent, ctx, params)
+		assert.NoError(t, err, "Should not return error")
+		assert.NotEmpty(t, poolId, "Pool ID should not be empty")
+		assert.NotEmpty(t, poolCli, "Pool CLI should not be empty")
+		assert.Contains(t, poolCli, "CUSTOM_POOL_NAME", "Pool CLI should contain custom pool name")
+	})
+
+	t.Run("Create pool with snat_object_name_template and parse verify", func(t *testing.T) {
+		// 创建新的节点，确保干净的状态
+		testNode := NewTestSecPathNode()
+		testCtx := &firewall.PolicyContext{
+			Node:      testNode,
+			Variables: make(map[string]interface{}),
+		}
+		testCtx.WithValue("policy_name_template", "POLICY_{site}_{UUID}")
+		testCtx.WithValue("site", "TestSite")
+		testCtx.WithValue("UUID", "1234567890abcdef")
+
+		testData := map[string]interface{}{
+			"policy_name_template": "POLICY_{site}_{UUID}",
+		}
+
+		testTemplates := common.NewCommonTemplates(testNode, testCtx, common.NewSecPathTemplates(), testData)
+
+		intent := &policy.Intent{
+			TicketNumber: "TICKET006",
+			SubTicket:    "SUB006",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.3.0/24"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp"),
+			},
+			Snat: "203.0.113.50-203.0.113.60",
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		params := map[string]interface{}{
+			"make_snat":   "true",
+			"policy_name": "POLICY_TestSite_1234567890abcdef",
+			"securitypolicy.snat_object_name_template": "SNAT_{policy_name}",
+		}
+
+		poolId, poolCli, err := testTemplates.CreateOrReuseNatAddressGroup(intent, testCtx, params)
+		assert.NoError(t, err, "Should not return error")
+		assert.NotEmpty(t, poolId, "Pool ID should not be empty")
+		assert.NotEmpty(t, poolCli, "Pool CLI should not be empty")
+		assert.Contains(t, poolCli, "nat address-group", "Pool CLI should contain nat address-group")
+		assert.Contains(t, poolCli, "203.0.113.50", "Pool CLI should contain start IP")
+		assert.Contains(t, poolCli, "203.0.113.60", "Pool CLI should contain end IP")
+
+		// 解析生成的 CLI
+		testNode.Nats.parseAddressGroupCli(poolCli)
+
+		// 验证解析后的地址组
+		assert.Greater(t, len(testNode.Nats.addrGroups), 0, "Should have at least one address group after parsing")
+
+		// 使用迭代器查找匹配的 pool
+		iterator := testNode.NatPoolIterator()
+		found := false
+		expectedNet, err := network.NewNetworkGroupFromString("203.0.113.50-203.0.113.60")
+		assert.NoError(t, err, "Should create expected network group")
+
+		var matchedPool firewall.NatPool
+		for iterator.HasNext() {
+			pool := iterator.Next().(firewall.NatPool)
+			if pool.MatchNetworkGroup(expectedNet) {
+				found = true
+				matchedPool = pool
+				break
+			}
+		}
+		assert.True(t, found, "Should find matching pool after parsing")
+		assert.NotNil(t, matchedPool, "Matched pool should not be nil")
+		// 注意：解析后的 pool ID 是数字（GroupNumber），而生成的 poolId 可能是模板名称
+		// 验证 pool 的网络组匹配即可，ID 可能不同（因为 SecPath 的 nat address-group 需要数字 ID）
+		assert.True(t, matchedPool.MatchNetworkGroup(expectedNet), "Matched pool should match the expected network group")
+		// 验证 pool_name 是否包含在 CLI 中（如果使用模板生成）
+		assert.Contains(t, poolCli, "SNAT_POLICY_TestSite_1234567890abcdef", "Pool CLI should contain template-generated pool name")
+	})
+
+	t.Run("Create pool with make_snat=false should not create pool", func(t *testing.T) {
+		testNode := NewTestSecPathNode()
+		testCtx := &firewall.PolicyContext{
+			Node:      testNode,
+			Variables: make(map[string]interface{}),
+		}
+
+		testData := map[string]interface{}{}
+		testTemplates := common.NewCommonTemplates(testNode, testCtx, common.NewSecPathTemplates(), testData)
+
+		intent := &policy.Intent{
+			TicketNumber: "TICKET007",
+			SubTicket:    "SUB007",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.4.0/24"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp"),
+			},
+			Snat: "203.0.113.70-203.0.113.80",
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		params := map[string]interface{}{
+			"make_snat": "false", // 不创建 pool
+		}
+
+		poolId, poolCli, err := testTemplates.CreateOrReuseNatAddressGroup(intent, testCtx, params)
+		assert.NoError(t, err, "Should not return error when make_snat=false")
+		assert.Empty(t, poolId, "Pool ID should be empty when make_snat=false")
+		assert.Empty(t, poolCli, "Pool CLI should be empty when make_snat=false")
+	})
+
+	t.Run("Create pool, parse and verify with iterator", func(t *testing.T) {
+		// 创建新的节点，确保干净的状态
+		testNode := NewTestSecPathNode()
+		testCtx := &firewall.PolicyContext{
+			Node:      testNode,
+			Variables: make(map[string]interface{}),
+		}
+		testCtx.WithValue("policy_name_template", "POLICY_{site}_{UUID}")
+		testCtx.WithValue("site", "TestSite")
+		testCtx.WithValue("UUID", "1234567890abcdef")
+
+		testData := map[string]interface{}{
+			"policy_name_template": "POLICY_{site}_{UUID}",
+		}
+
+		testTemplates := common.NewCommonTemplates(testNode, testCtx, common.NewSecPathTemplates(), testData)
+
+		intent := &policy.Intent{
+			TicketNumber: "TICKET008",
+			SubTicket:    "SUB008",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.5.0/24"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp"),
+			},
+			Snat: "203.0.113.100-203.0.113.110",
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		params := map[string]interface{}{
+			"make_snat":   "true",
+			"policy_name": "POLICY_TestSite_1234567890abcdef",
+		}
+
+		// 创建 pool
+		poolId, poolCli, err := testTemplates.CreateOrReuseNatAddressGroup(intent, testCtx, params)
+		assert.NoError(t, err, "Should not return error")
+		assert.NotEmpty(t, poolId, "Pool ID should not be empty")
+		assert.NotEmpty(t, poolCli, "Pool CLI should not be empty")
+
+		// 解析生成的 CLI
+		testNode.Nats.parseAddressGroupCli(poolCli)
+
+		// 验证解析后的地址组数量
+		initialCount := len(testNode.Nats.addrGroups)
+		assert.Greater(t, initialCount, 0, "Should have at least one address group after parsing")
+
+		// 使用迭代器查找匹配的 pool
+		iterator := testNode.NatPoolIterator()
+		found := false
+		expectedNet, err := network.NewNetworkGroupFromString("203.0.113.100-203.0.113.110")
+		assert.NoError(t, err, "Should create expected network group")
+
+		var matchedPool firewall.NatPool
+		for iterator.HasNext() {
+			pool := iterator.Next().(firewall.NatPool)
+			if pool.MatchNetworkGroup(expectedNet) {
+				found = true
+				matchedPool = pool
+				break
+			}
+		}
+		assert.True(t, found, "Should find matching pool after parsing")
+		assert.NotNil(t, matchedPool, "Matched pool should not be nil")
+		assert.Equal(t, poolId, matchedPool.ID(), "Pool ID should match")
+
+		// 再次调用 CreateOrReuseNatAddressGroup，应该复用已存在的 pool
+		reusePoolId, reusePoolCli, err := testTemplates.CreateOrReuseNatAddressGroup(intent, testCtx, params)
+		assert.NoError(t, err, "Should not return error when reusing")
+		assert.Equal(t, poolId, reusePoolId, "Should reuse the same pool ID")
+		assert.Contains(t, reusePoolCli, "# Reusing existing address group", "Should indicate reuse")
+		assert.Contains(t, reusePoolCli, poolId, "Should contain the reused pool ID")
+	})
+
+	t.Run("Error when snat overlaps with existing pool but does not match exactly", func(t *testing.T) {
+		// 创建新的节点，确保干净的状态
+		testNode := NewTestSecPathNode()
+		testCtx := &firewall.PolicyContext{
+			Node:      testNode,
+			Variables: make(map[string]interface{}),
+		}
+
+		testData := map[string]interface{}{}
+		testTemplates := common.NewCommonTemplates(testNode, testCtx, common.NewSecPathTemplates(), testData)
+
+		// 先创建一个地址组：192.168.1.1-192.168.1.10
+		config := `nat address-group 1
+address 192.168.1.1 192.168.1.10
+#`
+		testNode.Nats.parseAddressGroupCli(config)
+
+		// 现在尝试创建一个与现有 pool 重叠但不完全匹配的 snat：192.168.1.5-192.168.1.15
+		// 这个 snat 与 pool 1 重叠（192.168.1.5-192.168.1.10），但不完全匹配
+		intent := &policy.Intent{
+			TicketNumber: "TICKET009",
+			SubTicket:    "SUB009",
+			PolicyEntry: policy.PolicyEntry{
+				PolicyEntrySrc:     mustNetworkGroup("192.168.1.0/24"),
+				PolicyEntryDst:     network.NewAny4Group(),
+				PolicyEntryService: mustNewService("tcp"),
+			},
+			Snat: "192.168.1.5-192.168.1.15", // 与 pool 1 重叠但不完全匹配
+			MetaData: map[string]string{
+				"system_name": "SYS",
+				"app_name":    "APP",
+			},
+		}
+
+		params := map[string]interface{}{
+			"make_snat": "true",
+		}
+
+		poolId, poolCli, err := testTemplates.CreateOrReuseNatAddressGroup(intent, testCtx, params)
+		assert.Error(t, err, "Should return error when snat overlaps with existing pool but does not match exactly")
+		assert.Contains(t, err.Error(), "overlaps with existing pool", "Error message should indicate overlap")
+		assert.Contains(t, err.Error(), "does not match exactly", "Error message should indicate not exact match")
+		assert.Empty(t, poolId, "Pool ID should be empty on error")
+		assert.Empty(t, poolCli, "Pool CLI should be empty on error")
+	})
+}

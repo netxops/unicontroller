@@ -1,0 +1,5 @@
+#name: hostnameTransform
+#mappings:
+#  - inputField: sysHostname#value
+#    outputField: hostname
+#    unchanged: true

@@ -1,0 +1,14 @@
+base_mode_config: mode_config/base_mode_config.yaml
+base_templates:
+  - alive/base/ssh_alive_check.yaml
+  - collect/base/hostname_collect.yaml
+  - collect/base/version_collect.yaml
+  - collect/base/interface_collect.yaml
+  - collect/base/architecture_collect.yaml
+  - collect/base/kernel_collect.yaml
+  - parse/base/version_extract.yaml
+  - parse/base/platform_extract.yaml
+  - transform/base/hostname_platform_version_transform.yaml
+  - transform/base/interface_transform.yaml
+
+

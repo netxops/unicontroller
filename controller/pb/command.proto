@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "github.com/influxdata/telegraf/controller/pb";
+
+message ExecCommandReq {
+  string command = 1;
+  bool continuous = 2;  // 标识是否为持续运行的命令
+}
+
+message ExecCommandResp {
+  string out = 1;
+  string err = 2;
+  string command_id = 3;  // 用于标识持续运行的命令
+}
+
+enum ExecCommandSignalType {
+  CANCEL = 0;
+  PAUSE = 1;
+  RESUME = 2;
+}
+
+message ExecCommandSignalReq {
+  string command_id = 1;
+  ExecCommandSignalType signal = 2;
+}
+
+message ExecCommandSignalResp {
+  bool success = 1;
+}
+
+message GetCommandStatusReq {
+  string command_id = 1;
+}
+
+message GetCommandStatusResp {
+  string command_id = 1;
+  string status = 2;
+  int64 start_time = 3;
+  double duration = 4;
+}
+
+service Command {
+  rpc ExecCommand (ExecCommandReq) returns (stream ExecCommandResp);
+  rpc ExecCommandSignal (ExecCommandSignalReq) returns (ExecCommandSignalResp);
+  rpc GetCommandStatus (GetCommandStatusReq) returns (GetCommandStatusResp);
+}

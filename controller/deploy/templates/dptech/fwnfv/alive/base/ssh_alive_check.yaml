@@ -1,0 +1,6 @@
+name: sshAliveCheck
+method: SSH
+target: aliveCheck
+dataType: map[string]string
+timeout: 5s
+expectedType: JSON

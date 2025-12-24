@@ -1,0 +1,20 @@
+========== 节点路由表: CTY-YZ-JS-YZ-MTDD-01D04F403-J01_12-02U23-H3C-F5000-NFW ==========
+生成时间: 2025-12-02 14:35:25
+
+
+---------- VRF: default (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+192.168.0.0/16       192.167.254.11       Route-Aggregation2.1204 false      false     
+0.0.0.0/0            192.167.255.11       Route-Aggregation2.1203 false      true      
+
+默认网关:
+  NextHop: 192.167.255.11, Interface: Route-Aggregation2.1203, Connected: false
+
+---------- VRF: management (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+0.0.0.0/0            132.254.194.254      GigabitEthernet1/0/0 false      true      
+
+默认网关:
+  NextHop: 132.254.194.254, Interface: GigabitEthernet1/0/0, Connected: false

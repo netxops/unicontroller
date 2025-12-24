@@ -1,0 +1,8 @@
+name: versionExtract
+inputField: versionCollect#value
+outputField: version
+dataType: map[string]string
+expectedType: string
+operation: Regex
+pattern: VERSION_ID="([\d\.]+)"
+

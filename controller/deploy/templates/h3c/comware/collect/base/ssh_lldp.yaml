@@ -1,0 +1,6 @@
+name: sshLldp
+method: SSH
+target: display lldp neighbor-information verbose
+dataType: map[string]string
+timeout: 5s
+expectedType: JSON

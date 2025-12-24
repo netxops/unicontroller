@@ -1,0 +1,7 @@
+name: sysVersionProcess
+indexPositions: [1]
+dataType: map[string]string
+classifierPositions: [0]
+classifierToNameMap:
+  "2": "description"
+inputField: sysVersion

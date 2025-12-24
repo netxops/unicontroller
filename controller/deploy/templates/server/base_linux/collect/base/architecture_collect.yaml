@@ -1,0 +1,7 @@
+name: architectureCollect
+method: SSH
+dataType: map[string]string
+target: uname -m
+timeout: 10s
+expectedType: Text
+

@@ -1,0 +1,187 @@
+policy:
+  destination: 192.168.117.130/32
+  realIp: 192.168.113.129/32
+  service:
+    port: 443-443
+    protocol: tcp
+  source: 172.32.2.96/28,172.32.2.133-172.32.2.141
+  ticketNumber: WOF20251124013_nat_00003
+
+policy:
+  realIp: 192.168.117.2/32
+  service:
+    port: 2443-2443
+    protocol: tcp
+  source: 172.32.2.16-172.32.2.47
+  ticketNumber: Dnat_inside_2
+
+policy:
+  realIp: 192.168.117.1/32
+  service:
+    port: 8443-8443
+    protocol: tcp
+  source: 172.32.2.4/32,172.32.2.6-172.32.2.10
+  ticketNumber: Dnat_inside_1
+
+policy:
+  destination: 172.32.2.100/32,172.32.2.129-172.32.2.138
+  realIp: 172.32.100.128/28
+  service:
+    port: 0-65535
+    protocol: tcp
+  source: 192.168.112.128/28,192.168.113.128-192.168.113.139
+  ticketNumber: WOF20251124011_nat_00002
+
+policy:
+  destination: 172.32.2.129-172.32.2.138
+  realIp: 172.32.100.129/32
+  service:
+    port: 0-65535
+    protocol: tcp
+  source: 192.168.112.128/32
+  ticketNumber: WOF20251124010_nat_00001
+
+policy:
+  destination: 172.32.2.20/32,172.32.2.32/28
+  realIp: 172.32.100.10-172.32.100.20
+  source: 192.168.113.32/28,192.168.113.254/32
+  ticketNumber: Snat_outside_2
+
+policy:
+  destination: 172.32.2.1/32
+  realIp: 172.32.100.254/32
+  source: 192.168.112.1-192.168.112.10,192.168.112.16/28
+  ticketNumber: Snat_outside_1
+
+policy:
+  destination: 192.168.113.129/32
+  service:
+    port: 80-80
+    protocol: tcp
+  source: 172.32.2.96/28,172.32.2.133-172.32.2.141
+  ticketNumber: WOF20251124013_policy_10001
+
+policy:
+  destination: 172.32.2.100/32,172.32.2.129-172.32.2.138
+  service:
+    port: 0-65535
+    protocol: tcp
+  source: 192.168.112.128/28,192.168.113.128-192.168.113.139
+  ticketNumber: WOF20251124011_policy_10000
+
+policy:
+  destination: 172.32.2.1/32
+  service:
+    port: 22-22,443-443
+    protocol: tcp
+  source: 192.168.112.254/32
+  ticketNumber: outside_policy
+
+policy:
+  destination: 172.32.2.6-172.32.2.10
+  service:
+    port: 80-80,8080-8080
+    protocol: tcp
+  source: 192.168.115.254/32
+  ticketNumber: outside_policy
+
+policy:
+  destination: 172.32.2.4/32,172.32.2.16/28
+  service:
+    port: 23-23,1521-1521
+    protocol: tcp
+  source: 192.168.112.16/28,192.168.114.1-192.168.114.10
+  ticketNumber: outside_policy
+
+policy:
+  destination: 172.32.2.6-172.32.2.10
+  service:
+    port: 22-22,443-443
+    protocol: tcp
+  source: 192.168.114.1-192.168.114.10
+  ticketNumber: outside_policy
+
+policy:
+  destination: 172.32.2.2/32,172.32.2.16-172.32.2.47
+  service:
+    port: 80-80,8080-8080
+    protocol: tcp
+  source: 192.168.113.32/28,192.168.116.1-192.168.116.10,192.168.116.254/32
+  ticketNumber: outside_policy
+
+policy:
+  destination: 172.32.2.2/32,172.32.2.20/32
+  service:
+    port: 23-23,1521-1521
+    protocol: tcp
+  source: 192.168.112.1-192.168.112.10
+  ticketNumber: outside_policy
+
+policy:
+  destination: 192.168.112.16/28,192.168.114.1-192.168.114.10
+  service:
+    port: 443-443
+    protocol: tcp
+  source: 172.32.2.1/32
+  ticketNumber: inside_policy
+
+policy:
+  destination: 192.168.114.1-192.168.114.10
+  service:
+    port: 80-80,8080-8080
+    protocol: tcp
+  source: 172.32.2.6-172.32.2.10
+  ticketNumber: inside_policy
+
+policy:
+  destination: 192.168.112.254/32
+  service:
+    port: 23-23
+    protocol: tcp
+  source: 172.32.2.4/32,172.32.2.16/28
+  ticketNumber: inside_policy
+
+policy:
+  destination: 192.168.115.254/32
+  service:
+    port: 443-443
+    protocol: tcp
+  source: 172.32.2.6-172.32.2.10
+  ticketNumber: inside_policy
+
+policy:
+  destination: 192.168.112.16/28,192.168.114.1-192.168.114.10
+  service:
+    port: 80-80,8080-8080
+    protocol: tcp
+  source: 172.32.2.2/32,172.32.2.16-172.32.2.47
+  ticketNumber: inside_policy
+
+policy:
+  destination: 192.168.113.32/28,192.168.116.1-192.168.116.10,192.168.116.254/32
+  service:
+    port: 23-23
+    protocol: tcp
+  source: 172.32.2.2/32,172.32.2.20/32
+  ticketNumber: inside_policy
+
+policy:
+  destination: 0.0.0.0/0,::/0
+  service:
+    port: 8443-8443
+    protocol: tcp
+  source: 182.168.112.25/32
+  ticketNumber: NAT_112.25_policy_10000
+
+policy:
+  destination: 192.168.113.0/24
+  service:
+    port: 22-22,443-443,999-1005,8443-8443,8888-8888,5555-5555
+    protocol: icmp,tcp,udp
+  source: 172.32.2.11/32
+  ticketNumber: 带外管理-1
+
+policy:
+  destination: 0.0.0.0/0,::/0
+  source: 0.0.0.0/0,::/0
+  ticketNumber: default-policy

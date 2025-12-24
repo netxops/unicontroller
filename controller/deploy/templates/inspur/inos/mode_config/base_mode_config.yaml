@@ -1,0 +1,16 @@
+prompts:
+  - "^(?:(?:[\\w.\\/]+:)?[\\w.-]+\\s?(?:\\(config[^\\)]*\\))?\\s?[\\$#>]((\\s+$)|(\\s?(?:\\(enable\\))?\\s*$)))"
+err_prompts:
+  - "% Incomplete"
+  - "% Bad"
+  - "% Invalid"
+  - "% Unrecognized"
+init_commands:
+  - "terminal length 0"
+save_commands:
+  - "wr"
+first_chain:
+  - "do show running-config"
+last_chain:
+  - "do show running-config"
+auth_cmd: "enable"

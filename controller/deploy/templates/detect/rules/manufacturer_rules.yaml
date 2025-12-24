@@ -1,0 +1,140 @@
+# 厂商识别规则
+# 用于从设备信息中识别设备厂商
+
+rules:
+  # Cisco识别规则
+  - name: cisco_snmp
+    manufacturer: Cisco
+    catalog: NETWORK
+    priority: 10
+    patterns:
+      - source: sysDescr
+        regex: "(?i)cisco"
+        confidence: 0.9
+        required: true
+      - source: sysDescr
+        regex: "(?i)cisco.*systems"
+        confidence: 0.8
+  
+  - name: cisco_ssh
+    manufacturer: Cisco
+    catalog: NETWORK
+    priority: 10
+    patterns:
+      - source: versionInfo
+        regex: "(?i)cisco"
+        confidence: 0.9
+        required: true
+  
+  # Huawei识别规则
+  - name: huawei_snmp
+    manufacturer: Huawei
+    catalog: NETWORK
+    priority: 10
+    patterns:
+      - source: sysDescr
+        regex: "(?i)huawei"
+        confidence: 0.9
+        required: true
+  
+  - name: huawei_ssh
+    manufacturer: Huawei
+    catalog: NETWORK
+    priority: 10
+    patterns:
+      - source: versionInfo
+        regex: "(?i)huawei|vrp"
+        confidence: 0.9
+        required: true
+  
+  # H3C识别规则
+  - name: h3c_snmp
+    manufacturer: H3C
+    catalog: NETWORK
+    priority: 10
+    patterns:
+      - source: sysDescr
+        regex: "(?i)h3c|comware"
+        confidence: 0.9
+        required: true
+  
+  - name: h3c_ssh
+    manufacturer: H3C
+    catalog: NETWORK
+    priority: 10
+    patterns:
+      - source: versionInfo
+        regex: "(?i)h3c|comware|secpath"
+        confidence: 0.9
+        required: true
+  
+  # Dell识别规则
+  - name: dell_snmp
+    manufacturer: Dell
+    catalog: SERVER
+    priority: 10
+    patterns:
+      - source: sysDescr
+        regex: "(?i)dell"
+        confidence: 0.9
+        required: true
+  
+  - name: dell_ssh
+    manufacturer: Dell
+    catalog: SERVER
+    priority: 10
+    patterns:
+      - source: osRelease
+        regex: "(?i)dell"
+        confidence: 0.7
+      - source: unameInfo
+        regex: "(?i)dell"
+        confidence: 0.7
+  
+  # Dptech识别规则
+  - name: dptech_snmp
+    manufacturer: Dptech
+    catalog: NETWORK
+    priority: 10
+    patterns:
+      - source: sysDescr
+        regex: "(?i)dptech|dp.*tech"
+        confidence: 0.9
+        required: true
+  
+  # Sangfor识别规则
+  - name: sangfor_snmp
+    manufacturer: Sangfor
+    catalog: NETWORK
+    priority: 10
+    patterns:
+      - source: sysDescr
+        regex: "(?i)sangfor"
+        confidence: 0.9
+        required: true
+  
+  # Ruijie识别规则
+  - name: ruijie_snmp
+    manufacturer: Ruijie
+    catalog: NETWORK
+    priority: 10
+    patterns:
+      - source: sysDescr
+        regex: "(?i)ruijie"
+        confidence: 0.9
+        required: true
+  
+  # 通用服务器识别规则
+  - name: server_linux
+    manufacturer: server
+    catalog: SERVER
+    priority: 5
+    patterns:
+      - source: osRelease
+        regex: "(?i)NAME=.*"
+        confidence: 0.7
+        required: true
+      - source: unameInfo
+        regex: "(?i)linux"
+        confidence: 0.6
+

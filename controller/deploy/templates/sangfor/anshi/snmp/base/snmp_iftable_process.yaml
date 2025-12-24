@@ -1,0 +1,40 @@
+# 处理项的名称，用于标识这个特定的 SNMP 接口表处理配置
+name: snmpIftableProcess
+
+# 定义如何从 SNMP OID 后缀中提取索引
+# [1] 表示使用 OID 后缀的第二个元素作为索引
+# 例如，如果 OID 后缀是 "1.2.3.4.5"，那么索引将是 "2"
+indexPositions: [1]
+
+# 定义如何从 SNMP OID 后缀中提取分类器
+# [0] 表示使用 OID 后缀的第一个元素作为分类器
+# 例如，如果 OID 后缀是 "1.2.3.4.5"，那么分类器将是 "1"
+classifierPositions: [0]
+
+# 将 SNMP 数据中的分类器映射到更有意义的名称
+classifierToNameMap:
+  "2": "name"           # 接口名称
+  "3": "phy_protocol"   # 物理层协议
+  "6": "mac"            # MAC 地址
+  "8": "status"         # 接口状态
+classifierProcessors:
+  "6": "MacPDU"
+# 指定输入数据的字段名
+# 表示这个处理项将处理名为 "snmpIftable" 的输入数据
+inputField: snmpIftable
+
+# 定义值映射，用于将原始的数值映射到更有意义的字符串
+valueMapping:
+  # 接口状态的映射
+  status:
+    "1": "up"       # 接口启用
+    "2": "down"     # 接口关闭
+    "3": "testing"  # 接口处于测试状态
+
+  # 物理层协议的映射
+  phy_protocol:
+    "1": "other"              # 其他类型
+    "6": "ethernet"           # 以太网
+    "23": "ppp"               # 点对点协议
+    "24": "softwareLoopback"  # 软件环回接口
+    "131": "tunnel"           # 隧道接口

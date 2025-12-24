@@ -1,0 +1,1 @@
+sangfor没有nat pool这类概念

@@ -1,0 +1,96 @@
+========== 节点路由表: NJ-GL4F-G16U5-FW.RP.M9010 ==========
+生成时间: 2025-12-02 14:35:31
+
+
+---------- VRF: default (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+132.254.240.0/20     132.252.151.193      Route-Aggregation12.1058 false      false     
+132.252.146.0/23     132.252.151.201      Route-Aggregation12.1059 false      false     
+132.224.84.0/24      132.252.151.145      Route-Aggregation12.1052 false      false     
+132.224.85.0/24      132.252.151.145      Route-Aggregation12.1052 false      false     
+132.224.86.0/24      132.252.151.145      Route-Aggregation12.1052 false      false     
+132.224.87.0/24      132.252.151.201      Route-Aggregation12.1059 false      false     
+132.224.88.0/24      132.252.151.201      Route-Aggregation12.1059 false      false     
+132.224.90.0/24      132.252.151.145      Route-Aggregation12.1052 false      false     
+132.252.58.0/24      132.252.151.193      Route-Aggregation12.1058 false      false     
+132.252.59.0/24      132.252.151.193      Route-Aggregation12.1058 false      false     
+132.252.128.0/24     132.252.151.145      Route-Aggregation12.1052 false      false     
+132.252.130.0/24     132.252.151.145      Route-Aggregation12.1052 false      false     
+132.252.132.0/24     132.252.151.153      Route-Aggregation12.1053 false      false     
+132.252.134.0/24     132.252.151.169      Route-Aggregation12.1055 false      false     
+132.252.136.0/24     132.252.151.161      Route-Aggregation12.1054 false      false     
+132.252.138.0/24     132.252.151.193      Route-Aggregation12.1058 false      false     
+132.252.140.0/24     132.252.151.177      Route-Aggregation12.1056 false      false     
+132.252.142.0/24     132.252.151.145      Route-Aggregation12.1052 false      false     
+132.252.143.0/24     132.252.151.145      Route-Aggregation12.1052 false      false     
+132.252.144.0/24     132.252.151.177      Route-Aggregation12.1056 false      false     
+132.252.145.0/24     132.252.151.209      Route-Aggregation12.1060 false      false     
+132.252.149.0/24     132.252.151.201      Route-Aggregation12.1059 false      false     
+132.252.150.0/24     132.252.151.201      Route-Aggregation12.1059 false      false     
+132.252.152.0/24     132.252.151.193      Route-Aggregation12.1058 false      false     
+132.252.153.0/24     132.252.151.201      Route-Aggregation12.1059 false      false     
+132.252.154.0/24     132.252.151.217      Route-Aggregation12.1061 false      false     
+132.252.155.0/24     132.252.151.217      Route-Aggregation12.1061 false      false     
+132.224.70.128/25    132.252.151.193      Route-Aggregation12.1058 false      false     
+132.224.71.0/25      132.252.151.145      Route-Aggregation12.1052 false      false     
+132.224.71.128/25    132.252.151.177      Route-Aggregation12.1056 false      false     
+132.224.89.0/25      132.252.151.153      Route-Aggregation12.1053 false      false     
+132.252.129.0/25     132.252.151.145      Route-Aggregation12.1052 false      false     
+132.252.129.128/25   132.252.151.145      Route-Aggregation12.1052 false      false     
+132.252.131.0/25     132.252.151.145      Route-Aggregation12.1052 false      false     
+132.252.131.128/25   132.252.151.145      Route-Aggregation12.1052 false      false     
+132.252.133.0/25     132.252.151.153      Route-Aggregation12.1053 false      false     
+132.252.133.128/25   132.252.151.153      Route-Aggregation12.1053 false      false     
+132.252.135.0/25     132.252.151.169      Route-Aggregation12.1055 false      false     
+132.252.135.128/25   132.252.151.169      Route-Aggregation12.1055 false      false     
+132.252.137.0/25     132.252.151.161      Route-Aggregation12.1054 false      false     
+132.252.137.128/25   132.252.151.161      Route-Aggregation12.1054 false      false     
+132.252.139.0/25     132.252.151.193      Route-Aggregation12.1058 false      false     
+132.252.139.128/25   132.252.151.193      Route-Aggregation12.1058 false      false     
+132.252.141.0/25     132.252.151.185      Route-Aggregation12.1057 false      false     
+132.252.141.128/25   132.252.151.185      Route-Aggregation12.1057 false      false     
+132.252.148.0/25     132.252.151.201      Route-Aggregation12.1059 false      false     
+132.252.148.128/25   132.252.151.201      Route-Aggregation12.1059 false      false     
+132.224.69.64/26     132.252.151.193      Route-Aggregation12.1058 false      false     
+132.224.69.192/26    132.252.151.193      Route-Aggregation12.1058 false      false     
+132.224.70.0/26      132.252.151.225      Route-Aggregation12.1062 false      false     
+132.224.89.128/26    132.252.151.153      Route-Aggregation12.1053 false      false     
+132.224.89.192/26    132.252.151.153      Route-Aggregation12.1053 false      false     
+132.224.91.0/26      132.252.151.177      Route-Aggregation12.1056 false      false     
+132.224.70.96/27     132.252.151.225      Route-Aggregation12.1062 false      false     
+132.224.70.64/28     132.252.151.225      Route-Aggregation12.1062 false      false     
+132.224.70.80/29     132.252.151.193      Route-Aggregation12.1058 false      false     
+132.224.70.88/29     132.252.151.233      Route-Aggregation12.1063 false      false     
+132.228.127.248/29   132.252.151.193      Route-Aggregation12.1058 false      false     
+132.228.176.240/29   132.252.151.193      Route-Aggregation12.1058 false      false     
+132.252.151.112/29   132.252.151.201      Route-Aggregation12.1059 false      false     
+132.252.151.120/29   132.252.151.209      Route-Aggregation12.1060 false      false     
+132.252.151.248/29   132.252.151.201      Route-Aggregation12.1059 false      false     
+0.0.0.0/0            132.252.151.137      Route-Aggregation12.1051 false      true      
+
+默认网关:
+  NextHop: 132.252.151.137, Interface: Route-Aggregation12.1051, Connected: false
+
+---------- VRF: default (IPv6) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+240e:1c7:8001:10::/60 240E:1C7:8001:1:132:252:151:91 Route-Aggregation12.1052 false      false     
+240e:1c7:8001:20::/60 240E:1C7:8001:1:132:252:151:91 Route-Aggregation12.1052 false      false     
+240e:1c7:8001:30::/60 240E:1C7:8001:1:132:252:151:99 Route-Aggregation12.1053 false      false     
+240e:1c7:8001:40::/60 240E:1C7:8001:1:132:252:151:A1 Route-Aggregation12.1054 false      false     
+240e:1c7:8001:50::/60 240E:1C7:8001:1:132:252:151:A9 Route-Aggregation12.1055 false      false     
+240e:1c7:8001:60::/60 240E:1C7:8001:1:132:252:151:C1 Route-Aggregation12.1058 false      false     
+240e:1c7:8001:70::/60 240E:1C7:8001:1:132:252:151:E1 Route-Aggregation12.1062 false      false     
+240e:1c7:8001:80::/60 240E:1C7:8001:1:132:252:151:B9 Route-Aggregation12.1057 false      false     
+240e:1c7:8001:90::/60 240E:1C7:8001:1:132:252:151:B1 Route-Aggregation12.1056 false      false     
+240e:1c7:8001:b0::/60 240E:1C7:8001:1:132:252:151:D1 Route-Aggregation12.1060 false      false     
+::/0                 240E:1C7:8001:1:132:252:151:89 Route-Aggregation12.1051 false      true      
+
+默认网关:
+  NextHop: 240E:1C7:8001:1:132:252:151:89, Interface: Route-Aggregation12.1051, Connected: false
+
+---------- VRF: VRF_GL_Management (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+132.224.0.0/11       132.252.148.1        M-GigabitEthernet0/0/0 false      false     

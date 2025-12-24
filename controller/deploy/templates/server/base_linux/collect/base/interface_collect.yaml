@@ -1,0 +1,7 @@
+name: interfaceCollect
+method: SSH
+dataType: map[string]string
+target: ip addr
+timeout: 10s
+expectedType: Text
+

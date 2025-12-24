@@ -1,0 +1,9 @@
+name: snmpMacTableProcess
+indexPositions: [1,2,3,4,5,6]
+classifierPositions: [0]
+classifierToNameMap:
+  "1": "mac"
+  "2": "ifindex"
+classifierProcessors:
+  "1": "MacPDU"
+inputField: snmpMacTable

@@ -1,0 +1,6 @@
+name: HostnameExtract
+inputField: sshHostname#value
+outputField: hostname
+dataType: map[string]string
+expectedType: string
+operation: TrimSpace

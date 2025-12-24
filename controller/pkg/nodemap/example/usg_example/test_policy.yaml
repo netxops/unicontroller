@@ -1,0 +1,206 @@
+- Name: NJ-GL4F-G16U5-FW.RP.M9010
+  TestGroups:
+    - GroupName: group1
+      Policy: 
+        - PolicyName: GL4F-policy4391
+          PolicyCli: |
+            rule 4391 name GL4F-policy4391
+              description NETACC_20250529_614045
+              action pass
+              source-zone QXGUANKONG
+              destination-zone QXDCN
+              source-ip-host 132.252.138.127 
+              destination-ip-host 132.254.112.244 
+              service-port tcp destination eq 8111
+      TestCase:
+        - name: 子集
+          description: NETACC_20250529_614045
+          src: 132.252.138.127/32
+          dst: 132.254.112.244/32
+          service:
+            protocol: tcp
+            port: 8111
+        - name: 精确匹配
+          description: NETACC_20250527_611783
+          src: 132.252.138.127/32
+          dst: 132.254.112.244/32
+          service:
+            protocol: tcp
+            port: 8111
+        - name: 策略复用
+          description: NETACC_20250527_611783
+          src: 132.252.138.127/32
+          dst: 132.254.112.244/32
+          service:
+            protocol: tcp
+            port: 8822
+        - name: 新建策略
+          description: NETACC_20250527_611783
+          src: 132.252.138.126/32,132.252.138.120-132.252.138.123,132.252.138.64/26
+          dst: 132.254.112.244/32
+          service:
+            protocol: tcp
+            port: 8822,10000-10005
+
+- Name: NJ-JiS-E24-FW-1.RP.Edu8000E
+  TestGroups:
+    - GroupName: group1
+      Policy: 
+        - PolicyName: JiS_policy_2904
+          PolicyCli: |
+            rule name JiS_policy_2904
+              description NETACC_20250527_611950
+              source-zone QXDCN
+              destination-zone QXMSS
+              source-address range 132.254.22.245 132.254.22.246
+              destination-address range 132.252.35.125 132.252.35.126
+              service protocol tcp destination-port 9009 
+              action permit
+      TestCase:
+        - name: 子集
+          description: NETACC_20250527_611950
+          src: 132.254.22.245
+          dst: 132.252.35.125
+          service:
+            protocol: tcp
+            port: 9009
+        - name: 精确匹配
+          description: NETACC_20250527_611950
+          src: 132.254.22.245-132.254.22.246
+          dst: 132.252.35.125-132.252.35.126
+          service:
+            protocol: tcp
+            port: 9009
+        - name: 策略复用
+          description: NETACC_20250527_611950
+          src: 132.254.22.245-132.254.22.246
+          dst: 132.252.35.125-132.252.35.126
+          service:
+            protocol: tcp
+            port: 7788
+        - name: 新建策略
+          description: NETACC_20250527_611950
+          src: 132.254.22.241
+          dst: 132.252.35.125-132.252.35.126
+          service:
+            protocol: tcp
+            port: 7799
+
+- Name: CZ-LY-FW-1.BD.F5000
+  TestGroups:
+    - GroupName: group1
+      Policy: 
+        - PolicyName: LY_policy_1249
+          PolicyCli: |
+            object-group ip address LY_policy_1249_src_addr01
+            description LY_policy_1249_source-address
+            0 network range 132.254.168.18 132.254.168.21
+            10 network range 132.254.168.23 132.254.168.30
+            20 network range 132.254.168.32 132.254.168.41
+
+            object-group ip address CZLiY_132.224.1.246
+            0 network host address 132.224.1.246
+
+            rule 1249 name LY_policy_1249
+              description NETACC_20250528_612799
+              action pass
+              source-zone QXDCN
+              destination-zone QXBD
+              source-ip LY_policy_1249_src_addr01
+              destination-ip CZLiY_132.224.1.246
+              service TCP_9001
+      TestCase:
+        - name: 子集
+          description: NETACC_20250528_612799
+          src: 132.254.168.18-132.254.168.21
+          dst: 132.224.1.246
+          service:
+            protocol: tcp
+            port: 9001
+        - name: 精确匹配
+          description: NETACC_20250528_612799
+          src: 132.254.168.18-132.254.168.21,132.254.168.23-132.254.168.30,132.254.168.32-132.254.168.41
+          dst: 132.224.1.246
+          service:
+            protocol: tcp
+            port: 9001
+        - name: 策略复用
+          description: NETACC_20250528_612799
+          src: 132.254.168.14-132.254.168.16,132.254.168.43-132.254.168.45
+          dst: 132.224.1.246
+          service:
+            protocol: tcp
+            port: 9001
+        - name: 新建策略
+          description: NETACC_20250528_612799
+          src: 132.254.168.1,132.254.168.23-132.254.168.27,132.254.168.36/30
+          dst: 132.224.1.55
+          service:
+            protocol: tcp
+            port: 7711,10050-10055
+        - name: 新建策略
+          description: NETACC_20250528_612799
+          src: 132.254.168.1-132.254.168.27,132.254.168.36/30
+          dst: 132.224.1.250
+          service:
+            protocol: tcp
+            port: 7711,10050-10055
+
+- Name: NJ-JiS-E19-FW-1.DMZ.DP1000
+  TestGroups:
+    - GroupName: group1
+      Policy: 
+        - PolicyName: 20250113_17
+          PolicyCli: |
+            service-object TCP_9001 protocol tcp src-port 0 to 65535 dst-port 9001 to 9001
+            address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.18
+            address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.19
+            address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.109
+            security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN src-address address-group DMZ_XXB_AddressGroup01
+            security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.30
+            security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.31
+            security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN service service-object TCP_9001
+            security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN action permit
+      TestCase:
+        - name: 子集
+          description: NETACC_20250113_17
+          src: 192.168.32.18-192.168.32.19,192.168.32.109
+          dst: 132.252.24.30
+          service:
+            protocol: tcp
+            port: 9001
+        - name: 精确匹配
+          description: NETACC_20250113_17
+          src: 192.168.32.18-192.168.32.19,192.168.32.109
+          dst: 132.252.24.30-132.252.24.31
+          service:
+            protocol: tcp
+            port: 9001
+        - name: 策略复用
+          description: NETACC_20250113_17
+          src: 192.168.32.18-192.168.32.19,192.168.32.109
+          dst: 132.252.24.30-132.252.24.35
+          service:
+            protocol: tcp
+            port: 9001
+          meta_data:
+            system_name: XXB
+            description: NETACC_20250113_17
+        - name: 新建策略
+          src: 192.168.32.118-192.168.32.119,192.168.32.209
+          dst: 132.252.24.30-132.252.24.31
+          service:
+            protocol: tcp
+            port: 9001,10000-10005
+          meta_data:
+            system_name: XXB
+            description: NETACC_20250113_17
+        - name: 新建策略
+          dst: 192.168.32.118-192.168.32.119,192.168.32.209
+          src: 132.252.24.30-132.252.24.31
+          service:
+            protocol: tcp
+            port: 3000,3100-3105
+          meta_data:
+            system_name: BBC
+            description: NETACC_20250113_17

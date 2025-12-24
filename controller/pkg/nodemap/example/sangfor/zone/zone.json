@@ -1,0 +1,1017 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "description": "通过此接口，可以获得符合条件的全部安全防护策略对象(虚拟系统不支持该API)",
+        "outputSamples": {
+            "incorrect": {
+                "message": "无效参数",
+                "data": "",
+                "code": 22
+            },
+            "correct": {
+                "message": "",
+                "data": {
+                    "itemsOffset": 0,
+                    "itemLength": 1,
+                    "pageSize": 200,
+                    "items": [
+                        {
+                            "description": "",
+                            "srcAddrs": {
+                                "srcAddrType": "NETOBJECT",
+                                "userGroups": [
+                                    "/test/xxx/"
+                                ],
+                                "srcIpGroups": [
+                                    "test"
+                                ],
+                                "users": [
+                                    "admin"
+                                ]
+                            },
+                            "highlight": {
+                                "srcip": {
+                                    "exact": [
+                                        "admin"
+                                    ],
+                                    "fuzzy": "admin",
+                                    "position": "MATCH_DST_IPGROUP_BYIP"
+                                },
+                                "search": {
+                                    "exact": [
+                                        "admin"
+                                    ],
+                                    "fuzzy": "admin",
+                                    "position": "MATCH_DST_IPGROUP_BYIP"
+                                },
+                                "dstip": {
+                                    "exact": [
+                                        "admin"
+                                    ],
+                                    "fuzzy": "admin",
+                                    "position": "MATCH_DST_IPGROUP_BYIP"
+                                }
+                            },
+                            "srcZones": [
+                                "test"
+                            ],
+                            "position": 0,
+                            "enable": true,
+                            "uuid": "07150a520899461e956bd9f0a69ea82d",
+                            "monitor": {
+                                "pvsEnable": true,
+                                "createTime": "1949-10-01 10:00:00"
+                            },
+                            "dstZones": [
+                                "test"
+                            ],
+                            "strategy": "NOT_VIA_SNAT_CDN",
+                            "name": "admin",
+                            "defence": {
+                                "waf": {
+                                    "template": "test",
+                                    "enable": true,
+                                    "action": "DENY"
+                                },
+                                "ips": {
+                                    "template": "test",
+                                    "enable": true,
+                                    "action": "DENY"
+                                },
+                                "contextsafe": {
+                                    "template": "test",
+                                    "enable": true,
+                                    "action": "DENY"
+                                }
+                            },
+                            "policyType": "INTERNET_ACCESS",
+                            "dstIpGroups": [
+                                "test"
+                            ],
+                            "response": {
+                                "utm": {
+                                    "template": "test",
+                                    "enable": true,
+                                    "action": "DENY"
+                                },
+                                "innerDnsOptimize": true,
+                                "localDnsIp": [
+                                    "192.168.1.1"
+                                ],
+                                "recordLog": true,
+                                "block": {
+                                    "enable": true,
+                                    "type": "HIGH_THREATS"
+                                }
+                            }
+                        }
+                    ],
+                    "totalPages": 1,
+                    "pageNumber": 0,
+                    "totalItems": 1
+                },
+                "code": 0
+            }
+        },
+        "apiname": "getSecuritys",
+        "outputParams": [
+            {
+                "description": "错误码",
+                "relationshipKey": "code",
+                "name": "code",
+                "type": "int",
+                "docrequired": "否"
+            },
+            {
+                "description": "错误信息",
+                "relationshipKey": "message",
+                "name": "message",
+                "type": "string",
+                "docrequired": "否"
+            },
+            {
+                "description": "分页数据",
+                "relationshipKey": "data",
+                "name": "data",
+                "type": "object",
+                "docrequired": "是"
+            },
+            {
+                "description": "总共多少项目",
+                "relationshipKey": "data.totalItems",
+                "name": "totalItems",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "总共多少页",
+                "relationshipKey": "data.totalPages",
+                "name": "totalPages",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "当前页码，从 1 开始",
+                "relationshipKey": "data.pageNumber",
+                "name": "pageNumber",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "每页多大",
+                "relationshipKey": "data.pageSize",
+                "name": "pageSize",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "当前条目偏移，从 0 开始",
+                "relationshipKey": "data.itemsOffset",
+                "name": "itemsOffset",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "数据列表长度",
+                "relationshipKey": "data.itemLength",
+                "name": "itemLength",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "内部偏移",
+                "relationshipKey": "data.privateOffset",
+                "name": "privateOffset",
+                "type": "uint64",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "有效数据列表",
+                "relationshipKey": "data.items",
+                "name": "items",
+                "type": "object[]",
+                "docrequired": "--",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "唯一标识id",
+                "relationshipKey": "data.items.uuid",
+                "name": "uuid",
+                "type": "string",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "唯一标识名称",
+                "relationshipKey": "data.items.name",
+                "name": "name",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "minLength": 1,
+                    "maxLength": 95,
+                    "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                }
+            },
+            {
+                "description": "描述",
+                "relationshipKey": "data.items.description",
+                "name": "description",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "minLength": 0,
+                    "maxLength": 95,
+                    "pattern desc": "描述字段不能包含`~!#$%^&*+\\|{};:\"'/<>? 特殊字符"
+                }
+            },
+            {
+                "description": "是否启用",
+                "relationshipKey": "data.items.enable",
+                "name": "enable",
+                "type": "bool",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "安全防护策略类型",
+                "relationshipKey": "data.items.policyType",
+                "name": "policyType",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "SERVER",
+                            "description": "业务防护策略"
+                        },
+                        {
+                            "value": "INTERNET_ACCESS",
+                            "description": "用户防护策略"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "源区域",
+                "relationshipKey": "data.items.srcZones",
+                "name": "srcZones",
+                "type": "string[]",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "源网络对象/用户",
+                "relationshipKey": "data.items.srcAddrs",
+                "name": "srcAddrs",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "源地址类型",
+                "relationshipKey": "data.items.srcAddrs.srcAddrType",
+                "name": "srcAddrType",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "NETOBJECT",
+                            "description": "网络对象"
+                        },
+                        {
+                            "value": "USERS",
+                            "description": "用户/组"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "源用户",
+                "relationshipKey": "data.items.srcAddrs.users",
+                "name": "users",
+                "type": "string[]",
+                "docrequired": "--",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "源用户组",
+                "relationshipKey": "data.items.srcAddrs.userGroups",
+                "name": "userGroups",
+                "type": "string[]",
+                "docrequired": "--",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "源网络对象",
+                "relationshipKey": "data.items.srcAddrs.srcIpGroups",
+                "name": "srcIpGroups",
+                "type": "string[]",
+                "docrequired": "--",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "目的区域",
+                "relationshipKey": "data.items.dstZones",
+                "name": "dstZones",
+                "type": "string[]",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "目的网络对象",
+                "relationshipKey": "data.items.dstIpGroups",
+                "name": "dstIpGroups",
+                "type": "string[]",
+                "docrequired": "--",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "业务访问场景",
+                "relationshipKey": "data.items.strategy",
+                "name": "strategy",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "NOT_VIA_SNAT_CDN",
+                            "description": "访问未经过源地址转换或CDN"
+                        },
+                        {
+                            "value": "VIA_SNAT_CDN",
+                            "description": "访问经过源地址转换或CDN"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "位置",
+                "relationshipKey": "data.items.position",
+                "name": "position",
+                "type": "uint32",
+                "docrequired": "--",
+                "extra": {
+                    "maximum": 1024,
+                    "minimum": 0
+                }
+            },
+            {
+                "description": "评估",
+                "relationshipKey": "data.items.monitor",
+                "name": "monitor",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "开启实时漏洞分析",
+                "relationshipKey": "data.items.monitor.pvsEnable",
+                "name": "pvsEnable",
+                "type": "bool",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "PVS开启时间",
+                "relationshipKey": "data.items.monitor.createTime",
+                "name": "createTime",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "pattern desc": "请输入有效日期时间，且格式必须为YYYY-MM-DD HH:MM:SS"
+                }
+            },
+            {
+                "description": "防御",
+                "relationshipKey": "data.items.defence",
+                "name": "defence",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "漏洞攻击防护",
+                "relationshipKey": "data.items.defence.ips",
+                "name": "ips",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "开启漏洞攻击防护",
+                "relationshipKey": "data.items.defence.ips.enable",
+                "name": "enable",
+                "type": "bool",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "漏洞攻击防护模板",
+                "relationshipKey": "data.items.defence.ips.template",
+                "name": "template",
+                "type": "string",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "动作",
+                "relationshipKey": "data.items.defence.ips.action",
+                "name": "action",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "ALLOW",
+                            "description": "允许"
+                        },
+                        {
+                            "value": "DENY",
+                            "description": "拒绝"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "内容安全",
+                "relationshipKey": "data.items.defence.contextsafe",
+                "name": "contextsafe",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "开启内容安全",
+                "relationshipKey": "data.items.defence.contextsafe.enable",
+                "name": "enable",
+                "type": "bool",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "内容安全模板",
+                "relationshipKey": "data.items.defence.contextsafe.template",
+                "name": "template",
+                "type": "string",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "动作",
+                "relationshipKey": "data.items.defence.contextsafe.action",
+                "name": "action",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "ALLOW",
+                            "description": "允许"
+                        },
+                        {
+                            "value": "DENY",
+                            "description": "拒绝"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "WEB应用防护",
+                "relationshipKey": "data.items.defence.waf",
+                "name": "waf",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "开启WEB应用防护",
+                "relationshipKey": "data.items.defence.waf.enable",
+                "name": "enable",
+                "type": "bool",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "WEB应用防护模板",
+                "relationshipKey": "data.items.defence.waf.template",
+                "name": "template",
+                "type": "string",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "动作",
+                "relationshipKey": "data.items.defence.waf.action",
+                "name": "action",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "ALLOW",
+                            "description": "允许"
+                        },
+                        {
+                            "value": "DENY",
+                            "description": "拒绝"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "检测响应",
+                "relationshipKey": "data.items.response",
+                "name": "response",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "僵尸网络",
+                "relationshipKey": "data.items.response.utm",
+                "name": "utm",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "开启僵尸网络",
+                "relationshipKey": "data.items.response.utm.enable",
+                "name": "enable",
+                "type": "bool",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "僵尸网络模板",
+                "relationshipKey": "data.items.response.utm.template",
+                "name": "template",
+                "type": "string",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "动作",
+                "relationshipKey": "data.items.response.utm.action",
+                "name": "action",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "ALLOW",
+                            "description": "允许"
+                        },
+                        {
+                            "value": "DENY",
+                            "description": "拒绝"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "内网DNS服务器",
+                "relationshipKey": "data.items.response.localDnsIp",
+                "name": "localDnsIp",
+                "type": "string[]",
+                "docrequired": "--",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "启用内网DNS服务器场景优化",
+                "relationshipKey": "data.items.response.innerDnsOptimize",
+                "name": "innerDnsOptimize",
+                "type": "bool",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "联动封锁",
+                "relationshipKey": "data.items.response.block",
+                "name": "block",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "开启联动封锁",
+                "relationshipKey": "data.items.response.block.enable",
+                "name": "enable",
+                "type": "bool",
+                "docrequired": "--",
+                "extra": {
+                    "default": false
+                }
+            },
+            {
+                "description": "开启联动封锁",
+                "relationshipKey": "data.items.response.block.type",
+                "name": "type",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "HIGH_THREATS",
+                            "description": "高危行为联动封锁"
+                        },
+                        {
+                            "value": "ANY_THREAT",
+                            "description": "任意攻击行为联动封锁"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "记录日志",
+                "relationshipKey": "data.items.response.recordLog",
+                "name": "recordLog",
+                "type": "bool",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "策略搜索结果，用于前端高亮",
+                "relationshipKey": "data.items.highlight",
+                "name": "highlight",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "search字段搜索结果",
+                "relationshipKey": "data.items.highlight.search",
+                "name": "search",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "模糊搜索高亮位置",
+                "relationshipKey": "data.items.highlight.search.position",
+                "name": "position",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "MATCH_NAME",
+                            "description": "SECURITY_SEARCH_NAME"
+                        },
+                        {
+                            "value": "MATCH_SRC_ZONE",
+                            "description": "模糊搜索到源区域名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_USERS",
+                            "description": "模糊搜索到源用户名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_USERGROUPS",
+                            "description": "模糊搜索到源用户组名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_IPGROUP",
+                            "description": "模糊搜索到源网络对象名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_IPGROUP_BYIP",
+                            "description": "精确搜索到源网络对象中IP区间"
+                        },
+                        {
+                            "value": "MATCH_DST_ZONE",
+                            "description": "模糊搜索到目的区域名称"
+                        },
+                        {
+                            "value": "MATCH_DST_IPGROUP",
+                            "description": "模糊搜索到目的网络对象名称"
+                        },
+                        {
+                            "value": "MATCH_DST_IPGROUP_BYIP",
+                            "description": "精确搜索到源网络对象中IP区间"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "模糊搜索高亮字符串",
+                "relationshipKey": "data.items.highlight.search.exact",
+                "name": "exact",
+                "type": "string[]",
+                "docrequired": "--",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "模糊搜索高亮字符串",
+                "relationshipKey": "data.items.highlight.search.fuzzy",
+                "name": "fuzzy",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "minLength": 1,
+                    "maxLength": 95,
+                    "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                }
+            },
+            {
+                "description": "过滤源IP搜索结果",
+                "relationshipKey": "data.items.highlight.srcip",
+                "name": "srcip",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "模糊搜索高亮位置",
+                "relationshipKey": "data.items.highlight.srcip.position",
+                "name": "position",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "MATCH_NAME",
+                            "description": "SECURITY_SEARCH_NAME"
+                        },
+                        {
+                            "value": "MATCH_SRC_ZONE",
+                            "description": "模糊搜索到源区域名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_USERS",
+                            "description": "模糊搜索到源用户名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_USERGROUPS",
+                            "description": "模糊搜索到源用户组名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_IPGROUP",
+                            "description": "模糊搜索到源网络对象名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_IPGROUP_BYIP",
+                            "description": "精确搜索到源网络对象中IP区间"
+                        },
+                        {
+                            "value": "MATCH_DST_ZONE",
+                            "description": "模糊搜索到目的区域名称"
+                        },
+                        {
+                            "value": "MATCH_DST_IPGROUP",
+                            "description": "模糊搜索到目的网络对象名称"
+                        },
+                        {
+                            "value": "MATCH_DST_IPGROUP_BYIP",
+                            "description": "精确搜索到源网络对象中IP区间"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "模糊搜索高亮字符串",
+                "relationshipKey": "data.items.highlight.srcip.exact",
+                "name": "exact",
+                "type": "string[]",
+                "docrequired": "--",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "模糊搜索高亮字符串",
+                "relationshipKey": "data.items.highlight.srcip.fuzzy",
+                "name": "fuzzy",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "minLength": 1,
+                    "maxLength": 95,
+                    "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                }
+            },
+            {
+                "description": "过滤目的IP搜索结果",
+                "relationshipKey": "data.items.highlight.dstip",
+                "name": "dstip",
+                "type": "object",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "模糊搜索高亮位置",
+                "relationshipKey": "data.items.highlight.dstip.position",
+                "name": "position",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "MATCH_NAME",
+                            "description": "SECURITY_SEARCH_NAME"
+                        },
+                        {
+                            "value": "MATCH_SRC_ZONE",
+                            "description": "模糊搜索到源区域名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_USERS",
+                            "description": "模糊搜索到源用户名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_USERGROUPS",
+                            "description": "模糊搜索到源用户组名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_IPGROUP",
+                            "description": "模糊搜索到源网络对象名称"
+                        },
+                        {
+                            "value": "MATCH_SRC_IPGROUP_BYIP",
+                            "description": "精确搜索到源网络对象中IP区间"
+                        },
+                        {
+                            "value": "MATCH_DST_ZONE",
+                            "description": "模糊搜索到目的区域名称"
+                        },
+                        {
+                            "value": "MATCH_DST_IPGROUP",
+                            "description": "模糊搜索到目的网络对象名称"
+                        },
+                        {
+                            "value": "MATCH_DST_IPGROUP_BYIP",
+                            "description": "精确搜索到源网络对象中IP区间"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "模糊搜索高亮字符串",
+                "relationshipKey": "data.items.highlight.dstip.exact",
+                "name": "exact",
+                "type": "string[]",
+                "docrequired": "--",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "模糊搜索高亮字符串",
+                "relationshipKey": "data.items.highlight.dstip.fuzzy",
+                "name": "fuzzy",
+                "type": "string",
+                "docrequired": "--",
+                "extra": {
+                    "minLength": 1,
+                    "maxLength": 95,
+                    "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                }
+            }
+        ],
+        "title": "获取安全防护策略",
+        "position": "7.2.1.2",
+        "inputParams": {
+            "uri": [
+                {
+                    "description": "筛选-源IP",
+                    "relationshipKey": "srcip",
+                    "name": "srcip",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "format": "ip-address"
+                    }
+                },
+                {
+                    "description": "选择字段，字段用逗号分隔",
+                    "relationshipKey": "_select",
+                    "name": "_select",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "maxLength": 1000
+                    }
+                },
+                {
+                    "description": "筛选-目的IP",
+                    "relationshipKey": "dstip",
+                    "name": "dstip",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "format": "ip-address"
+                    }
+                },
+                {
+                    "description": "获取最大长度，限制最大值，如果数据不够可能返回小于 length",
+                    "relationshipKey": "_length",
+                    "name": "_length",
+                    "type": "int32",
+                    "docrequired": "否",
+                    "extra": {
+                        "maximum": 200,
+                        "default": 100,
+                        "minimum": 1
+                    }
+                },
+                {
+                    "description": "安全防护策略类型",
+                    "relationshipKey": "policyType",
+                    "name": "policyType",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "enums": [
+                            {
+                                "value": "SERVER",
+                                "description": "业务防护策略"
+                            },
+                            {
+                                "value": "INTERNET_ACCESS",
+                                "description": "用户防护策略"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "description": "起始位置，从 0 开始",
+                    "relationshipKey": "_start",
+                    "name": "_start",
+                    "type": "int32",
+                    "docrequired": "否",
+                    "extra": {
+                        "maximum": 2000000,
+                        "default": 0,
+                        "minimum": 0
+                    }
+                },
+                {
+                    "description": "模糊搜索关键字",
+                    "relationshipKey": "_search",
+                    "name": "_search",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "maxLength": 95
+                    }
+                }
+            ],
+            "cookies": [
+                {
+                    "description": "认证令牌",
+                    "relationshipKey": "token",
+                    "name": "token",
+                    "type": "string",
+                    "docrequired": "是",
+                    "extra": "{\"maxLength\":64}"
+                },
+                {
+                    "description": "认证会话",
+                    "relationshipKey": "SESSID",
+                    "name": "SESSID",
+                    "type": "string",
+                    "docrequired": "是",
+                    "extra": "{\"maxLength\":256}"
+                }
+            ],
+            "headers": []
+        },
+        "api": {
+            "url": "https://{host}/api/v1/namespaces/@namespace/securitys",
+            "method": "GET"
+        },
+        "chapters": [
+            "策略",
+            "安全策略",
+            "安全防护策略"
+        ],
+        "inputSamples": {
+            "request": "GET https://192.168.1.1/api/v1/namespaces/public/securitys"
+        },
+        "chapter": "安全防护策略"
+    }
+}

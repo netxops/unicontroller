@@ -1,0 +1,445 @@
+package service
+
+import (
+	"context"
+	"fmt"
+	"strings"
+	"sync"
+	"time"
+
+	"github.com/influxdata/telegraf/controller/pkg/structs"
+	"github.com/netxops/log"
+
+	"github.com/fsnotify/fsnotify"
+	"github.com/netxops/cli/terminal"
+	"github.com/netxops/cli/terminalmode"
+	"github.com/netxops/utils/concurrency"
+	"github.com/netxops/utils/reachable"
+	"github.com/netxops/utils/snmp"
+	"github.com/netxops/utils/tools"
+	"github.com/spf13/viper"
+
+	clitask "github.com/netxops/utils/task"
+
+	"go.uber.org/zap"
+)
+
+var (
+	DEFAULT_CONFIG_FILE = "../l2nodemap/checkdevice.yaml"
+	Checkconfig         = &CheckConfig{}
+)
+
+var cdLogger *zap.Logger
+
+func init() {
+	cdLogger, _ = zap.NewDevelopment(zap.AddCallerSkip(1))
+}
+
+type CheckConfig struct {
+	UserConfig      UserConfig        `yaml:"user_config" mapstructure:"user_config"`
+	PlatformConfigs []*PlatformConfig `yaml:"platform_config" mapstructure:"platform_config"`
+	WhiteList       []string          `yaml:"white_list" mapstructure:"white_list"`
+}
+
+type UserConfig struct {
+	Username  []string `yaml:"username" mapstructure:"username"`
+	Community string   `yaml:"community" mapstructure:"community"`
+}
+
+type PlatformConfig struct {
+	Name    string `yaml:"name" mapstructure:"name"`
+	Version string `yaml:"version" mapstructure:"version"`
+}
+
+type CHECKDEVICE struct{}
+
+func (ts *CHECKDEVICE) CheckDevice(ctx context.Context, args *structs.Args, reply *structs.Reply) (err error) {
+	logger := log.NewLogger(args.Remote.ActionID, true)
+
+	reply.StartTime = time.Now()
+	session := NewWorkContext(ts, args)
+	logger.Debug("CHECKDEVICE start", zap.Any("args", args), zap.Any("session", session))
+	checkConfigViper(DEFAULT_CONFIG_FILE)
+	community := Checkconfig.UserConfig.Community
+
+	pool := make(chan string, 5)
+	parallelism := concurrency.Concurrency{
+		Done: make(chan bool),
+	}
+
+	var lock sync.Mutex
+	ipList := strings.Split(args.Ip, ",")
+
+	tb := clitask.NewEmptyTableWithKeys([]string{"ip", "name", "platform", "Alive", "SSHPort", "TelnetPort", "EnableSSH", "EnableTelnet", "EnableSnmp", "Version", "Username"})
+
+	// go func() {
+	for _, ip := range ipList {
+		parallelism.Add()
+		pool <- ip
+
+		go func(ip string) {
+			if len(Checkconfig.WhiteList) == 0 || tools.Contains(Checkconfig.WhiteList, ip) {
+
+				var enableSsh, enableSnmp, enableTelnet bool
+				var userName string
+				var systemName string
+				var selectPlatform *PlatformConfig
+				var remote *structs.L2DeviceRemoteInfo
+				if len(Checkconfig.WhiteList) == 0 || tools.Contains(Checkconfig.WhiteList, ip) {
+					platformList := Checkconfig.PlatformConfigs
+					sshIsChecked := false
+
+					versionIsOk := false
+					for _, platform := range platformList {
+						if !sshIsChecked {
+							for _, u := range Checkconfig.UserConfig.Username {
+								// remote, _ = getRemote(u, *platform, Checkconfig, ip)
+								remote = args.Remote
+								enableSsh, enableTelnet = runSshAndTelnetCheck(remote)
+								if enableSsh || enableTelnet {
+									logger.Debug("CHECKDEVICE",
+										zap.Any("ssh", "success"),
+										zap.Any("platform", platform.Name))
+									remote.Platform = platform.Name
+									// platformName = platform.Name
+									selectPlatform = platform
+									userName = u
+									break
+								}
+							}
+							sshIsChecked = true
+						}
+					}
+
+					if selectPlatform != nil {
+						platformList = []*PlatformConfig{selectPlatform}
+					}
+
+					for _, platform := range platformList {
+						remote.Platform = platform.Name
+						err, systemName = getSystemNameBySnmp(remote)
+						if err == nil {
+							if systemName != "" {
+								enableSnmp = true
+							}
+
+							version, _, _, err := getVersion(ip, community, platform.Name)
+							if err == nil {
+								remote.Meta.Version = version
+								versionIsOk = true
+								// if remote.Platform == "" {
+								// remote.Platform = platform.Name
+								// }
+							}
+
+							break
+						}
+					}
+					if !versionIsOk {
+						remote.Meta.Version = ""
+						remote.Platform = ""
+					}
+					// checkTable := getCheckTable(remote, enableSsh, enableTelnet, enableSnmp, userName, systemName)
+					var checkdata map[string]string
+					checkdata = make(map[string]string)
+					checkdata["ip"] = remote.Ip
+					checkdata["name"] = systemName
+					checkdata["platform"] = remote.Platform
+					checkdata["Alive"] = getboolString(remote.Meta.Enable)
+					checkdata["SSHPort"] = fmt.Sprint(remote.Meta.SSHPort)
+					checkdata["TelnetPort"] = fmt.Sprint(remote.Meta.TelnetPort)
+					checkdata["EnableSSH"] = fmt.Sprintf("%t", enableSsh)
+					checkdata["EnableTelnet"] = fmt.Sprintf("%t", enableTelnet)
+					checkdata["EnableSnmp"] = fmt.Sprintf("%t", enableSnmp)
+					checkdata["Version"] = remote.Meta.Version
+					checkdata["Username"] = userName
+					lock.Lock()
+					tb.PushRow("", checkdata, false, "")
+					lock.Unlock()
+
+					// checkTable.Pretty()
+				}
+
+			}
+
+			<-pool
+			parallelism.Del()
+			logger.Debug("CHECKDEVICE", zap.Any("count", parallelism.Count()))
+			if parallelism.Count() == 0 {
+				parallelism.Done <- true
+			}
+		}(ip)
+	}
+
+	<-parallelism.Done
+	logger.Debug("CHECKDEVICE", zap.Any("Done", true))
+
+	// }()
+
+	reply.Table = tb
+	reply.Result = tb.ToSliceMap()
+	reply.Total = tb.RowCount()
+	reply.EndTime = time.Now()
+	reply.Duration = reply.EndTime.Sub(reply.StartTime).Truncate(10 * time.Millisecond).Seconds()
+	err = nil
+	// reply.Error = err
+
+	return
+}
+
+func runSshAndTelnetCheck(remote *structs.L2DeviceRemoteInfo) (EnableSSH bool, EnableTelnet bool) {
+	if remote.Meta.EnableSSH != nil && *remote.Meta.EnableSSH {
+		status := trySshOrTelnet(remote, false)
+		EnableSSH = status
+	}
+
+	if remote.Meta.EnableTelnet != nil && *remote.Meta.EnableTelnet {
+		status := trySshOrTelnet(remote, true)
+		EnableTelnet = status
+
+	}
+	//
+	// if !sshStatus {
+	// err = fmt.Errorf("ip:%s platform:%s can not connect ssh", remote.Ip, remote.Platform)
+	// EnableSSH = func(b bool) *bool { return &b }(false)
+	// } else {
+	// EnableSSH = func(b bool) *bool { return &b }(true)
+	// }
+
+	return
+}
+
+func getSystemNameBySnmp(remote *structs.L2DeviceRemoteInfo) (err error, name string) {
+	// sshStatus := trySshOrTelnet(remote)
+	var ok bool
+	var table *clitask.Table
+	snmpService, desc := Config.Select(context.TODO(), remote, "system_name")
+	if !desc.Ok() {
+		err = desc.Error()
+		return
+	}
+
+	table, err = snmpService.Run(remote)
+	if err != nil {
+		return
+	}
+	if table == nil || table.IsEmpty() {
+		err = fmt.Errorf("ip:%s platform:%s snmp check failed", remote.Ip, remote.Platform)
+		return
+	}
+
+	name, ok = table.IndexToValue("name", "0")
+	if !ok {
+		err = fmt.Errorf("get system name failed.")
+	}
+	return
+}
+
+func getCheckTable(remote *structs.L2DeviceRemoteInfo, enableSSH, enableTelnet, enableSnmp bool, userName, systemName string) *clitask.Table {
+	tb := clitask.NewEmptyTableWithKeys([]string{"ip", "name", "platform", "Alive", "SSHPort", "TelnetPort", "EnableSSH", "EnableTelnet", "EnableSnmp", "Version", "Username"})
+	return tb
+}
+
+func getboolString(b *bool) string {
+	if *b {
+		return "true"
+	} else {
+		return "false"
+	}
+}
+
+func checkEnable(remote *structs.L2DeviceRemoteInfo, ip string) (err error) {
+	if !reachable.IsAlive(ip) {
+		remote.Meta.Enable = func(b bool) *bool { return &b }(false)
+	} else {
+		remote.Meta.Enable = func(b bool) *bool { return &b }(true)
+	}
+
+	if reachable.TCPPortAlive(ip, fmt.Sprint(remote.Meta.SSHPort)) {
+		remote.Meta.EnableSSH = func(b bool) *bool { return &b }(true)
+	} else {
+		remote.Meta.EnableSSH = func(b bool) *bool { return &b }(false)
+	}
+	if reachable.TCPPortAlive(ip, fmt.Sprint(remote.Meta.TelnetPort)) {
+		remote.Meta.EnableTelnet = func(b bool) *bool { return &b }(true)
+	} else {
+		remote.Meta.EnableTelnet = func(b bool) *bool { return &b }(false)
+	}
+
+	if !*remote.Meta.Enable {
+		err = fmt.Errorf("can not ping ip:%s platform:%s", ip, remote.Platform)
+	}
+	// if !*remote.Meta.EnableTelnet && !*remote.Meta.EnableSnmp {
+	// err = fmt.Errorf("ssh and telnet is not alive, ip:%s Platform:%s", ip, remote.Platform)
+	// }
+	return
+
+}
+
+//
+// func getInitMeta(platformName string) (*l2model.L2DcimInitMeta, error) {
+// platform := model.DcimPlatform{}
+// err := global.GVA_DB.Where("name = ?", platformName).Preload("DcimInitMeta").First(&platform).Error
+// if err != nil {
+// return nil, err
+// }
+// if platform.DcimInitMeta == nil {
+// err = fmt.Errorf("init meta is empty")
+// logger.Panic("GetInitMeta", zap.Any("platform", "platformName"), zap.Any("error", err))
+// }
+//
+// m := l2model.L2DcimInitMeta{}
+// m.ID = platform.DcimInitMeta.ID
+// m.RestfullPort = platform.DcimInitMeta.RestfullPort
+// m.NetconfPort = platform.DcimInitMeta.NetconfPort
+// m.TelnetPort = platform.DcimInitMeta.TelnetPort
+// m.SSHPort = platform.DcimInitMeta.SSHPort
+// m.RedfishPort = platform.DcimInitMeta.RedfishPort
+// m.Enable = platform.DcimInitMeta.Enable
+//
+// return &m, err
+// }
+//
+// func getRemote(username string, platform PlatformConfig, config *CheckConfig, ip string) (remote *structs.L2DeviceRemoteInfo, err error) {
+// community := config.UserConfig.Community
+// var communityList []string
+// communityList = append(communityList, community)
+// password, err := getPassword(username)
+// if err != nil {
+// panic(err)
+// }
+//
+// initMeta, err := getInitMeta(platform.Name)
+// if err != nil {
+// panic(err)
+// }
+//
+// remote = &structs.L2DeviceRemoteInfo{
+// Ip:        ip,
+// Username:  username,
+// Password:  password,
+// AuthPass:  password,
+// Community: communityList,
+// Platform:  platform.Name,
+// Catalog:   "switch",
+// MetaID:    1,
+// IsRedfish: false,
+// }
+// remote.Meta.RestfullPort = tools.Conditional(initMeta.RestfullPort == 0, 443, initMeta.RestfullPort).(int)
+// remote.Meta.NetconfPort = tools.Conditional(initMeta.NetconfPort == 0, 830, initMeta.NetconfPort).(int)
+// remote.Meta.TelnetPort = tools.Conditional(initMeta.TelnetPort == 0, 23, initMeta.TelnetPort).(int)
+// remote.Meta.SSHPort = tools.Conditional(initMeta.SSHPort == 0, 22, initMeta.SSHPort).(int)
+//
+// remote.Meta.Version = platform.Version
+// err = checkEnable(remote, ip)
+// return
+// }
+//
+// }
+
+func trySshOrTelnet(remote *structs.L2DeviceRemoteInfo, telnet bool) (ok bool) {
+	cmdMap := map[terminalmode.DeviceType]string{
+		terminalmode.IOS:     "sh ver",
+		terminalmode.Nexus:   "sh ver",
+		terminalmode.ASA:     "sh ver",
+		terminalmode.F5:      "sh ver",
+		terminalmode.HuaWei:  "display version",
+		terminalmode.Comware: "display version",
+	}
+
+	base := &terminal.BaseInfo{
+		Host:     remote.Ip,
+		Username: remote.Username,
+		Password: remote.Password,
+		AuthPass: remote.AuthPass,
+		Telnet:   telnet,
+	}
+	testCmd := cmdMap[terminalmode.NewDeviceType(remote.Platform)]
+	exec := terminal.NewExecute(terminalmode.VIEW, terminalmode.NewDeviceType(remote.Platform), base)
+	exec.Add(testCmd, "", 2, "chheck", "")
+	exec.Prepare(true)
+	retryResult := exec.Run(true)
+	if retryResult.State == clitask.EXEC_SUCCESS {
+		ok = true
+	} else {
+		ok = false
+	}
+
+	return
+}
+
+func getVersion(ip, community, platform string) (string, string, string, error) {
+	st, err := snmp.NewSnmpTask(
+		ip,
+		community,
+		"1.3.6.1.2.1.1",
+		[]int{1},
+		[]int{0},
+		map[string]string{"1": "description"},
+		map[string]func(byte, string, interface{}) (string, error){},
+		nil)
+
+	st.Run(true)
+	table, err := st.Table()
+
+	if err != nil {
+		return "", "", "", err
+	} else {
+		// table.Pretty()
+	}
+
+	value, ok := table.IndexToValue("description", "0")
+	if !ok {
+		return "", "", "", fmt.Errorf("ip=%s, IndexToValue failed", ip)
+	}
+
+	if terminalmode.IsSupport(platform) {
+		mode := terminalmode.NewDeviceType(platform)
+		return snmpVersionParser(value, mode)
+	} else {
+		return "", "", "", fmt.Errorf("unsupport mode = %s", platform)
+	}
+}
+
+func getDeviceName(remote *structs.L2DeviceRemoteInfo) (systemName string, err error) {
+	SnmpService, desc := Config.Select(context.TODO(), remote, "system_name")
+	if !desc.Ok() {
+		err = desc.Error()
+		return
+	}
+
+	snmpResult, snmperr := SnmpService.Run(remote)
+	fmt.Println("kkkkkkkkkkkkkkk", snmpResult, snmperr)
+	return
+}
+
+//
+// func getPassword(username string) (password string, err error) {
+// var secret model.SecretsSecret
+// err = global.GVA_DB.Where("username = ?", username).Find(&secret).Error
+// password = secret.PlainText
+// return
+// }
+
+func checkConfigViper(path string) {
+	v := viper.New()
+	v.SetConfigFile(path)
+
+	err := v.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	}
+	v.WatchConfig()
+
+	v.OnConfigChange(func(e fsnotify.Event) {
+		fmt.Println("config file changed:", e.Name)
+		if err := v.Unmarshal(Checkconfig); err != nil {
+			fmt.Println(err)
+		}
+	})
+
+	if err := v.Unmarshal(Checkconfig); err != nil {
+		fmt.Println(err)
+	}
+
+}

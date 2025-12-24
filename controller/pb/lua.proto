@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "github.com/influxdata/telegraf/controller/pb";
+
+message ExecLuaScriptResp {
+  string agentCode = 1;
+  string output = 2;
+}
+
+message ExecLuaScriptReq {
+  string agentCode = 1;
+  string lua = 2;
+}
+
+service Lua{
+  rpc ExecLuaScript (ExecLuaScriptReq) returns (ExecLuaScriptResp);
+}

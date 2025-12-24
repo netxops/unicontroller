@@ -1,0 +1,147 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package pb;
+option go_package = "github.com/influxdata/telegraf/controller/pb";
+
+// FileInfo 文件信息
+message FileInfo {
+  string path = 1;
+  int64 size = 2;
+  bool is_dir = 3;
+  string mode = 4;
+  google.protobuf.Timestamp mod_time = 5;
+  string md5 = 6;
+  string sha256 = 7;
+}
+
+// ListFilesReq 列出文件请求
+message ListFilesReq {
+  string path = 1;  // 目录路径
+}
+
+// ListFilesResp 列出文件响应
+message ListFilesResp {
+  string path = 1;
+  repeated FileInfo files = 2;
+}
+
+// GetFileInfoReq 获取文件信息请求
+message GetFileInfoReq {
+  string path = 1;
+}
+
+// GetFileInfoResp 获取文件信息响应
+message GetFileInfoResp {
+  FileInfo file = 1;
+  bool exists = 2;
+}
+
+// StartFileUploadReq 开始文件上传请求
+message StartFileUploadReq {
+  string file_path = 1;
+  int64 file_size = 2;
+  string md5 = 3;
+  string sha256 = 4;
+}
+
+// StartFileUploadResp 开始文件上传响应
+message StartFileUploadResp {
+  string session_id = 1;
+  string file_path = 2;
+  int64 chunk_size = 3;
+}
+
+// UploadFileChunkReq 上传文件块请求
+message UploadFileChunkReq {
+  string session_id = 1;
+  int64 chunk_index = 2;
+  bytes data = 3;
+}
+
+// UploadFileChunkResp 上传文件块响应
+message UploadFileChunkResp {
+  string session_id = 1;
+  int64 chunk_index = 2;
+  string status = 3;
+}
+
+// GetUploadStatusReq 获取上传状态请求
+message GetUploadStatusReq {
+  string session_id = 1;
+}
+
+// GetUploadStatusResp 获取上传状态响应
+message GetUploadStatusResp {
+  string session_id = 1;
+  string status = 2;  // uploading, completed, failed
+  int64 total_size = 3;
+  int64 received_size = 4;
+  double progress = 5;  // 0-100
+}
+
+// DownloadFileReq 下载文件请求
+message DownloadFileReq {
+  string path = 1;
+  int64 offset = 2;  // 可选：起始偏移量
+  int64 length = 3;  // 可选：读取长度
+}
+
+// DownloadFileResp 下载文件响应（流式）
+message DownloadFileResp {
+  bytes data = 1;
+  int64 offset = 2;
+  bool eof = 3;
+}
+
+// DeleteFileReq 删除文件请求
+message DeleteFileReq {
+  string path = 1;
+  bool recursive = 2;  // 如果是目录，是否递归删除
+}
+
+// DeleteFileResp 删除文件响应
+message DeleteFileResp {
+  bool success = 1;
+  string message = 2;
+}
+
+// CreateDirectoryReq 创建目录请求
+message CreateDirectoryReq {
+  string path = 1;
+  uint32 mode = 2;  // 目录权限模式（八进制，如 0755）
+}
+
+// CreateDirectoryResp 创建目录响应
+message CreateDirectoryResp {
+  bool success = 1;
+  string message = 2;
+}
+
+// File 服务定义
+service File {
+  // ListFiles 列出文件
+  rpc ListFiles(ListFilesReq) returns (ListFilesResp);
+  
+  // GetFileInfo 获取文件信息
+  rpc GetFileInfo(GetFileInfoReq) returns (GetFileInfoResp);
+  
+  // StartFileUpload 开始文件上传
+  rpc StartFileUpload(StartFileUploadReq) returns (StartFileUploadResp);
+  
+  // UploadFileChunk 上传文件块
+  rpc UploadFileChunk(UploadFileChunkReq) returns (UploadFileChunkResp);
+  
+  // GetUploadStatus 获取上传状态
+  rpc GetUploadStatus(GetUploadStatusReq) returns (GetUploadStatusResp);
+  
+  // DownloadFile 下载文件（流式）
+  rpc DownloadFile(DownloadFileReq) returns (stream DownloadFileResp);
+  
+  // DeleteFile 删除文件或目录
+  rpc DeleteFile(DeleteFileReq) returns (DeleteFileResp);
+  
+  // CreateDirectory 创建目录
+  rpc CreateDirectory(CreateDirectoryReq) returns (CreateDirectoryResp);
+}
+

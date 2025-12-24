@@ -1,0 +1,16 @@
+name: deviceInfoDerive
+fields:
+  - name: fullDeviceInfo
+    sourceFields:
+      - softwareVersion
+      - deviceModel
+      - hostname
+    expression: "deviceModel + ' running ' + softwareVersion + ' on ' + hostname"
+  - name: isLatestVersion
+    sourceFields:
+      - softwareVersion
+    expression: "softwareVersion == '15.2(20200924:215240)'"
+  - name: deviceType
+    sourceFields:
+      - deviceModel
+    regex: "(\\w+)\\d+"

@@ -1,0 +1,16 @@
+prompts:
+  - "[\\r\\n]?[^\n]+(>|#) $"
+err_prompts:
+  - "(?i)error:"
+  - "(?i)does not exist"
+  - "found duplicate element"
+  - "Removing.* not allowed, it is being used"
+init_commands:
+  - "no terminal pager"
+save_commands:
+  - "wr"
+first_chain:
+  - "show running-config"
+last_chain:
+  - "show running-config"
+auth_cmd: "enable"

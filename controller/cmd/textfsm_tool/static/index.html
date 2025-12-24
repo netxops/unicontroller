@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextFSM & 正则表达式测试工具</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 TextFSM & 正则表达式测试工具</h1>
+            <p>测试和调试TextFSM模板与正则表达式的强大工具</p>
+        </div>
+
+        <div class="content">
+            <!-- TextFSM 测试面板 -->
+            <div class="panel">
+                <h2>📋 TextFSM 模板测试</h2>
+
+                <div class="example">
+                    <h4>示例模板：</h4>
+                    <code>Value NAME (\S+)\nValue IP ([\d\.]+)\n\nStart\n  ^${NAME}.*${IP} -> Record</code>
+                </div>
+
+                <form id="textfsm-form" onsubmit="testTextFSM(event)">
+                    <div class="form-group">
+                        <label for="textfsm-template">TextFSM 模板：</label>
+                        <textarea id="textfsm-template" name="template" placeholder="输入TextFSM模板..."
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="textfsm-input">测试数据：</label>
+                        <textarea id="textfsm-input" name="input" placeholder="输入要解析的文本数据..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn">🚀 测试 TextFSM</button>
+                    <button type="button" class="btn" onclick="loadExample()">📝 加载示例</button>
+                </form>
+
+                <div class="loading" id="textfsm-loading">
+                    <div class="spinner"></div>
+                    <div>正在解析...</div>
+                </div>
+
+                <div id="textfsm-result" class="result" style="display: none;"></div>
+            </div>
+
+            <!-- 正则表达式测试面板 -->
+            <div class="panel">
+                <h2>🔍 正则表达式测试</h2>
+
+                <div class="example">
+                    <h4>示例正则：</h4>
+                    <code>(\d+\.\d+\.\d+\.\d+)</code>
+                </div>
+
+                <form id="regex-form" onsubmit="testRegex(event)">
+                    <div class="form-group">
+                        <label for="regex-pattern">正则表达式：</label>
+                        <input type="text" id="regex-pattern" name="pattern" placeholder="输入正则表达式..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regex-input">测试文本：</label>
+                        <textarea id="regex-input" name="input" placeholder="输入要匹配的文本..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn">🎯 测试正则</button>
+                    <button type="button" class="btn" onclick="clearAll()">🗑️ 清空</button>
+                </form>
+
+                <div class="loading" id="regex-loading">
+                    <div class="spinner"></div>
+                    <div>正在匹配...</div>
+                </div>
+
+                <div id="regex-result" class="result" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

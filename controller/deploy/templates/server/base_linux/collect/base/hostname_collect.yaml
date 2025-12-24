@@ -1,0 +1,6 @@
+name: hostnameCollect
+method: SSH
+dataType: map[string]string
+target: hostname
+timeout: 10s
+expectedType: Text

@@ -1,0 +1,8 @@
+name: interfaceTransform
+mappings:
+  - inputField: interfaceCollect#value
+    outputField: output
+    unchanged: true
+  - inputField: item.interfaceCollect.target
+    outputField: command
+    unchanged: true

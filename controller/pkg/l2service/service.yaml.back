@@ -1,0 +1,1824 @@
+service:
+  - platform: IOS
+    service:
+      - name: arp
+        snmp:
+          - version: [12, 13, 16]
+            oid: 1.3.6.1.2.1.4.22.1
+            indexall: [1,2,3,4,5]
+            prefix: [0]
+            prefixmap:
+              2: ip_mac
+            method: IOS_ARP
+      - name: system_name
+        snmp:
+          - version: [10,11,12,13.1.x,16]
+            oid: 1.3.6.1.2.1.1.5
+            indexall: [0]
+            prefix: [0]
+            method: IOS_SYSTEMNAME
+            prefixmap:
+              0: name
+      - name: iftable
+        snmp:
+          - version: [10,11,12,13.1.x,16]
+            oid: 1.3.6.1.2.1.2.2.1
+            indexall: [1]
+            prefix: [0]
+            prefixmap:
+              2: name
+            method: IOS_IFTABLE
+      - name: dot1dport
+        snmp:
+          - version: [10,11,12,13.1.x,16]
+            oid: 1.3.6.1.2.1.17.1.4.1.2
+            indexall: [0]
+            prefix: []
+            method: IOS_DOT1DPORT
+      - name: portip
+        snmp:
+          - version: [10,11,12,13.1.x,16]
+            oid: 1.3.6.1.2.1.4.20.1
+            indexall: [1,2,3,4]
+            prefix: [0]
+            prefixmap:
+              2: interface
+              3: mask
+            method: IOS_PORTIP
+      - name: vlan
+        snmp:
+          - version: [10,11,12,13.1.x,16]
+            oid: 1.3.6.1.4.1.9.9.46.1.3.1.1.2
+            indexall: [1]
+            prefix: [0]
+            prefixmap:
+              1: prefix
+            method: IOS_VLAN
+      - name: mactable
+        snmp:
+          - version: []
+            oid: 1.3.6.1.2.1.17.4.3.1
+            indexall: [1, 2, 3, 4, 5, 6]
+            prefix: [0]
+            prefixmap:
+              1: mac
+              2: ifindex
+            method: IOS_MACTABLE
+        ssh:
+          - version: [10,11,12,13.1.x,16]
+            commands:
+              - cmd: sh mac address-table dynamic
+                key: mactable
+                timeout: 2
+            config_mode: false
+            method: IOS_SshMactable
+      - name: cdp
+        snmp:
+          - version: [10,11,12,13.1.x,16]
+            oid: 1.3.6.1.4.1.9.9.23.1.2.1.1
+            indexall: [1, 2]
+            prefix: [0]
+            prefixmap:
+              4: ip
+              6: name
+              7: peer_interface
+            method: IOS_CDP
+      - name: lldp
+        ssh:
+          - version: [10,11,12,13.1.x,16]
+            commands:
+              - cmd: sh lldp ne de
+                key: lldp
+                timeout: 2
+            config_mode: false
+            method: IOS_SSHLLDP
+      - name: stp
+        ssh:
+          - version: [10,11,12,13.1.x,16]
+            commands:
+              - cmd: show spann detail
+                key: stp
+                timeout: 2
+            config_mode: false
+            method: IOS_STP
+      - name: port_statistics
+        ssh:
+          - version: [10,11,12,13.1.x, 16]
+            commands:
+              - cmd: sh int
+                key: port_statistics
+                timeout: 5
+            config_mode: false
+            method: IOS_PortStatistics
+      - name: port_channel
+        ssh:
+          - version: [10,11,12,13.1.x,16]
+            commands:
+              - cmd: sh run
+                key: port_channel
+                timeout: 10
+            config_mode: false
+            method: IOS_PORTCHANNEL
+      #          pretty: true
+      - name: port_info
+        ssh:
+          - version: [ 9,10,11,12,13.1.x,16 ]
+            commands:
+              - cmd: sh interface | json
+                key: port_info
+                timeout: 5
+            config_mode: false
+            method: IOS_PORTINFO
+      - name: ipv6_neighbor
+        ssh:
+          - version: []
+            commands:
+              - cmd:
+                key: ipv6_neighbor
+                timeout: 5
+            config_mode: false
+            method: IOS_IPV6NEIGHBOR
+      - name: switch_config
+        ssh:
+          - version: [10,11,12,13.1.x,16]
+            method: IOS_CONFIG
+      - name: switch_config_with_command
+        ssh:
+          - version: [10,11,12,13.1.x,16]
+            method: IOS_CONFIG_WITH_COMMAND
+      - name: switch_version
+        ssh:
+          - version: [ 9,10,11,12,13.1.x,16]
+            type: [xx]
+            method: IOS_SWITCH_VERSION1
+
+
+  - platform: Nexus
+    service:
+      - name: arp
+        snmp:
+          - version: [6, 7, 8, 9, 16, 10,12]
+            oid: 1.3.6.1.2.1.4.22.1
+            indexall: [1,2,3,4,5]
+            prefix: [0]
+            prefixmap:
+              2: ip_mac
+            method: NEXUS_ARP
+      - name: system_name
+        snmp:
+          - version: [6, 7, 8, 9, 16, 10 ,12]
+            oid: 1.3.6.1.2.1.1.5
+            indexall: [0]
+            prefix: [0]
+            method: NEXUS_SYSTEMNAME
+            prefixmap:
+              0: name
+      - name: iftable
+        snmp:
+          - version: [6, 7, 8, 9, 16, 10 ,12]
+            oid: 1.3.6.1.2.1.2.2.1
+            indexall: [1]
+            prefix: [0]
+            prefixmap:
+              2: name
+            method: NEXUS_IFTABLE
+      - name: dot1dport
+        snmp:
+          - version: [6, 7, 8, 9, 16, 10 ,12]
+            oid: 1.3.6.1.2.1.17.1.4.1.2
+            indexall: [0]
+            prefix: []
+            method: NEXUS_DOT1DPORT
+      - name: portip
+        snmp:
+          - version: [6, 7, 8, 9, 16, 10 ,12]
+            oid: 1.3.6.1.2.1.4.20.1
+            indexall: [1,2,3,4]
+            prefix: [0]
+            prefixmap:
+              2: interface
+              3: mask
+            method: NEXUS_PORTIP
+      - name: mactable
+        snmp:
+          - version: []
+            oid: 1.3.6.1.2.1.17.4.3.1
+            indexall: [1, 2, 3, 4, 5, 6, 10,12]
+            prefix: [0]
+            prefixmap:
+              1: mac
+              2: ifindex
+            method: NEXUS_MACTABLE
+        ssh:
+          - version: [6, 7, 8, 9, 16, 10,12]
+            commands:
+              - cmd: sh mac address-table dynamic
+                key: mactable
+                timeout: 2
+            config_mode: false
+            method: Nexus_SshMactable
+      - name: vlan
+        snmp:
+          - version: [6, 7, 8, 9, 16, 10,12]
+            oid: 1.3.6.1.4.1.9.9.46.1.3.1.1.2
+            indexall: [1]
+            prefix: [0]
+            prefixmap:
+              1: prefix
+            method: NEXUS_VLAN
+      - name: cdp
+        snmp:
+          - version: [6, 7, 8, 9, 16, 10,12]
+            oid: 1.3.6.1.4.1.9.9.23.1.2.1.1
+            indexall: [1, 2]
+            prefix: [0]
+            prefixmap:
+              4: ip
+              6: name
+              7: peer_interface
+            method: NEXUS_CDP
+      - name: lldp
+        ssh:
+          - version: [6, 7, 8, 9, 16, 10,12]
+            commands:
+              - cmd: sh lldp ne de
+                key: lldp
+                timeout: 2
+            config_mode: false
+            method: NEXUS_SSHLLDP
+      - name: stp
+        ssh:
+          - version: [6, 7, 8, 9, 16, 10,12]
+            commands:
+              - cmd: show spann detail
+                key: stp
+                timeout: 2
+            config_mode: false
+            method: NEXUS_STP
+      - name: port_statistics
+        ssh:
+          - version: [6, 7, 8, 9, 16, 10,12]
+            commands:
+              - cmd: sh int
+                key: port_statistics
+                timeout: 5
+            config_mode: false
+            method: NEXUS_PortStatistics
+      - name: port_channel
+        ssh:
+          - version: [6, 7, 8, 9, 16, 10,12]
+            commands:
+              - cmd: sh run
+                key: port_channel
+                timeout: 20
+            config_mode: false
+            method: NEXUS_PORTCHANNEL
+      - name: sh_run
+        ssh:
+          - version: [ 6, 7, 8, 9, 16, 10,12 ]
+            commands:
+              - cmd: sh run
+                key: interface
+                timeout: 20
+            config_mode: false
+            method: NEXUS_INTERFACE
+      - name: ipv6_neighbor
+        ssh:
+          - version: []
+            commands:
+              - cmd:
+                key: ipv6_neighbor
+                timeout: 5
+            config_mode: false
+            method: NEXUS_IPV6NEIGHBOR
+      - name: port_info
+        ssh:
+          - version: [6, 7, 8, 9, 16, 10,12]
+            commands:
+              - cmd: sh interface status
+                key: port_info
+                timeout: 20
+            config_mode: false
+            method: NEXUS_PORTINFO
+      - name: switch_config
+        ssh:
+          - version: [6, 7, 8, 9, 16, 10,12]
+            method: NEXUS_CONFIG
+      - name: switch_config_with_command
+        ssh:
+          - version: [10,11,12,13.1.x,16, 10]
+            method: NEXUS_CONFIG_WITH_COMMAND
+      - name: switch_version
+        ssh:
+          - version: [ 10,11,12,13.1.x,16,]
+            type: [ xx ]
+            method: NEXUS_SWITCH_VERSION1
+  - platform: Comware
+    service:
+      - name: arp
+        snmp:
+          - version: [5, 7, 8, 9]
+            oid: 1.3.6.1.2.1.4.22.1
+            indexall: [1,2,3,4,5]
+            prefix: [0]
+            prefixmap:
+              2: ip_mac
+            method: COMWARE_ARP
+      #          pretty: true
+      - name: system_name
+        snmp:
+          - version: [5, 7, 8, 9]
+            oid: 1.3.6.1.2.1.1.5
+            indexall: [0]
+            prefix: [0]
+            method: COMWARE_SYSTEMNAME
+            #          pretty: true
+            prefixmap:
+              0: name
+      - name: iftable
+        snmp:
+          - version: [5, 7, 8, 9]
+            oid: 1.3.6.1.2.1.2.2.1
+            indexall: [1]
+            prefix: [0]
+            prefixmap:
+              2: name
+            method: COMWARE_IFTABLE
+      #          pretty: true
+      - name: dot1dport
+        snmp:
+          - version: [5, 7, 8, 9]
+            oid: 1.3.6.1.2.1.17.1.4.1.2
+            indexall: [0]
+            prefix: []
+            method: COMWARE_DOT1DPORT
+      #          pretty: true
+      - name: portip
+        snmp:
+          - version: [5, 7, 8, 9]
+            oid: 1.3.6.1.2.1.4.20.1
+            indexall: [1,2,3,4]
+            prefix: [0]
+            prefixmap:
+              2: interface
+              3: mask
+            method: COMWARE_PORTIP
+      #          pretty: true
+      - name: mactable
+        snmp:
+          - version: []
+            oid: 1.3.6.1.4.1.25506.8.35.3.2.1.2
+            indexall: [0, 1, 2, 3, 4, 5, 6]
+            prefix: []
+            method: COMWARE_MACTABLE
+        #          pretty: true
+        ssh:
+          - version: [5, 7, 8, 9]
+            commands:
+              - cmd: display mac-address
+                key: mactable
+                timeout: 10
+            config_mode: false
+            method: COMWARE_SSH_MACTABLE
+      #          pretty: true
+      - name: vlan
+        snmp:
+          - version: [5, 7, 8, 9]
+            oid: 1.3.6.1.4.1.25506.8.35.2.1.1.1
+            indexall: [1]
+            prefix: [0]
+            prefixmap:
+              1: prefix
+            method: COMWARE_VLAN
+      #          pretty: true
+      - name: lldp
+        snmp:
+          - version: []
+            oid: 1.0.8802.1.1.2.1.4.1.1
+            indexall: [1,2]
+            prefix: [0]
+            prefixmap:
+              7: peer_interface
+              9: name
+            method: COMWARE_LLDP1
+        ssh:
+          - version: [7, 8, 9]
+            commands:
+              - cmd: display lldp neighbor ver
+                key: lldp
+                timeout: 2
+            config_mode: false
+            method: COMWARE_SSHLLDP
+          - version: [5]
+            commands:
+              - cmd: display lldp neighbor
+                key: lldp
+                timeout: 2
+            config_mode: false
+            method: COMWARE_SSHLLDP2
+      - name: lldp2
+        snmp:
+          - version: [5, 7, 8, 9]
+            oid: 1.0.8802.1.1.2.1.4.2.1.3
+            indexall: [0,1,2,3,4,5,6,7,8]
+            prefix: []
+            method: COMWARE_LLDP2
+      #          pretty: true
+      - name: stp
+        ssh:
+          - version: [5, 7, 8, 9]
+            commands:
+              - cmd: display stp bpdu-statistics | in Port|RST
+                key: stp
+                timeout: 10
+            config_mode: false
+            method: COMWARE_STP
+      #          pretty: true
+      - name: port_statistics
+        ssh:
+          - version: [5, 7, 8, 9]
+            commands:
+              - cmd: display interface
+                key: port_statistics
+                timeout: 5
+            config_mode: false
+            method: COMWARE_PortStatistics
+      #          pretty: true
+      - name: port_channel
+        ssh:
+          - version: [5, 7, 8, 9]
+            commands:
+              - cmd: display current
+                key: port_channel
+                timeout: 2
+            config_mode: false
+            method: COMWARE_PORTCHANNEL
+      #          pretty: true
+      - name: port_info
+        ssh:
+          - version: [ 5, 7, 8, 9 ,12,16]
+            commands:
+              - cmd: dis int brief
+                key: port_info
+                timeout: 5
+            config_mode: false
+            method: COMWARE_PORTINFO
+      - name: ipv6_neighbor
+        ssh:
+          - version: [5, 7, 8, 9,12,16]
+            commands:
+              - cmd:
+                key: ipv6_neighbor
+                timeout: 5
+            config_mode: false
+            method: COMWARE_IPV6NEIGHBOR
+      #          pretty: true
+      - name: switch_config
+        ssh:
+          - version: [5, 7, 8, 9]
+            method: COMWARE_CONFIG
+      - name: switch_config_with_command
+        ssh:
+          - version: [10,11,12,13.1.x,16]
+            method: COMWARE_CONFIG_WITH_COMMAND
+      - name: switch_version
+        ssh:
+          - version: [ 5, 6,7, 8, 9,10,11,12,13.1.x,16]
+            type: [ xx ]
+            method: COMWARE_SWITCH_VERSION1
+  - platform: VRP
+    service:
+      - name: arp
+        snmp:
+          - version: [ 3,5, 7, 8, 9 ]
+            oid: 1.3.6.1.2.1.4.22.1
+            indexall: [ 1,2,3,4,5 ]
+            prefix: [ 0 ]
+            prefixmap:
+              2: ip_mac
+            method: COMWARE_ARP
+          #          pretty: true
+          - name: system_name
+            snmp:
+              - version: [ 3,5, 7, 8, 9 ]
+                oid: 1.3.6.1.2.1.1.5
+                indexall: [ 0 ]
+                prefix: [ 0 ]
+                method: COMWARE_SYSTEMNAME
+                #          pretty: true
+                prefixmap:
+                  0: name
+          - name: iftable
+            snmp:
+              - version: [ 3,5, 7, 8, 9 ]
+                oid: 1.3.6.1.2.1.2.2.1
+                indexall: [ 1 ]
+                prefix: [ 0 ]
+                prefixmap:
+                  2: name
+                method: COMWARE_IFTABLE
+          #          pretty: true
+          - name: dot1dport
+            snmp:
+              - version: [3, 5, 7, 8, 9 ]
+                oid: 1.3.6.1.2.1.17.1.4.1.2
+                indexall: [ 0 ]
+                prefix: [ ]
+                method: COMWARE_DOT1DPORT
+          #          pretty: true
+          - name: portip
+            snmp:
+              - version: [ 3,5, 7, 8, 9 ]
+                oid: 1.3.6.1.2.1.4.20.1
+                indexall: [ 1,2,3,4 ]
+                prefix: [ 0 ]
+                prefixmap:
+                  2: interface
+                  3: mask
+                method: COMWARE_PORTIP
+          #          pretty: true
+          - name: mactable
+            snmp:
+              - version: [ ]
+                oid: 1.3.6.1.4.1.25506.8.35.3.2.1.2
+                indexall: [ 0, 1, 2, 3, 4, 5, 6 ]
+                prefix: [ ]
+                method: COMWARE_MACTABLE
+            #          pretty: true
+            ssh:
+              - version: [3, 5, 7, 8, 9 ]
+                commands:
+                  - cmd: display mac-address
+                    key: mactable
+                    timeout: 10
+                config_mode: false
+                method: COMWARE_SSH_MACTABLE
+          #          pretty: true
+          - name: vlan
+            snmp:
+              - version: [ 3,5, 7, 8, 9 ]
+                oid: 1.3.6.1.4.1.25506.8.35.2.1.1.1
+                indexall: [ 1 ]
+                prefix: [ 0 ]
+                prefixmap:
+                  1: prefix
+                method: COMWARE_VLAN
+          #          pretty: true
+          - name: lldp
+            snmp:
+              - version: [ ]
+                oid: 1.0.8802.1.1.2.1.4.1.1
+                indexall: [ 1,2 ]
+                prefix: [ 0 ]
+                prefixmap:
+                  7: peer_interface
+                  9: name
+                method: COMWARE_LLDP1
+            ssh:
+              - version: [ 3,7, 8, 9 ]
+                commands:
+                  - cmd: display lldp neighbor ver
+                    key: lldp
+                    timeout: 2
+                config_mode: false
+                method: COMWARE_SSHLLDP
+              - version: [ 5 ]
+                commands:
+                  - cmd: display lldp neighbor
+                    key: lldp
+                    timeout: 2
+                config_mode: false
+                method: COMWARE_SSHLLDP2
+          - name: lldp2
+            snmp:
+              - version: [ 3,5, 7, 8, 9 ]
+                oid: 1.0.8802.1.1.2.1.4.2.1.3
+                indexall: [ 0,1,2,3,4,5,6,7,8 ]
+                prefix: [ ]
+                method: COMWARE_LLDP2
+          #          pretty: true
+          - name: stp
+            ssh:
+              - version: [3, 5, 7, 8, 9 ]
+                commands:
+                  - cmd: display stp bpdu-statistics | in Port|RST
+                    key: stp
+                    timeout: 10
+                config_mode: false
+                method: COMWARE_STP
+          #          pretty: true
+          - name: port_statistics
+            ssh:
+              - version: [ 3,5, 7, 8, 9 ]
+                commands:
+                  - cmd: display interface
+                    key: port_statistics
+                    timeout: 5
+                config_mode: false
+                method: COMWARE_PortStatistics
+          #          pretty: true
+          - name: port_channel
+            ssh:
+              - version: [3, 5, 7, 8, 9 ]
+                commands:
+                  - cmd: display current
+                    key: port_channel
+                    timeout: 2
+                config_mode: false
+                method: COMWARE_PORTCHANNEL
+          #          pretty: true
+          - name: port_info
+            ssh:
+              - version: [ 3,5, 7, 8, 9 ,12,16 ]
+                commands:
+                  - cmd: dis int brief
+                    key: port_info
+                    timeout: 5
+                config_mode: false
+                method: COMWARE_PORTINFO
+          - name: ipv6_neighbor
+            ssh:
+              - version: [ 3,5, 7, 8, 9,12,16 ]
+                commands:
+                  - cmd:
+                    key: ipv6_neighbor
+                    timeout: 5
+                config_mode: false
+                method: COMWARE_IPV6NEIGHBOR
+          #          pretty: true
+          - name: switch_config
+            ssh:
+              - version: [ 3,5, 7, 8, 9 ]
+                method: COMWARE_CONFIG
+          - name: switch_config_with_command
+            ssh:
+              - version: [ 10,11,12,13.1.x,16 ]
+                method: COMWARE_CONFIG_WITH_COMMAND
+
+  - platform: HuaWei
+    service:
+      - name: cpu
+        redfish:
+          - version: [1, 2]
+            method: HUAWEI_CPUV1
+          - version: [3, 4]
+            method: HUAWEI_CPUV2
+      - name: arp
+        snmp:
+          - version: []
+            oid: 1.3.6.1.2.1.4.22.1
+            indexall: [1,2,3,4,5]
+            prefix: [0]
+            prefixmap:
+              2: ip_mac
+            method: HuaWei_ARP
+        ssh:
+          - version: [5, 6, 7, 8, 9]
+            commands:
+              - cmd: display arp
+                key: arp
+                timeout: 2
+            config_mode: false
+            method: HuaWei_SshArp
+      - name: system_name
+        snmp:
+          - version: [5, 6, 7, 8, 9]
+            oid: 1.3.6.1.2.1.1.5
+            indexall: [0]
+            prefix: [0]
+            method: HuaWei_SYSTEMNAME
+            prefixmap:
+              0: name
+      - name: iftable
+        snmp:
+          - version: [5, 6, 7, 8, 9]
+            oid: 1.3.6.1.2.1.2.2.1
+            indexall: [1]
+            prefix: [0]
+            prefixmap:
+              2: name
+            method: HuaWei_IFTABLE
+      - name: dot1dport
+        snmp:
+          - version: [5, 6, 7, 8, 9]
+            oid: 1.3.6.1.2.1.17.1.4.1.2
+            indexall: [0]
+            prefix: []
+            method: HuaWei_DOT1DPORT
+      - name: portip
+        snmp:
+          - version: [5, 6, 7, 8, 9]
+            oid: 1.3.6.1.2.1.4.20.1
+            indexall: [1,2,3,4]
+            prefix: [0]
+            prefixmap:
+              2: interface
+              3: mask
+            method: HuaWei_PORTIP
+      - name: mactable
+        snmp:
+          - version: []
+            oid: 1.3.6.1.4.1.2011.5.25.42.2.1.3.1.4
+            indexall: [0, 1, 2, 3, 4, 5, 6]
+            prefix: []
+            method: HuaWei_MACTABLE
+        ssh:
+          - version: [5, 6, 7, 8, 9]
+            commands:
+              - cmd: display mac-address
+                key: mactable
+                timeout: 2
+            config_mode: false
+            method: HuaWei_SshMacTable
+      - name: vlan
+        snmp:
+          - version: [5, 6, 7, 8, 9]
+            oid: 1.3.6.1.4.1.2011.5.25.42.3.1.1.1.1.2
+            indexall: [1]
+            prefix: [0]
+            prefixmap:
+              1: prefix
+            method: HuaWei_VLAN
+        ssh:
+          - version: [5, 6, 7, 8, 9]
+            commands:
+              - cmd: display vlan summary
+                key: vlan
+                timeout: 2
+            config_mode: false
+            method: HuaWei_SshVlan
+      - name: lldp
+        snmp:
+          - version: []
+            oid: 1.0.8802.1.1.2.1.4.1.1
+            indexall: [1,2]
+            prefix: [0]
+            prefixmap:
+              7: peer_interface
+              9: name
+            method: HuaWei_LLDP_dd
+        ssh:
+          - version: [5, 6, 7, 8, 9]
+            commands:
+              - cmd: display lldp neighbor
+                key: lldp
+                timeout: 2
+            config_mode: false
+            method: HuaWei_SSHLLDP
+      - name: stp
+        ssh:
+          - version: [8]
+            commands:
+              - cmd: display stp
+                key: stp
+                timeout: 2
+            config_mode: false
+            method: HuaWei_STP_82
+          - version: [5, 6, 7, 8, 9]
+            commands:
+              - cmd: display stp vlan bpdu statistics
+                key: stp
+                timeout: 2
+            config_mode: false
+            method: HuaWei_STP
+      - name: port_statistics
+        ssh:
+          - version: [5, 6, 7, 8, 9]
+            commands:
+              - cmd: display interface
+                key: port_statistics
+                timeout: 5
+            config_mode: false
+            method: HuaWei_PortStatistics
+      - name: port_channel
+        ssh:
+          - version: [5, 6, 7, 8, 9]
+            commands:
+              - cmd: display current
+                key: port_channel
+                timeout: 2
+            config_mode: false
+            method: HUAWEI_PORTCHANNEL
+      - name: port_info
+        ssh:
+          - version: [ 5, 6, 7, 8, 9 ]
+            commands:
+              - cmd: dis int brief
+                key: port_info
+                timeout: 5
+            config_mode: false
+            method: HUAWEI_PORTINFO
+      - name: ipv6_neighbor
+        ssh:
+          - version: [5, 6, 7, 8, 9]
+            commands:
+              - cmd: display ipv6 neighbors
+                key: ipv6_neighbor
+                timeout: 5
+            config_mode: false
+            method: HUAWEI_IPV6NEIGHBOR
+      - name: switch_config
+        ssh:
+          - version: [5, 6, 7, 8, 9]
+            method: HUAWEI_CONFIG
+      - name: switch_config_with_command
+        ssh:
+          - version: [5, 6, 7, 8, 9,10,11,12,13.1.x,16]
+            method: HUAWEI_CONFIG_WITH_COMMAND
+      - name: switch_exec
+        ssh:
+          - version: [ 5, 6, 7, 8, 9 ]
+            method: HUAWEI_SWITCH_EXEC
+
+      - name: switch_version
+        ssh:
+          - version: [ 5, 6, 7, 8, 9 ]
+            type: [ S5736-S24T4X]
+            method: HUAWEI_SWITCH_VERSION1
+          - version: [ 5, 6, 7, 8, 9 ]
+            type: [ S6735-S24X6C ]
+            method: HUAWEI_SWITCH_VERSION2
+
+  - platform: Linux
+    service:
+      - name: interfaces
+        rshell:
+          - version: [6.7, 7]
+            method: batch
+  - platform: Ubuntu
+    service:
+      - name: batch
+        rshell:
+          - version: [1x,2x]
+            method: BATCH
+      - name: step
+        rshell:
+          - version: [1x,2x]
+            method: STEP
+      - name: step_with_command
+        rshell:
+          - version: [1x,2x]
+            method: STEP_WITH_COMMAND
+      - name: check_device
+        rshell:
+          - version: [1x,2x]
+            method: CHECK_DEVICE
+  - platform: Centos
+    service:
+      - name: batch
+        rshell:
+          - version: [ 6, 7, 8]
+            method: BATCH
+      - name: step
+        rshell:
+          - version: [ 6, 7, 8]
+            method: STEP
+      - name: step_with_command
+        rshell:
+          - version: [ 6, 7, 8]
+            method: STEP_WITH_COMMAND
+  - platform: DEBIAN
+    service:
+      - name: batch
+        rshell:
+          - version: [ 11 ]
+            method: BATCH
+      - name: step
+        rshell:
+          - version: [ 11 ]
+            method: STEP
+      - name: step_with_command
+        rshell:
+          - version: [ 11 ]
+            method: STEP_WITH_COMMAND
+  - platform: ALMALINUX
+    service:
+      - name: batch
+        rshell:
+          - version: [ 9 ]
+            method: BATCH
+      - name: step
+        rshell:
+          - version: [ 9 ]
+            method: STEP
+      - name: step_with_command
+        rshell:
+          - version: [ 9 ]
+            method: STEP_WITH_COMMAND
+  - platform: Redhat
+    service:
+      - name: batch
+        rshell:
+          - version: [ 6, 7, 8,9 ]
+            method: BATCH
+      - name: step
+        rshell:
+          - version: [ 6, 7, 8 ,9]
+            method: STEP
+      - name: step_with_command
+        rshell:
+          - version: [ 6, 7, 8,9]
+            method: STEP_WITH_COMMAND
+  - manufacturer: Dell
+    service:
+      - name: cpu
+        gofish:
+          - version: [1,2]
+            type: [R740XD,R740]
+            method: DELL_GoFish_CPUV1
+        redfish:
+          - version: [1,2]
+            type: [R930,R730,R730XD,C4140]
+            method: DELL_RedFish_CPUV1
+      - name: mem
+        gofish:
+          - version: [1,2]
+            type: [R740XD,R740]
+            method: DELL_GoFish_MEMV1
+        redfish:
+          - version: [1,2]
+            type: [R930,R730,R730XD,C4140]
+            method: DELL_RedFish_MEMV1
+      - name: disk
+        gofish:
+          - version: [1,2]
+            type: [R740XD,R740]
+            method: DELL_GoFish_DISKV1
+        redfish:
+          - version: [1,2]
+            type: [R930,R730,R730XD,C4140]
+            method: DELL_RedFish_DISKV1
+      - name: baseinfo
+        gofish:
+          - version: [1,2]
+            type: [R740XD,R740]
+            method: DELL_GoFish_BaseInfoV1
+        redfish:
+          - version: [1,2]
+            type: [R930,R730,R730XD,C4140]
+            method: DELL_RedFish_BaseInfoV1
+      - name: network
+        gofish:
+          - version: [1,2]
+            type: [R740XD,R740]
+            method: DELL_GoFish_NETWORKV1
+        redfish:
+          - version: [1,2]
+            type: [R930,R730,R730XD,C4140]
+            method: DELL_RedFish_NETWORKV1
+      - name: redfishversion
+        gofish:
+          - version: [1,2]
+            type: [R740XD,R740]
+            method: DELL_GoFish_RedFishVersionV1
+        redfish:
+          - version: [1,2]
+            type: [R930,R730,R730XD,C4140]
+            method: DELL_RedFish_RedFishVersionV1
+      - name: power
+        gofish:
+          - version: [1,2]
+            type: [R740XD,R740]
+            method: DELL_GOFISH_POWERCONTROLV1
+        redfish:
+          - version: [1]
+            type: [R930,R730,R730XD,C4140]
+            method: DELL_REDFISH_POWERCONTROLV1
+      - name: powerControl
+        gofish:
+          - version: [ 1,2 ]
+            type: [ R740XD,R740 ]
+            method: DELL_GoFish_PowerV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ R930,R730,R730XD,C4140 ]
+            method: DELL_RedFish_PowerV1
+      - name: networkinterface
+        gofish:
+          - version: [1,2]
+            type: [R740XD,R740]
+            method: DELL_GoFish_InterfaceV1
+        redfish:
+          - version: [1,2 ]
+            type: [R930,R730,R730XD,C4140]
+            method: DELL_RedFish_InterfaceV1
+      - name: bmc
+        gofish:
+          - version: [1,2]
+            type: [R740XD,R740]
+            method: DELL_GoFish_BMCV1
+        redfish:
+          - version: [1,2]
+            type: [R930,R730,R730XD,C4140]
+            method: DELL_RedFish_BMCV1
+  - manufacturer: Sugon
+    service:
+      - name: cpu
+        gofish:
+          - version: [1]
+            type: [xx]
+            method: Sugon_GoFish_CPUV1
+        redfish:
+          - version: [1,2,3]
+            type: [I620-G30,R620-G30]
+            method: Sugon_RedFish_CPUV1
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.27500.1.1.1.1.4.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ I620-G20]
+            prefixmap:
+              3: model
+            method: Sugon_SNMP_CPUV1
+      - name: mem
+        gofish:
+          - version: [ 1,2 ]
+            type: [xx]
+            method: SUGON_GoFish_MEMV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30]
+            method: SUGON_RedFish_MEMV1
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.27500.1.1.1.1.4.2.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ I620-G20 ]
+            prefixmap:
+              2: name
+              6: cacheSizeMiB
+              4: memoryDeviceType
+              8: partNumber
+              7: manufacture
+            method: SUGON_SNMP_MEMV1
+      - name: disk
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: SUGON_GoFish_DISKV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30]
+            method: SUGON_RedFish_DISKV1
+        snmp:
+          - version: [ xx ]
+            oid: 1.3.6.1.4.1.25506.13.1.2.1.1.9.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ I620-G20  ]
+            prefixmap:
+              6: manufacture
+              8: serialNumber
+              9: model
+              10: capacityBytes
+            method: SUGON_SNMP_DISKV1
+      - name: baseinfo
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: SUGON_GoFish_BaseInfoV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30]
+            method: SUGON_RedFish_BaseInfoV1
+        ipmi:
+          - version: [ 1,2 ]
+            type: [ I620-G20 ]
+            method: SUGON_IPMI_BaseInfoV1
+      - name: network
+        gofish:
+          - version: [ 1 ]
+            type: [ xx ]
+            method: SUGON_GoFish_NETWORKV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30 ]
+            method: SUGON_RedFish_NETWORKV1
+      - name: redfishversion
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: SUGON_GoFish_RedFishVersionV1
+        redfish:
+          - version: [ 1,2 ,3]
+            type: [ I620-G30,R620-G30 ]
+            method: SUGON_RedFish_RedFishVersionV1
+      - name: power
+        gofish:
+          - version: [ 1,2 ]
+            type: [ xx ]
+            method: SUGON_GOFISH_POWERCONTROLV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30  ]
+            method: SUGON_REDFISH_POWERCONTROLV1
+      - name: networkinterface
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: SUGON_GoFish_InterfaceV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30  ]
+            method: SUGON_RedFish_InterfaceV1
+        snmp:
+          - version: [ xx ]
+            oid: 1.3.6.1.4.1.25506.13.1.2.2.2.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ I620-G20 ]
+            prefixmap:
+              2: interfaceName
+              4: macAddress
+            method: SUGON_SNMP_NETWORKMANAGERV1
+      - name: bmc
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: SUGON_GoFish_BMCV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30 ]
+            method: SUGON_RedFish_BMCV1
+  - manufacturer: Nettrix
+    service:
+      - name: cpu
+        gofish:
+          - version: [1]
+            type: [xx]
+            method: NETTRIX_GoFish_CPUV1
+        redfish:
+          - version: [1,2,3]
+            type: [I620-G30,R620-G30]
+            method: NETTRIX_RedFish_CPUV1
+      - name: mem
+        gofish:
+          - version: [ 1 ]
+            type: [xx]
+            method: NETTRIX_GoFish_MEMV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30]
+            method: NETTRIX_RedFish_MEMV1
+      - name: disk
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: NETTRIX_GoFish_DISKV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30]
+            method: NETTRIX_RedFish_DISKV1
+      - name: baseinfo
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: NETTRIX_GoFish_BaseInfoV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30]
+            method: NETTRIX_RedFish_BaseInfoV1
+      - name: network
+        gofish:
+          - version: [ 1 ]
+            type: [ xx ]
+            method: NETTRIX_GoFish_NETWORKV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ I620-G30,R620-G30 ]
+            method: NETTRIX_RedFish_NETWORKV1
+      - name: redfishversion
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: NETTRIX_GoFish_RedFishVersionV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ I620-G30,R620-G30 ]
+            method: NETTRIX_RedFish_RedFishVersionV1
+      - name: power
+        gofish:
+          - version: [ 1,2 ]
+            type: [ xx ]
+            method: NETTRIX_GOFISH_POWERCONTROLV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ R620-G30 ]
+            method: NETTRIX_REDFISH_POWERCONTROLV1
+      - name: networkinterface
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: NETTRIX_GoFish_InterfaceV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ R620-G30 ]
+            method: NETTRIX_RedFish_InterfaceV1
+      - name: bmc
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: NETTRIX_GoFish_BMCV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ R620-G30 ]
+            method: NETTRIX_RedFish_BMCV1
+  - manufacturer: Hp
+    service:
+      - name: cpu
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: HP_GoFish_CPUV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ DL380 Gen10]
+            method: HP_RedFish_CPUV1
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.232.1.2.2.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ XL450 Gen9, DL380 Gen9 ,SL4540 Gen8,DL585 G7,DL580 Gen8,DL385P Gen8]
+            prefixmap:
+              3: model
+              25: totalThreads
+              26: totalEnabledCores
+            method: HP_SNMP_CPUV1
+      - name: mem
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: HP_GoFish_MEMV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ DL380 Gen10]
+            method: HP_RedFish_MEMV1
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.232.6.2.14.13.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ XL450 Gen9, DL380 Gen9 ,SL4540 Gen8,DL585 G7,DL580 Gen8,DL385P Gen8]
+            prefixmap:
+              6: cacheSizeMiB
+              9: manufacture
+              10: partNumber
+              13: name
+            method: HP_SNMP_MEMV1
+      - name: disk
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: HP_GoFish_DISKV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ DL380 Gen10]
+            method: HP_RedFish_DISKV1
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.232.3.2.5.1.1
+            indexall: [ 1,2 ]
+            prefix: [ 0 ]
+            type: [ XL450 Gen9,DL380 Gen9,SL4540 Gen8,DL585 G7,DL580 Gen8,DL385P Gen8 ]
+            prefixmap:
+              3: model
+              51: serialNumber
+              45: capacityBytes
+            method: HP_SNMP_DISKV1
+      - name: baseinfo
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: HP_GoFish_BaseInfoV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ DL380 Gen10]
+            method: HP_RedFish_BaseInfoV1
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.232.2.2.2.1
+            indexall: [ 1]
+            prefix: [ 0 ]
+            type: [ XL450 Gen9,DL380 Gen9,SL4540 Gen8,DL585 G7,DL580 Gen8,DL385P Gen8 ]
+            prefixmap:
+              0: serialNumber
+            method: HP_SNMP_BaseInfoV1
+      - name: network
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: HP_GoFish_NETWORKV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ DL380 Gen10]
+            method: HP_RedFish_NETWORKV1
+        snmp:
+          - version: [2,5 ]
+            oid:
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ XL450 Gen9, DL380 Gen9,SL4540 Gen8,DL585 G7,DL580 Gen8,DL385P Gen8 ]
+            prefixmap:
+              6: manufacture
+              8: serialNumber
+              9: model
+              10: capacityBytes
+            method: HP_SNMP_NETWORKV1
+      - name: redfishversion
+        gofish:
+          - version: [ 1 ]
+            type: [ xx ]
+            method: HP_GoFish_RedFishVersionV1
+        redfish:
+          - version: [ 1,2]
+            type: [ DL380 Gen10]
+            method: HP_RedFish_RedFishVersionV1
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.232.11.2.14.1.1.5
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ XL450 Gen9, DL380 Gen9 ,SL4540 Gen8,DL585 G7,DL580 Gen8,DL385P Gen8]
+            prefixmap:
+              0: version
+            method: HP_SNMP_RedFishVERSIONV1
+      - name: power
+        gofish:
+          - version: [ 1,2 ]
+            type: [ xx ]
+            method: HP_GOFISH_POWERCONTROLV1
+        redfish:
+          - version: [ 1,2,3 ]
+            type: [ DL380 Gen10]
+            method: HP_REDFISH_POWERCONTROLV1
+      - name: networkinterface
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: HP_GoFish_InterfaceV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ DL380 Gen10]
+            method: HP_RedFish_InterfaceV1
+        snmp:
+          - version: [ 1,2 ]
+            oid: 1.3.6.1.4.1.232
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ XL450 Gen9, DL380 Gen9,SL4540 Gen8 ,DL585 G7,DL580 Gen8,DL385P Gen8]
+            prefixmap:
+              6: manufacture
+              8: serialNumber
+              9: model
+              10: capacityBytes
+            method: HP_SNMP_NETWORKMANAGERV1
+      - name: bmc
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: HP_GoFish_BMCV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ DL380 Gen10,]
+            method: HP_RedFish_BMCV1
+  - manufacturer: Lenovo
+    service:
+      - name: cpu
+        gofish:
+          - version: [ 1,2 ]
+            type: [ xx]
+            method: LENOVO_GoFish_CPUV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ SR650]
+            method: LENOVO_RedFish_CPUV1
+      - name: mem
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: LENOVO_GoFish_MEMV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ SR650 ]
+            method: LENOVO_RedFish_MEMV1
+      - name: disk
+        gofish:
+          - version: [ 1 ]
+            type: [xx]
+            method: LENOVO_GoFish_DISKV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ SR650 ]
+            method: LENOVO_RedFish_DISKV1
+      - name: baseinfo
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: LENOVO_GoFish_BaseInfoV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ SR650 ]
+            method: LENOVO_RedFish_BaseInfoV1
+      - name: network
+        gofish:
+          - version: [ 1 ]
+            type: [ xx ]
+            method: LENOVO_GoFish_NETWORKV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ SR650 ]
+            method: LENOVO_RedFish_NETWORKV1
+      - name: redfishversion
+        gofish:
+          - version: [ 1 ]
+            type: [ xx ]
+            method: LENOVO_GoFish_RedFishVersionV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ SR650]
+            method: LENOVO_RedFish_RedFishVersionV1
+      - name: power
+        gofish:
+          - version: [ 1,2 ]
+            type: [ xx]
+            method: LENOVO_GOFISH_POWERCONTROLV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ SR650 ]
+            method: LENOVO_REDFISH_POWERCONTROLV1
+      - name: networkinterface
+        gofish:
+          - version: [ 1 ]
+            type: [ xx ]
+            method: LENOVO_GoFish_InterfaceV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ SR650 ]
+            method: LENOVO_RedFish_InterfaceV1
+      - name: bmc
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: LENOVO_GoFish_BMCV1
+        redfish:
+          - version: [ 1,2 ]
+            type: [ SR650]
+            method: LENOVO_RedFish_BMCV1
+  - manufacturer: IBM
+    service:
+      - name: cpu
+        gofish:
+          - version: [ 1 ]
+            type: [ xx]
+            method: IBM_GoFish_CPUV1
+        redfish:
+          - version: [ 1, ]
+            type: [ xx]
+            method: IBM_RedFish_CPUV1
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.25506.13.1.2.1.1.1.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [x3650 M5,x3850 X6,x3650 M3]
+            prefixmap:
+              2: model
+              4: totalEnabledCores
+              5: manufacture
+              8: totalThreads
+            method: IBM_SNMP_CPUV1
+      - name: mem
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.25506.13.1.2.1.1.2.2.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [x3650 M5,x3850 X6,x3650 M3]
+            prefixmap:
+              7: cacheSizeMiB
+              12: manufacture
+              11: partNumber
+              8: memoryDeviceType
+              2: name
+            method: IBM_SNMP_MEMV1
+      - name: disk
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.25506.13.1.2.1.1.9.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [x3650 M5,x3850 X6,x3650 M3 ]
+            prefixmap:
+              9: model
+              8: serialNumber
+              6: manufacture
+              10: capacityBytes
+            method: IBM_SNMP_DISKV1
+      - name: disk
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.25506.13.1.2.1.1.9.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ x3650 M5,x3850 X6,x3650 M3 ]
+            prefixmap:
+              9: model
+              8: serialNumber
+              6: manufacture
+              10: capacityBytes
+            method: IBM_SNMP_BASEINFOV1
+      - name: networkinterface
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.25506.13.1.2.2.2.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [x3650 M5,x3850 X6,x3650 M3]
+            prefixmap:
+              2: interfaceName
+              4: macAddress
+            method: IBM_SNMP_NETWORKMANAGERV1
+      - name: redfishversion
+        snmp:
+          - version: [ 1,2 ]
+            oid: .1.3.6.1.4.1.25506.13.1.2.2.7.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ x3650 M5,x3850 X6,x3650 M3]
+            prefixmap:
+              0: version
+            method: IBM_SNMP_RedFishVERSIONV1
+      - name: power
+        gofish:
+          - version: [ 1 ]
+            type: [ xx ]
+            method: IBM_GOFISH_POWERCONTROLV1
+        redfish:
+          - version: [ 1, ]
+            type: [ xx ]
+            method: IBM_REDFISH_POWERCONTROLV1
+  - manufacturer: H3C
+    service:
+      - name: cpu
+        snmp:
+          - version: [ 1,2]
+            oid: 1.3.6.1.4.1.25506.13.1.2.1.1.1.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ R390X G2, R6900 G3]
+            prefixmap:
+              2: model
+              4: totalEnabledCores
+              5: manufacture
+              8: totalThreads
+            method: H3C_SNMP_CPUV1
+      - name: mem
+        snmp:
+          - version: [ 1,2 ]
+            oid: 1.3.6.1.4.1.25506.13.1.2.1.1.2.2.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ R390X G2, R6900 G3]
+            prefixmap:
+              2: name
+              6: cacheSizeMiB
+              8: memoryDeviceType
+              11: partNumber
+              12: manufacture
+            method: H3C_SNMP_MEMV1
+      - name: disk
+        snmp:
+          - version: [ 1,2 ]
+            oid: 1.3.6.1.4.1.25506.13.1.2.1.1.9.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ R390X G2, R6900 G3]
+            prefixmap:
+              6: manufacture
+              8: serialNumber
+              9: model
+              10: capacityBytes
+            method: H3C_SNMP_DISKV1
+      - name: networkinterface
+        snmp:
+          - version: [ 1,2 ]
+            oid: 1.3.6.1.4.1.25506.13.1.2.2.2.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ R390X G2, R6900 G3 ]
+            prefixmap:
+              2: interfaceName
+              4: macAddress
+            method: H3C_SNMP_NETWORKMANAGERV1
+      - name: network
+        snmp:
+          - version: [ 2,5 ]
+            oid: 1.3.6.1.4.1.25506.13.1.2.2.2.1.1
+            indexall: [ 1 ]
+            prefix: [ 0 ]
+            type: [ R390X G2, R6900 G3]
+            prefixmap:
+              2: interfaceName
+              4: macAddress
+            method: H3C_SNMP_NETWORKV1
+      - name: baseinfo
+        ipmi:
+          - version: [1,2]
+            type: [ R390X G2, R6900 G3 ]
+            method : H3c_IPMI_BaseInfoV1
+      - name: power
+        snmp:
+          - version: [ 9 ]
+            type: [ XX]
+            method: H3c_IPMI_BaseInfoV1
+
+  - platform: Vmware
+    service:
+      - name: resources
+        vmware:
+          - version: [6,7,8]
+            method: Vmware_Resources
+      - name: vm
+        vmware:
+          - version: [6,7,8]
+            method: Vmware_Vm
+      - name: template
+        vmware:
+          - version: [6,7,8]
+            method: Vmware_Template
+      - name: datastore
+        vmware:
+          - version: [6,7,8]
+            method: Vmware_Datastore
+      - name: info
+        vmware:
+          - version: [6,7,8]
+            method: Vmware_Info
+      - name: interfaces
+        vmware:
+          - version: [6,7,8]
+            method: Vmware_Interfaces
+      - name: vmhost
+        vmware:
+          - version: [ 6,7,8]
+            method: Vmware_Host
+      - name: vmcluster
+        vmware:
+          - version: [ 6,7,8]
+            method: Vmware_CLUSTER
+      - name: host_base_value
+        vmware:
+          - version: [ 6,7,8]
+            method: Vmware_Host_base
+      - name: vmware_ip_data
+        vmware:
+          - version: [ 6,7,8]
+            method: VMWARE_IPDATA
+
+  - platform: HuaWeiSDN
+    service:
+      - name: fabric
+        sdn:
+          - version: [1,2,3,4,5,6]
+            method: HUAWEI_SDN_FABRIC
+      - name: vpc
+        sdn:
+          - version: [1,2,3,4,5,6]
+            method: HUAWEI_SDN_VPC
+      - name: logic_router
+        sdn:
+          - version: [1,2,3,4,5,6]
+            method: HUAWEI_SDN_LOGICROUTER
+      - name: logic_switch
+        sdn:
+          - version: [1,2,3,4,5,6]
+            method: HUAWEI_SDN_LOGICSWITCH
+      - name: logic_port
+        sdn:
+          - version: [1,2,3,4,5,6]
+            method: HUAWEI_SDN_LOGICPORT
+      - name: device
+        sdn:
+          - version: [1,2,3,4,5,6]
+            method: HUAWEI_SDN_DEVICE
+      - name: device_port
+        sdn:
+          - version: [1,2,3,4,5,6]
+            method: HUAWEI_SDN_DEVICEPORT
+      - name: subnet
+        sdn:
+          - version: [1,2,3,4,5,6]
+            method: HUAWEI_SDN_SUBNET
+      - name: create_port
+        sdn:
+          - version: [1,2,3,4,5,6]
+            method: HUAWEI_SDN_CREATEPORT
+      - name: delete_port
+        sdn:
+          - version: [1,2,3,4,5,6]
+            method: HUAWEI_SDN_DELETEPORT
+  - platform: ACI
+    service:
+      - name: sdn_get
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_GET
+      - name: sdn_fabricapathep
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_FABRICAPATHEP
+      - name: sdn_infra
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_INFRA
+      - name: sdn_eptracker
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_EPTRACKER
+      - name: sdn_fabricinst
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_FABRICINST
+      - name: sdn_fabricpathep
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_FABRICPATHEP
+      - name: sdn_controller
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_CONTROLLER
+      - name: sdn_controllerssize
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_CONTROLLERSSIZE
+      - name: sdn_fvap
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_FVAP
+      - name: sdn_fvsubnet
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_FVSUBNET
+      - name: sdn_fortypolicy
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_FORTYPOLICY
+      - name: sdn_fortisubnet
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_FORTISUBNET
+      - name: sdn_fortiservice
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_FORTISERVICE
+      - name: sdn_firmware
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_FIRMWARE
+      - name: sdn_vzfilter
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_VZFILTER
+      - name: sdn_vzentry
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_VZENTRY
+      - name: sdn_infra
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_INFRA
+      - name: sdn_fabric2
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_FABRIC2
+      - name: sdn_contract
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: SDN_CONTRACT
+
+
+  - platform: ExcelCheck
+    service:
+      - name: check
+        sdn:
+          - version: [ 1,2,3,4,5,6 ]
+            method: EXCEL_CHECK
+
+  - platform: ASA
+    service:
+      - name: asa_config
+        ssh:
+          - version: [ 8.x,9,10 ]
+            method: ASA_CONFIG
+            config_mode: true
+
+  - platform: F5
+    service:
+      - name: f5_config
+        ssh:
+          - version: [ 8.x,9,10,11,12,13,14,15,16 ]
+            method: F5_CONFIG
+            config_mode: true

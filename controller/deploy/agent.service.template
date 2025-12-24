@@ -1,0 +1,54 @@
+[Unit]
+Description=UniOps Agent Service
+Documentation=https://github.com/influxdata/telegraf/controller
+After=network.target
+
+[Service]
+Type=simple
+{{if .user}}User={{.user}}{{end}}
+{{if .group}}Group={{.group}}{{end}}
+Restart=on-failure
+RestartSec=5
+
+# 工作目录（从配置文件中读取或使用默认值）
+WorkingDirectory={{.install_dir}}
+
+# 环境变量
+Environment="APP_LOG_DIR={{ if .log_directory }}{{ .log_directory }}{{ else }}/var/log/agent{{ end }}"
+Environment="AGENT_CODE={{ if .agent_code }}{{ .agent_code }}{{ else }}{{ .device_code }}{{ end }}"
+
+# 可选环境变量
+{{- if .log_level }}
+Environment="LOG_LEVEL={{ .log_level }}"
+{{- end }}
+{{- if .debug }}
+Environment="DEBUG={{ .debug }}"
+{{- end }}
+
+# 启动命令
+# 配置文件路径：{{ .config_dir }}/agent.yaml
+ExecStart={{.install_dir}}/agent --config={{.config_dir}}/agent.yaml
+
+# 优雅关闭
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# 资源限制（可选）
+{{- if .memory_limit }}
+MemoryLimit={{ .memory_limit }}
+{{- end }}
+{{- if .cpu_limit }}
+CPUQuota={{ .cpu_limit }}%
+{{- end }}
+
+# 安全设置
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths={{ .install_dir }}/logs {{ if .workspace }}{{ .workspace }}{{ else }}/opt/uniops-agent{{ end }}
+
+[Install]
+WantedBy={{ if .wanted_by }}{{ .wanted_by }}{{ else }}multi-user.target{{ end }}
+

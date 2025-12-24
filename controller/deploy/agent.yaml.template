@@ -1,0 +1,118 @@
+# Agent 配置文件模板
+# 此文件使用 Go template 语法，部署时会替换模板变量
+# 注意：Go template 标准库不支持 default 函数，需要使用条件判断
+
+# 服务器配置
+server:
+  grpc_port: {{ if .grpc_port }}{{ .grpc_port }}{{ else }}10380{{ end }}
+  http_port: {{ if .http_port }}{{ .http_port }}{{ else }}58080{{ end }}
+  upload_dir: {{ if .upload_dir }}"{{ .upload_dir }}"{{ else }}""{{ end }}  # 文件上传目录，留空使用默认值：/tmp/agentv2/uploads
+
+# Agent 配置
+agent:
+  # Agent 标识码（由运维平台生成和管理，必须唯一）
+  # 注意：部署代理使用 device_code 变量名传递 agent_code
+  # 如果 Controller 提供了 agent_code 变量，优先使用；否则使用 device_code
+  code: "{{ if .agent_code }}{{ .agent_code }}{{ else }}{{ .device_code }}{{ end }}"
+  # 工作目录（可选，留空则根据用户权限自动选择）
+  # 特权用户（root）: /opt/uniops-agent
+  # 普通用户: ~/app/uniops-agent
+  workspace: {{ if .workspace }}"{{ .workspace }}"{{ else }}""{{ end }}
+  log_level: {{ if .log_level }}{{ .log_level }}{{ else }}info{{ end }}
+
+# 服务注册配置（用于与 Controller 集成）
+registry:
+  enabled: {{ if .registry_enabled }}{{ .registry_enabled }}{{ else }}true{{ end }}
+  etcd_endpoints:
+{{- if .etcd_endpoints }}
+{{- range .etcd_endpoints }}
+    - "{{ . }}"
+{{- end }}
+{{- else if .etcd_endpoint }}
+    - "{{ .etcd_endpoint }}"
+{{- else }}
+    - "127.0.0.1:2379"
+{{- end }}
+  etcd_username: {{ if .etcd_username }}"{{ .etcd_username }}"{{ else }}""{{ end }}
+  etcd_password: {{ if .etcd_password }}"{{ .etcd_password }}"{{ else }}""{{ end }}
+  etcd_prefix: "{{ if .etcd_prefix }}{{ .etcd_prefix }}{{ else }}/agents{{ end }}"
+  register_interval: {{ if .register_interval }}{{ .register_interval }}{{ else }}30s{{ end }}
+  ttl: {{ if .ttl }}{{ .ttl }}{{ else }}60s{{ end }}
+
+# 服务发现配置
+discovery:
+  enabled: {{ if .discovery_enabled }}{{ .discovery_enabled }}{{ else }}true{{ end }}
+  interval: {{ if .discovery_interval }}{{ .discovery_interval }}{{ else }}30s{{ end }}
+
+# 健康检查配置
+health_check:
+  default_interval: {{ if .health_check_interval }}{{ .health_check_interval }}{{ else }}30s{{ end }}
+  default_timeout: {{ if .health_check_timeout }}{{ .health_check_timeout }}{{ else }}5s{{ end }}
+  default_retries: {{ if .health_check_retries }}{{ .health_check_retries }}{{ else }}3{{ end }}
+
+# 自动恢复配置
+auto_recovery:
+  enabled: {{ if .auto_recovery_enabled }}{{ .auto_recovery_enabled }}{{ else }}true{{ end }}
+  max_restarts: {{ if .auto_recovery_max_restarts }}{{ .auto_recovery_max_restarts }}{{ else }}5{{ end }}
+  restart_delay: {{ if .auto_recovery_restart_delay }}{{ .auto_recovery_restart_delay }}{{ else }}5s{{ end }}
+  backoff_factor: {{ if .auto_recovery_backoff_factor }}{{ .auto_recovery_backoff_factor }}{{ else }}2.0{{ end }}
+  max_backoff: {{ if .auto_recovery_max_backoff }}{{ .auto_recovery_max_backoff }}{{ else }}60s{{ end }}
+
+# 指标收集配置
+metrics:
+  enabled: {{ if .metrics_enabled }}{{ .metrics_enabled }}{{ else }}true{{ end }}
+  interval: {{ if .metrics_interval }}{{ .metrics_interval }}{{ else }}10s{{ end }}
+  collect_system: {{ if .metrics_collect_system }}{{ .metrics_collect_system }}{{ else }}true{{ end }}
+  collect_service: {{ if .metrics_collect_service }}{{ .metrics_collect_service }}{{ else }}true{{ end }}
+  # 增强型收集器配置（基于 Prometheus，参考 Node Exporter 指标命名）
+  enhanced_enabled: {{ if .metrics_enhanced_enabled }}{{ .metrics_enhanced_enabled }}{{ else }}true{{ end }}  # 是否启用增强型收集器（默认启用）
+  
+  # 推荐配置：只启用核心collectors（稳定可靠，适用于生产环境）
+  # 核心collectors包括：cpu, meminfo, loadavg, filesystem, diskstats, netdev, stat, os, time, uname
+  enhanced_only_core: {{ if .metrics_enhanced_only_core }}{{ .metrics_enhanced_only_core }}{{ else }}true{{ end }}
+  
+  # 可选配置方式1：指定启用的collectors列表（空表示启用所有）
+  # 如果 enhanced_only_core 为 false，可以使用此配置精确控制启用的collectors
+{{- if .metrics_enhanced_collectors }}
+  enhanced_collectors:
+{{- range .metrics_enhanced_collectors }}
+    - "{{ . }}"
+{{- end }}
+{{- end }}
+  
+  # 可选配置方式2：排除某些collectors（适用于需要大部分collectors但排除特定几个的场景）
+  # 如果 enhanced_only_core 为 false，可以使用此配置排除容易失败的collectors
+{{- if .metrics_enhanced_exclude }}
+  enhanced_exclude:
+{{- range .metrics_enhanced_exclude }}
+    - "{{ . }}"
+{{- end }}
+{{- end }}
+  # 历史缓存配置
+  history_enabled: {{ if .metrics_history_enabled }}{{ .metrics_history_enabled }}{{ else }}true{{ end }}    # 是否启用历史缓存
+  history_max_points: {{ if .metrics_history_max_points }}{{ .metrics_history_max_points }}{{ else }}360{{ end }}   # 历史数据点最大数量（默认 360，即 1 小时，10秒间隔）
+  # 指标上报配置
+  report_enabled: {{ if .metrics_report_enabled }}{{ .metrics_report_enabled }}{{ else }}false{{ end }}  # 是否启用指标上报到 Controller
+  controller_url: "{{ .controller_url }}"  # 必须由 Controller 提供，基于 BaseConfig.DefaultPort 构建
+  report_interval: {{ if .metrics_report_interval }}{{ .metrics_report_interval }}{{ else }}30s{{ end }}
+  retry_count: {{ if .metrics_retry_count }}{{ .metrics_retry_count }}{{ else }}3{{ end }}
+  retry_delay: {{ if .metrics_retry_delay }}{{ .metrics_retry_delay }}{{ else }}5s{{ end }}
+  # 应用指标配置（业务指标收集）
+  application_enabled: {{ if .metrics_application_enabled }}{{ .metrics_application_enabled }}{{ else }}true{{ end }}   # 是否启用应用指标收集
+  application_endpoint: "{{ if .metrics_application_endpoint }}{{ .metrics_application_endpoint }}{{ else }}:9091{{ end }}"  # 应用指标接收端点（Prometheus 格式）
+  # 指标策略配置（用于从 Controller 动态获取指标采集策略）
+  strategy_enabled: {{ if .metrics_strategy_enabled }}{{ .metrics_strategy_enabled }}{{ else }}false{{ end }}  # 是否启用策略（默认 false，需要手动启用）
+  strategy_source: {{ if .metrics_strategy_source }}"{{ .metrics_strategy_source }}"{{ else }}"api"{{ end }}  # 策略来源："config"（配置文件）或 "api"（从 Controller API 获取）
+  strategy_api_url: {{ if .metrics_strategy_api_url }}"{{ .metrics_strategy_api_url }}"{{ else }}""{{ end }}  # 策略API地址（留空则使用 controller_url）
+  strategy_sync_interval: {{ if .metrics_strategy_sync_interval }}{{ .metrics_strategy_sync_interval }}{{ else }}"5m"{{ end }}  # 策略同步间隔（默认5分钟）
+
+# 日志配置
+logging:
+  # 日志目录（可选，留空则根据用户权限自动选择）
+  # 特权用户（root）: /var/log/agent
+  # 普通用户: ~/.local/log/agent
+  directory: {{ if .log_directory }}"{{ .log_directory }}"{{ else }}""{{ end }}
+  max_size: {{ if .log_max_size }}{{ .log_max_size }}{{ else }}100MB{{ end }}
+  max_files: {{ if .log_max_files }}{{ .log_max_files }}{{ else }}10{{ end }}
+  level: {{ if .log_level }}{{ .log_level }}{{ else }}info{{ end }}
+

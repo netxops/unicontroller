@@ -1,0 +1,6 @@
+name: sshOsInfo
+method: SSH
+dataType: map[string]string
+target: cat /etc/*release 2>/dev/null || cat /etc/*version 2>/dev/null || uname -a
+timeout: 5s
+expectedType: JSON

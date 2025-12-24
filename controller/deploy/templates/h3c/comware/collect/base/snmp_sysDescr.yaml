@@ -1,0 +1,7 @@
+name: sysDescr
+method: SNMP
+target: 1.3.6.1.2.1.1.1.0
+expectedType: SNMPSingle
+inputFields: []
+fields:
+  - sysDescr

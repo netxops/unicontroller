@@ -1,0 +1,5 @@
+name: interfaceBrief
+method: SSH
+target: display interface brief
+timeout: 5s
+expectedType: JSON

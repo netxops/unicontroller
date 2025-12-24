@@ -1,0 +1,138 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package pb;
+option go_package = "github.com/influxdata/telegraf/controller/pb";
+
+// ServiceMetrics 服务指标
+message ServiceMetrics {
+  string package = 1;
+  double cpu_usage = 2;          // CPU 使用率（百分比）
+  double memory_usage = 3;       // 内存使用率（百分比）
+  int64 memory_bytes = 4;        // 内存使用量（字节）
+  double disk_usage = 5;         // 磁盘使用率（百分比）
+  int64 network_in = 6;           // 网络入流量（字节）
+  int64 network_out = 7;          // 网络出流量（字节）
+  int64 request_count = 8;       // 请求数
+  int64 error_count = 9;         // 错误数
+  int64 response_time_ms = 10;   // 响应时间（毫秒）
+  google.protobuf.Timestamp last_updated = 11;
+}
+
+// NetworkInterface 网络接口信息
+message NetworkInterface {
+  string name = 1;      // 接口名称
+  int64 rx_bytes = 2;  // 接收字节数
+  int64 tx_bytes = 3;  // 发送字节数
+}
+
+// SystemMetrics 系统指标
+message SystemMetrics {
+  double cpu_usage = 1;          // CPU 使用率（百分比）
+  int32 cpu_cores = 14;         // CPU 核心数
+  double memory_usage = 2;       // 内存使用率（百分比）
+  int64 memory_total = 3;        // 总内存（字节）
+  int64 memory_free = 4;         // 空闲内存（字节）
+  double disk_usage = 5;         // 磁盘使用率（百分比）
+  int64 disk_total = 6;          // 总磁盘空间（字节）
+  int64 disk_free = 7;           // 空闲磁盘空间（字节）
+  int64 network_in = 8;           // 网络入流量（字节，已废弃，使用 network_interfaces）
+  int64 network_out = 9;          // 网络出流量（字节，已废弃，使用 network_interfaces）
+  repeated NetworkInterface network_interfaces = 15;  // 网络接口列表
+  double load_avg_1 = 10;        // 1分钟负载平均值
+  double load_avg_5 = 11;         // 5分钟负载平均值
+  double load_avg_15 = 12;       // 15分钟负载平均值
+  google.protobuf.Timestamp last_updated = 13;
+}
+
+// GetSystemMetricsReq 获取系统指标请求
+message GetSystemMetricsReq {
+  // 空请求，暂时不需要参数
+}
+
+// GetSystemMetricsResp 获取系统指标响应
+message GetSystemMetricsResp {
+  SystemMetrics metrics = 1;
+}
+
+// GetServiceMetricsReq 获取服务指标请求
+message GetServiceMetricsReq {
+  string package = 1;
+}
+
+// GetServiceMetricsResp 获取服务指标响应
+message GetServiceMetricsResp {
+  ServiceMetrics metrics = 1;
+}
+
+// ListServiceMetricsReq 列出所有服务指标请求
+message ListServiceMetricsReq {
+  // 可选：只返回运行中的服务
+  bool running_only = 1;
+}
+
+// ListServiceMetricsResp 列出所有服务指标响应
+message ListServiceMetricsResp {
+  repeated ServiceMetrics metrics = 1;
+}
+
+// ApplicationMetrics 应用指标
+message ApplicationMetrics {
+  string service_name = 1;
+  map<string, double> metrics = 2;  // 指标名称 -> 指标值
+  map<string, string> labels = 3;   // 指标标签
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+// GetApplicationMetricsReq 获取应用指标请求
+message GetApplicationMetricsReq {
+  string service_name = 1;  // 可选：服务名称，为空则返回所有服务
+}
+
+// GetApplicationMetricsResp 获取应用指标响应
+message GetApplicationMetricsResp {
+  map<string, ApplicationMetrics> services = 1;  // 服务名称 -> 应用指标
+  ApplicationMetrics metrics = 2;  // 单个服务的指标（当指定 service_name 时）
+}
+
+// GetMetricsHistoryReq 获取指标历史请求
+message GetMetricsHistoryReq {
+  string type = 1;          // 指标类型：system, service
+  string service_name = 2;  // 服务名称（仅当 type=service 时）
+  google.protobuf.Timestamp start_time = 3;  // 开始时间
+  google.protobuf.Timestamp end_time = 4;   // 结束时间
+}
+
+// MetricsHistoryPoint 指标历史数据点
+message MetricsHistoryPoint {
+  google.protobuf.Timestamp timestamp = 1;
+  map<string, string> metrics = 2;  // 指标数据（JSON 字符串格式）
+}
+
+// GetMetricsHistoryResp 获取指标历史响应
+message GetMetricsHistoryResp {
+  string type = 1;
+  string service_name = 2;
+  google.protobuf.Timestamp start_time = 3;
+  google.protobuf.Timestamp end_time = 4;
+  repeated MetricsHistoryPoint data_points = 5;
+}
+
+// Metrics 服务定义
+service Metrics {
+  // GetSystemMetrics 获取系统指标
+  rpc GetSystemMetrics(GetSystemMetricsReq) returns (GetSystemMetricsResp);
+  
+  // GetServiceMetrics 获取指定服务的指标
+  rpc GetServiceMetrics(GetServiceMetricsReq) returns (GetServiceMetricsResp);
+  
+  // ListServiceMetrics 列出所有服务的指标
+  rpc ListServiceMetrics(ListServiceMetricsReq) returns (ListServiceMetricsResp);
+  
+  // GetApplicationMetrics 获取应用指标
+  rpc GetApplicationMetrics(GetApplicationMetricsReq) returns (GetApplicationMetricsResp);
+  
+  // GetMetricsHistory 获取指标历史数据
+  rpc GetMetricsHistory(GetMetricsHistoryReq) returns (GetMetricsHistoryResp);
+}
+

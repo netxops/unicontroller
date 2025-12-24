@@ -1,0 +1,6 @@
+name: telnetAliveCheck
+method: TELNET
+target: aliveCheck
+dataType: map[string]string
+timeout: 5s
+expectedType: JSON

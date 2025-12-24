@@ -1,0 +1,19 @@
+prompts:
+  - "\\S+[^\n]+(>|#)$"
+err_prompts:
+  - "% Unknown command"
+  - "% Incomplete command"
+  - "% Too many parameters"
+  - "% Parameter error"
+  - "% Ambiguous command"
+  - "% Such file"
+  - "% Unrecognized command"
+  - "[\\r\\n] % \\w"
+  - "\\s+Error: "
+  - "Failed to move"
+pager_prompts:
+  - "\\s*\\-{4} More \\( Press 'Q' to break \\) \\-{4}$"
+pager_command: " "
+init_commands:
+  - "undo smart"
+auth_cmd: "enable"

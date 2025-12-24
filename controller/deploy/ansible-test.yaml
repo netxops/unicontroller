@@ -1,0 +1,66 @@
+area: default
+base_config:
+  resources:
+    vector: test-vector
+    vmagent: test-vmagent
+    minio: test-bucket
+  preferred_networks:
+    - 192.168.100.0/24
+    - 10.0.0.0/8
+  home_path: /home/jacky/project/agent/pkg/controller/
+  templates:
+   - /home/jacky/project/agent/pkg/controller/templates
+etcd:
+  image: quay.io/coreos/etcd:v3.5.0
+  port: 2379
+  host: localhost
+  name: test-etcd
+
+vector:
+  image: timberio/vector:latest-alpine
+  syslog_mode: udp
+  syslog_address: 0.0.0.0
+  syslog_port: 514
+  loki_endpoint: http://192.168.100.122:3100
+
+vmagent:
+  image: victoriametrics/vmagent:latest
+  remoteWriteurl: http://192.168.100.122:9090/api/v1/write
+  httpListenAddr: :8429
+  host: 0.0.0.0
+  port: 8429
+
+minio:
+  proxyAddr: ":9009"
+  endpoint: "192.168.100.122:9000"
+  accessKeyID: "3GSPC8hXVA4Jml805KCm"
+  secretAccessKey: "J6dYEhuf12gP86aGFYx2eSTHsMoqPE12jh7Fpoi8"
+  useSSL: false
+  bucketName: "test-bucket"
+
+ansible:
+  image: willhallonline/ansible:latest
+  container_name: test-ansible
+  keep_container_running: false
+  resources:
+    cpu: "1"
+    memory: "512M"
+  network_mode: host
+  volumes:
+    - /tmp/ansible-test/playbooks:/ansible/playbooks
+    - /tmp/ansible-test/inventory:/ansible/inventory
+    - /tmp/ansible-test/templates:/ansible/templates
+    - /tmp/ansible-test/ssh:/ansible/ssh
+  env_vars:
+    ANSIBLE_HOST_KEY_CHECKING: "False"
+  work_dir: "/tmp/ansible-test"
+  ssh_timeout: 10
+  forks: 5
+  ssh_key_path: /ansible/ssh/id_rsa
+  default_agent_install_dir: "/opt/uniops-agent"
+  default_agent_config:
+    log_level: "info"
+    api_endpoint: "http://localhost:8080"
+  default_agent_package: "http://localhost:8080/packages/uniops-agent.zip"
+  deployment_history_retention: 10
+  verbose_logging: true

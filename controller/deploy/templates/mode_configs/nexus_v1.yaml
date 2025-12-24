@@ -1,0 +1,18 @@
+prompts:
+  - "^\s?(?:(?:[\\w.\\/]+:)?[\\w.-]+\\s?(?:\\(config[^\\)]*\\))?\\s?[\\$#>]((\\s+$)|(\\s?(?:\\(enable\\))?\\s+$)))"
+err_prompts:
+  - "% Incomplete"
+  - "% Bad"
+  - "% Invalid"
+  - "% Unrecognized"
+  - "\\S+ process needs to be started before"
+  - "Failed to open file"
+init_commands:
+  - "terminal length 0"
+save_commands:
+  - "copy running start"
+first_chain:
+  - "do show running-config"
+last_chain:
+  - "do show running-config"
+auth_cmd: "enable"

@@ -1,0 +1,1 @@
+asa没有都使用object作为nat object

@@ -1,0 +1,30 @@
+#name: snmpDevicePorts
+#mappings:
+#  - inputField: snmpIftableProcess#name
+#    unchanged: true
+#    outputField: name
+#    flattenSlice: true
+#  - inputField: snmpIftableProcess#phy_protocol
+#    unchanged: true
+#    outputField: phy_protocol
+#    flattenSlice: true
+#  - inputField: snmpIftableProcess#mac
+#    unchanged: true
+#    outputField: mac
+#    flattenSlice: true
+#  - inputField: snmpIftableProcess#status
+#    unchanged: true
+#    outputField: status
+#    flattenSlice:
+#  - inputField: snmpIpAddrEntryProcess#interface
+#    unchanged: true
+#    outputField: interface
+#    flattenSlice: true
+#  - inputField: snmpIpAddrEntryProcess#mask
+#    unchanged: true
+#    outputField: mask
+#    flattenSlice: true
+#  - inputField: snmpIfHighSpeedProcess
+#    unchanged: true
+#    outputField: rate
+#    flattenSlice: true

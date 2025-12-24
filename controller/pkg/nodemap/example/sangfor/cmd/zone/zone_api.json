@@ -1,0 +1,165 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "totalItems": 16,
+        "totalPages": 1,
+        "pageNumber": 1,
+        "pageSize": 100,
+        "itemsOffset": 0,
+        "itemLength": 16,
+        "privateOffset": 0,
+        "items": [
+            {
+                "uuid": "00000000000000000000000900000001",
+                "name": "L2_trust_A",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "00000000000000000000000900000002",
+                "name": "L2_trust_B",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "00000000000000000000000900000003",
+                "name": "L2_untrust_A",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "00000000000000000000000900000004",
+                "name": "L2_untrust_B",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "00000000000000000000000900000009",
+                "name": "L3_manage",
+                "description": "",
+                "interfaces": [
+                    "eth0"
+                ],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "0000000000000000000000090000000a",
+                "name": "L3_trust_A",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "0000000000000000000000090000000b",
+                "name": "L3_trust_B",
+                "description": "",
+                "interfaces": [
+                    "eth2"
+                ],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "0000000000000000000000090000000c",
+                "name": "L3_trust_C",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "0000000000000000000000090000000d",
+                "name": "L3_untrust_A",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "0000000000000000000000090000000e",
+                "name": "L3_untrust_B",
+                "description": "",
+                "interfaces": [
+                    "eth1"
+                ],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "0000000000000000000000090000000f",
+                "name": "L3_untrust_C",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "00000000000000000000000900000005",
+                "name": "Virtual_trust_A",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "00000000000000000000000900000006",
+                "name": "Virtual_trust_B",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "00000000000000000000000900000007",
+                "name": "Virtual_untrust_A",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "00000000000000000000000900000008",
+                "name": "Virtual_untrust_B",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            },
+            {
+                "uuid": "00000000000000000000000900000010",
+                "name": "Local",
+                "description": "",
+                "interfaces": [],
+                "priority": 0,
+                "type": "",
+                "enable": false
+            }
+        ]
+    }
+}

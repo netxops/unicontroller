@@ -1,0 +1,121 @@
+package controller
+
+import (
+	"context"
+	"fmt"
+	"net"
+	"sync"
+	"time"
+
+	"github.com/douyu/jupiter/pkg/xlog"
+	"github.com/influxdata/telegraf/controller/pkg/controller/models"
+)
+
+const MetricsManagerServiceName = "controller-metrics-manager"
+
+type MetricsManager struct {
+	config          *Config
+	listener        net.Listener
+	registryManager *RegistryManager
+	// port            int
+	wg       sync.WaitGroup
+	cancel   context.CancelFunc
+	ctx      context.Context
+	stopChan chan struct{}
+}
+
+func ProvideMetricsManager(config *Config, registryManager *RegistryManager) (*MetricsManager, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+	return &MetricsManager{
+		config:          config,
+		stopChan:        make(chan struct{}),
+		registryManager: registryManager,
+		cancel:          cancel,
+		ctx:             ctx,
+	}, nil
+}
+
+func (mm *MetricsManager) Start() error {
+	addr := fmt.Sprintf(":%d", mm.config.MetricsManager.Port)
+	listener, err := net.Listen("tcp", addr)
+	if err != nil {
+		return fmt.Errorf("failed to start metrics listener: %v", err)
+	}
+	mm.listener = listener
+
+	go mm.handleConnections()
+
+	fmt.Printf("MetricsManager started on port %d\n", mm.config.MetricsManager.Port)
+	go mm.periodicRegister()
+	return nil
+}
+
+func (mm *MetricsManager) Stop() error {
+	mm.cancel()
+	close(mm.stopChan)
+	if mm.listener != nil {
+		mm.listener.Close()
+	}
+	mm.wg.Wait()
+	return nil
+}
+
+func (mm *MetricsManager) handleConnections() {
+	mm.wg.Add(1)
+	defer mm.wg.Done()
+
+	for {
+		select {
+		case <-mm.stopChan:
+			return
+		default:
+			conn, err := mm.listener.Accept()
+			if err != nil {
+				fmt.Printf("Error accepting metrics connection: %v\n", err)
+				continue
+			}
+			go mm.handleConnection(conn)
+		}
+	}
+}
+
+func (mm *MetricsManager) handleConnection(conn net.Conn) {
+	defer conn.Close()
+	// Handle the metrics connection here
+	// You can read from the connection and process the metrics data
+}
+
+func (mm *MetricsManager) CollectMetrics(agentAddr string) error {
+	// Implement logic to actively collect metrics from the agent's metrics endpoint
+	// This could involve making an HTTP request to the agent's metrics endpoint
+	return nil
+}
+
+func (mm *MetricsManager) periodicRegister() {
+	ticker := time.NewTicker(30 * time.Second) // 每30秒注册一次
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			mm.registerService()
+		case <-mm.ctx.Done():
+			xlog.Default().Info("Stopping Metrics manager service registration")
+			return
+		}
+	}
+}
+
+func (mm *MetricsManager) registerService() {
+	serviceInfo := &models.ServiceInfo{
+		Id:       MetricsManagerServiceName,
+		Name:     MetricsManagerServiceName,
+		Protocol: "tcp",
+		Address:  fmt.Sprintf(":%d", mm.config.MetricsManager.Port),
+	}
+
+	err := mm.registryManager.RegisterService(serviceInfo, 1*time.Minute) // TTL设置为1分钟
+	if err != nil {
+		xlog.Default().Error("Failed to register Metrics manager service", xlog.FieldErr(err))
+	}
+}

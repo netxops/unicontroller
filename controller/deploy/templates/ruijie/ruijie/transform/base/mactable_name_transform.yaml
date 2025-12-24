@@ -1,0 +1,8 @@
+name: mactableNameTransform
+# 定义一系列数据映射规则
+mappings:
+  - inputField: telnetMacTableTextFSM
+    outputField: mactableNameTransform                       
+    regex: |
+      expr: msRemoveSpaces(value, "NAME")                   
+  

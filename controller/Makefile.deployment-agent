@@ -1,0 +1,203 @@
+.PHONY: build-deployment-agent upload-to-minio-deployment-agent upload-deployment-agent-to-platform release-deployment-agent
+
+# Common variables
+GIT_COMMIT := $(shell git rev-parse HEAD)
+BUILD_TIME := $(shell date -u '+%Y-%m-%d %H:%M:%S')
+VERSION := $(shell git describe --tags --always --dirty)
+GIT_USER := $(shell git config user.name || echo "unknown")
+
+# MinIO variables (legacy support)
+MINIO_BUCKET := agent-bucket
+MINIO_DIRECTORY := deployment-tools
+MINIO_ENDPOINT := 192.168.100.121:9000
+BINARY_NAME := deployment-agent
+
+# Platform variables
+PLATFORM_API_URL ?= http://localhost:8080
+PLATFORM_USERNAME ?= 
+PLATFORM_ACCOUNT ?= ${PLATFORM_USERNAME}
+PLATFORM_PASSWORD ?= 
+
+# System information detection
+# OS detection: uname -s (linux/darwin/windows)
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+  DETECTED_OS := linux
+else ifeq ($(UNAME_S),Darwin)
+  DETECTED_OS := darwin
+else ifeq ($(UNAME_S),MINGW32_NT-6.1)
+  DETECTED_OS := windows
+else ifeq ($(UNAME_S),MINGW64_NT-6.1)
+  DETECTED_OS := windows
+else
+  DETECTED_OS := linux
+endif
+
+# Architecture detection: uname -m with normalization
+UNAME_M := $(shell uname -m)
+ifeq ($(UNAME_M),x86_64)
+  DETECTED_ARCH := amd64
+else ifeq ($(UNAME_M),aarch64)
+  DETECTED_ARCH := arm64
+else ifeq ($(UNAME_M),arm64)
+  DETECTED_ARCH := arm64
+else ifeq ($(UNAME_M),i386)
+  DETECTED_ARCH := x86
+else ifeq ($(UNAME_M),i686)
+  DETECTED_ARCH := x86
+else
+  DETECTED_ARCH := $(UNAME_M)
+endif
+
+# Kernel version detection: uname -r, extract major.minor
+UNAME_R := $(shell uname -r)
+# Extract major.minor from kernel version (e.g., "5.10.0-123-generic" -> "5.10")
+# Use sed with extended regex (works on both Linux and macOS)
+DETECTED_KERNEL_VERSION := $(shell echo "$(UNAME_R)" | sed -E 's/^([0-9]+\.[0-9]+).*/\1/' 2>/dev/null || echo "$(UNAME_R)" | sed 's/^\([0-9]\+\.[0-9]\+\).*/\1/')
+
+# Allow manual override
+DEPLOYMENT_AGENT_OS ?= ${DETECTED_OS}
+DEPLOYMENT_AGENT_ARCH ?= ${DETECTED_ARCH}
+DEPLOYMENT_AGENT_KERNEL_VERSION ?= ${DETECTED_KERNEL_VERSION}
+
+build-deployment-agent:
+	@echo "Building deployment-agent..."
+	@echo "Version: ${VERSION}"
+	@echo "Git Commit: ${GIT_COMMIT}"
+	@echo "Build Time: ${BUILD_TIME}"
+	@mkdir -p build
+	@go build -v -ldflags "-X main.GitCommit=${GIT_COMMIT} -X 'main.BuildTime=${BUILD_TIME}' -X main.Version=${VERSION}" -o build/${BINARY_NAME} ./cmd/deployment-agent
+	@echo "Deployment-agent built successfully: build/${BINARY_NAME}"
+
+upload-to-minio-deployment-agent: build-deployment-agent
+	@echo "Uploading deployment-agent binary to Minio..."
+	@MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY} MINIO_SECRET_KEY=${MINIO_SECRET_KEY} \
+        go run github.com/netxops/minio_uploader@latest \
+        -endpoint=${MINIO_ENDPOINT} \
+        -bucket=${MINIO_BUCKET} \
+        -prefix=${MINIO_DIRECTORY} \
+        -file=build/${BINARY_NAME}
+	@echo "Upload complete."
+
+upload-deployment-agent-to-platform: build-deployment-agent
+	@echo "Uploading deployment-agent to platform..."
+	@if [ -z "${PLATFORM_ACCOUNT}" ] && [ -z "${PLATFORM_USERNAME}" ]; then \
+		echo "=========================================="; \
+		echo "Error: Missing required environment variables"; \
+		echo "=========================================="; \
+		echo "Please set the following environment variables:"; \
+		echo "  export PLATFORM_API_URL=http://127.0.0.1:8080"; \
+		echo "  export PLATFORM_ACCOUNT=your-account (or PLATFORM_USERNAME)"; \
+		echo "  export PLATFORM_PASSWORD=your-password"; \
+		echo "=========================================="; \
+		echo "Current values:"; \
+		echo "  PLATFORM_API_URL: $${PLATFORM_API_URL:-not set}"; \
+		echo "  PLATFORM_ACCOUNT: $${PLATFORM_ACCOUNT:-not set}"; \
+		echo "  PLATFORM_USERNAME: $${PLATFORM_USERNAME:-not set}"; \
+		echo "  PLATFORM_PASSWORD: $${PLATFORM_PASSWORD:-not set}"; \
+		echo "=========================================="; \
+		exit 1; \
+	fi; \
+	if [ -z "${PLATFORM_PASSWORD}" ]; then \
+		echo "=========================================="; \
+		echo "Error: PLATFORM_PASSWORD is required"; \
+		echo "=========================================="; \
+		exit 1; \
+	fi
+	@echo "Platform API URL: ${PLATFORM_API_URL}"
+	@echo "Logging in to platform..."
+	@login_response=$$(curl -s --max-time 10 --connect-timeout 5 -w "\n%{http_code}" -X POST \
+		"${PLATFORM_API_URL}/api/v1/access/login" \
+		-H "Content-Type: application/json" \
+		-H "X-Auth-Token: placeholder" \
+		-d "{\"login_type\":0,\"account\":\"${PLATFORM_ACCOUNT}\",\"password\":\"${PLATFORM_PASSWORD}\"}" 2>&1); \
+	login_http_code=$$(echo "$$login_response" | tail -n1); \
+	login_body=$$(echo "$$login_response" | sed '$$d'); \
+	if [ -z "$$login_http_code" ] || [ "$$login_http_code" -lt 200 ] || [ "$$login_http_code" -ge 300 ] 2>/dev/null; then \
+		echo "=========================================="; \
+		echo "Login failed (HTTP $$login_http_code)"; \
+		echo "=========================================="; \
+		echo "API URL: ${PLATFORM_API_URL}/api/v1/access/login"; \
+		echo "Account: ${PLATFORM_ACCOUNT}"; \
+		if [ -n "$$login_body" ]; then \
+			echo "Response body: $$login_body"; \
+		else \
+			echo "No response body received"; \
+		fi; \
+		echo "=========================================="; \
+		echo "Troubleshooting tips:"; \
+		echo "1. Check if the platform service is running"; \
+		echo "2. Verify PLATFORM_API_URL is correct"; \
+		echo "3. Check network connectivity"; \
+		echo "4. Verify username and password are correct"; \
+		echo "=========================================="; \
+		exit 1; \
+	fi; \
+	login_code=$$(echo "$$login_body" | sed -n 's/.*"code"[[:space:]]*:[[:space:]]*\([0-9-]*\).*/\1/p' | head -n1); \
+	if [ -n "$$login_code" ] && [ "$$login_code" != "0" ] 2>/dev/null; then \
+		login_msg=$$(echo "$$login_body" | sed -n 's/.*"msg"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -n1); \
+		echo "=========================================="; \
+		echo "Login failed"; \
+		echo "=========================================="; \
+		echo "Error code: $$login_code"; \
+		if [ -n "$$login_msg" ]; then echo "Error message: $$login_msg"; fi; \
+		echo "Response: $$login_body"; \
+		echo "=========================================="; \
+		echo "Please check:"; \
+		echo "1. PLATFORM_ACCOUNT (or PLATFORM_USERNAME) is correct"; \
+		echo "2. PLATFORM_PASSWORD is correct"; \
+		echo "3. User account exists and is active"; \
+		echo "=========================================="; \
+		exit 1; \
+	fi; \
+	platform_token=$$(echo "$$login_body" | sed -n 's/.*"token"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -n1); \
+	if [ -z "$$platform_token" ]; then \
+		echo "=========================================="; \
+		echo "Error: Failed to extract token from login response"; \
+		echo "=========================================="; \
+		echo "Response: $$login_body"; \
+		echo "=========================================="; \
+		echo "The login request may have succeeded but the response format is unexpected."; \
+		echo "Please check the API response format."; \
+		echo "=========================================="; \
+		exit 1; \
+	fi; \
+	echo "Login successful, token obtained"; \
+	echo "Version: ${VERSION}"; \
+	echo "OS: ${DEPLOYMENT_AGENT_OS}"; \
+	echo "Architecture: ${DEPLOYMENT_AGENT_ARCH}"; \
+	echo "Kernel Version: ${DEPLOYMENT_AGENT_KERNEL_VERSION}"; \
+	echo "Uploading ${BINARY_NAME}..."; \
+	upload_response=$$(curl -s --max-time 60 --connect-timeout 10 -w "\n%{http_code}" -X POST \
+		"${PLATFORM_API_URL}/api/v1/platform/deployment-tools/upload" \
+		-H "X-Auth-Token: $$platform_token" \
+		-F "version=${VERSION}" \
+		-F "os=${DEPLOYMENT_AGENT_OS}" \
+		-F "architecture=${DEPLOYMENT_AGENT_ARCH}" \
+		-F "kernelVersion=${DEPLOYMENT_AGENT_KERNEL_VERSION}" \
+		-F "file=@build/${BINARY_NAME}" \
+		-F "description=Deployment agent build from Makefile" \
+		-F "uploader=${GIT_USER}" 2>&1); \
+	upload_http_code=$$(echo "$$upload_response" | tail -n1); \
+	upload_body=$$(echo "$$upload_response" | sed '$$d'); \
+	if [ -n "$$upload_http_code" ] && [ "$$upload_http_code" -ge 200 ] && [ "$$upload_http_code" -lt 300 ] 2>/dev/null; then \
+		echo "Upload successful (HTTP $$upload_http_code)"; \
+		if [ -n "$$upload_body" ]; then echo "Response: $$upload_body"; fi; \
+	else \
+		echo "Upload failed (HTTP $$upload_http_code)"; \
+		if [ -n "$$upload_body" ]; then echo "Response: $$upload_body"; fi; \
+		exit 1; \
+	fi
+	@echo "Upload complete."
+
+release-deployment-agent: upload-deployment-agent-to-platform
+	@echo "=========================================="
+	@echo "Deployment Agent Release ${VERSION} completed"
+	@echo "=========================================="
+	@echo "Version: ${VERSION}"
+	@echo "OS: ${DEPLOYMENT_AGENT_OS}"
+	@echo "Architecture: ${DEPLOYMENT_AGENT_ARCH}"
+	@echo "Kernel Version: ${DEPLOYMENT_AGENT_KERNEL_VERSION}"
+	@echo "Binary name: ${BINARY_NAME}"
+	@echo "Platform API: ${PLATFORM_API_URL}"
+	@echo "=========================================="

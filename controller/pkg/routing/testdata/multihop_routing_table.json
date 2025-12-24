@@ -1,0 +1,824 @@
+{
+  "topology": {
+    "source_network": "10.1.0.0/24",
+    "destination_network": "10.10.0.0/24",
+    "node_count": 10,
+    "max_hops": 7,
+    "description": "复杂多跳多路径路由拓扑，包含ECMP和路径合并场景"
+  },
+  "nodes": [
+    {
+      "id": "R1",
+      "name": "Router1",
+      "type": "router",
+      "vrf": "default",
+      "description": "源节点，连接多个下游节点"
+    },
+    {
+      "id": "R2",
+      "name": "Router2",
+      "type": "router",
+      "vrf": "default",
+      "description": "中间节点，支持ECMP"
+    },
+    {
+      "id": "R3",
+      "name": "Router3",
+      "type": "router",
+      "vrf": "default",
+      "description": "中间节点，支持ECMP"
+    },
+    {
+      "id": "R4",
+      "name": "Router4",
+      "type": "router",
+      "vrf": "default",
+      "description": "中间节点，连接R2和R6/R7"
+    },
+    {
+      "id": "R5",
+      "name": "Router5",
+      "type": "router",
+      "vrf": "default",
+      "description": "中间节点，ECMP汇聚点"
+    },
+    {
+      "id": "R6",
+      "name": "Router6",
+      "type": "router",
+      "vrf": "default",
+      "description": "中间节点，路径合并点"
+    },
+    {
+      "id": "R7",
+      "name": "Router7",
+      "type": "router",
+      "vrf": "default",
+      "description": "中间节点，多条路径汇聚"
+    },
+    {
+      "id": "R8",
+      "name": "Router8",
+      "type": "router",
+      "vrf": "default",
+      "description": "中间节点，路径合并点"
+    },
+    {
+      "id": "R9",
+      "name": "Router9",
+      "type": "router",
+      "vrf": "default",
+      "description": "中间节点，最终汇聚点"
+    },
+    {
+      "id": "R10",
+      "name": "Router10",
+      "type": "router",
+      "vrf": "default",
+      "description": "目标节点，多条路径终点"
+    }
+  ],
+  "ports": [
+    {
+      "id": "R1-Eth0/0",
+      "name": "Eth0/0",
+      "node_id": "R1",
+      "ip_address": "10.1.1.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R1-R2-1"
+    },
+    {
+      "id": "R1-Eth0/1",
+      "name": "Eth0/1",
+      "node_id": "R1",
+      "ip_address": "10.1.2.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R1-R2-2"
+    },
+    {
+      "id": "R1-Eth0/2",
+      "name": "Eth0/2",
+      "node_id": "R1",
+      "ip_address": "10.1.3.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R1-R3"
+    },
+    {
+      "id": "R1-Eth0/3",
+      "name": "Eth0/3",
+      "node_id": "R1",
+      "ip_address": "10.1.0.1/24",
+      "vrf": "default",
+      "connector_id": null,
+      "description": "源网络端口"
+    },
+    {
+      "id": "R2-Eth0/0",
+      "name": "Eth0/0",
+      "node_id": "R2",
+      "ip_address": "10.2.1.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R1-R2-1"
+    },
+    {
+      "id": "R2-Eth0/1",
+      "name": "Eth0/1",
+      "node_id": "R2",
+      "ip_address": "10.2.4.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R2-R4-1"
+    },
+    {
+      "id": "R2-Eth0/2",
+      "name": "Eth0/2",
+      "node_id": "R2",
+      "ip_address": "10.2.5.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R2-R5"
+    },
+    {
+      "id": "R2-Eth0/3",
+      "name": "Eth0/3",
+      "node_id": "R2",
+      "ip_address": "10.2.1.2/24",
+      "vrf": "default",
+      "connector_id": "Conn-R1-R2-2"
+    },
+    {
+      "id": "R3-Eth0/0",
+      "name": "Eth0/0",
+      "node_id": "R3",
+      "ip_address": "10.3.5.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R3-R5"
+    },
+    {
+      "id": "R3-Eth0/1",
+      "name": "Eth0/1",
+      "node_id": "R3",
+      "ip_address": "10.3.6.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R3-R6"
+    },
+    {
+      "id": "R3-Eth0/2",
+      "name": "Eth0/2",
+      "node_id": "R3",
+      "ip_address": "10.3.1.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R1-R3"
+    },
+    {
+      "id": "R4-Eth0/0",
+      "name": "Eth0/0",
+      "node_id": "R4",
+      "ip_address": "10.4.7.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R4-R7"
+    },
+    {
+      "id": "R4-Eth0/1",
+      "name": "Eth0/1",
+      "node_id": "R4",
+      "ip_address": "10.4.6.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R4-R6"
+    },
+    {
+      "id": "R4-Eth0/2",
+      "name": "Eth0/2",
+      "node_id": "R4",
+      "ip_address": "10.4.1.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R2-R4-1"
+    },
+    {
+      "id": "R5-Eth0/0",
+      "name": "Eth0/0",
+      "node_id": "R5",
+      "ip_address": "10.5.7.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R5-R7"
+    },
+    {
+      "id": "R5-Eth0/1",
+      "name": "Eth0/1",
+      "node_id": "R5",
+      "ip_address": "10.5.1.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R3-R5"
+    },
+    {
+      "id": "R5-Eth0/2",
+      "name": "Eth0/2",
+      "node_id": "R5",
+      "ip_address": "10.5.2.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R2-R5"
+    },
+    {
+      "id": "R6-Eth0/0",
+      "name": "Eth0/0",
+      "node_id": "R6",
+      "ip_address": "10.6.8.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R6-R8"
+    },
+    {
+      "id": "R6-Eth0/1",
+      "name": "Eth0/1",
+      "node_id": "R6",
+      "ip_address": "10.6.1.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R4-R6"
+    },
+    {
+      "id": "R6-Eth0/2",
+      "name": "Eth0/2",
+      "node_id": "R6",
+      "ip_address": "10.6.3.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R3-R6"
+    },
+    {
+      "id": "R7-Eth0/0",
+      "name": "Eth0/0",
+      "node_id": "R7",
+      "ip_address": "10.7.10.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R7-R10-1"
+    },
+    {
+      "id": "R7-Eth0/1",
+      "name": "Eth0/1",
+      "node_id": "R7",
+      "ip_address": "10.7.10.2/24",
+      "vrf": "default",
+      "connector_id": "Conn-R7-R10-2"
+    },
+    {
+      "id": "R7-Eth0/2",
+      "name": "Eth0/2",
+      "node_id": "R7",
+      "ip_address": "10.7.1.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R4-R7"
+    },
+    {
+      "id": "R7-Eth0/3",
+      "name": "Eth0/3",
+      "node_id": "R7",
+      "ip_address": "10.7.2.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R5-R7"
+    },
+    {
+      "id": "R8-Eth0/0",
+      "name": "Eth0/0",
+      "node_id": "R8",
+      "ip_address": "10.8.9.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R8-R9"
+    },
+    {
+      "id": "R8-Eth0/1",
+      "name": "Eth0/1",
+      "node_id": "R8",
+      "ip_address": "10.8.1.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R6-R8"
+    },
+    {
+      "id": "R9-Eth0/0",
+      "name": "Eth0/0",
+      "node_id": "R9",
+      "ip_address": "10.9.10.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R9-R10"
+    },
+    {
+      "id": "R9-Eth0/1",
+      "name": "Eth0/1",
+      "node_id": "R9",
+      "ip_address": "10.9.1.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R8-R9"
+    },
+    {
+      "id": "R10-Eth0/0",
+      "name": "Eth0/0",
+      "node_id": "R10",
+      "ip_address": "10.10.0.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R7-R10-1",
+      "description": "目标网络端口"
+    },
+    {
+      "id": "R10-Eth0/1",
+      "name": "Eth0/1",
+      "node_id": "R10",
+      "ip_address": "10.10.0.2/24",
+      "vrf": "default",
+      "connector_id": "Conn-R9-R10",
+      "description": "目标网络端口 (ECMP)"
+    },
+    {
+      "id": "R10-Eth0/2",
+      "name": "Eth0/2",
+      "node_id": "R10",
+      "ip_address": "10.10.1.1/24",
+      "vrf": "default",
+      "connector_id": "Conn-R7-R10-2",
+      "description": "目标网络端口 (ECMP)"
+    }
+  ],
+  "routes": {
+    "R1": [
+      {
+        "destination": "10.1.0.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/3",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.1.1.2",
+        "out_interface": "Eth0/0",
+        "connected": false
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.1.2.2",
+        "out_interface": "Eth0/1",
+        "connected": false
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.1.3.2",
+        "out_interface": "Eth0/2",
+        "connected": false
+      }
+    ],
+    "R2": [
+      {
+        "destination": "10.2.1.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/0",
+        "connected": true
+      },
+      {
+        "destination": "10.2.4.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/1",
+        "connected": true
+      },
+      {
+        "destination": "10.2.5.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/2",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.2.4.2",
+        "out_interface": "Eth0/1",
+        "connected": false
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.2.5.2",
+        "out_interface": "Eth0/2",
+        "connected": false
+      }
+    ],
+    "R3": [
+      {
+        "destination": "10.3.1.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/2",
+        "connected": true
+      },
+      {
+        "destination": "10.3.5.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/0",
+        "connected": true
+      },
+      {
+        "destination": "10.3.6.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/1",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.3.5.2",
+        "out_interface": "Eth0/0",
+        "connected": false
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.3.6.2",
+        "out_interface": "Eth0/1",
+        "connected": false
+      }
+    ],
+    "R4": [
+      {
+        "destination": "10.4.1.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/2",
+        "connected": true
+      },
+      {
+        "destination": "10.4.7.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/0",
+        "connected": true
+      },
+      {
+        "destination": "10.4.6.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/1",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.4.7.2",
+        "out_interface": "Eth0/0",
+        "connected": false
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.4.6.2",
+        "out_interface": "Eth0/1",
+        "connected": false
+      }
+    ],
+    "R5": [
+      {
+        "destination": "10.5.1.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/1",
+        "connected": true
+      },
+      {
+        "destination": "10.5.2.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/2",
+        "connected": true
+      },
+      {
+        "destination": "10.5.7.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/0",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.5.7.2",
+        "out_interface": "Eth0/0",
+        "connected": false
+      }
+    ],
+    "R6": [
+      {
+        "destination": "10.6.1.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/1",
+        "connected": true
+      },
+      {
+        "destination": "10.6.3.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/2",
+        "connected": true
+      },
+      {
+        "destination": "10.6.8.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/0",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.6.8.2",
+        "out_interface": "Eth0/0",
+        "connected": false
+      }
+    ],
+    "R7": [
+      {
+        "destination": "10.7.1.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/2",
+        "connected": true
+      },
+      {
+        "destination": "10.7.2.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/3",
+        "connected": true
+      },
+      {
+        "destination": "10.7.10.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/0",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.7.10.2",
+        "out_interface": "Eth0/0",
+        "connected": false
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.7.10.3",
+        "out_interface": "Eth0/1",
+        "connected": false
+      }
+    ],
+    "R8": [
+      {
+        "destination": "10.8.1.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/1",
+        "connected": true
+      },
+      {
+        "destination": "10.8.9.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/0",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.8.9.2",
+        "out_interface": "Eth0/0",
+        "connected": false
+      }
+    ],
+    "R9": [
+      {
+        "destination": "10.9.1.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/1",
+        "connected": true
+      },
+      {
+        "destination": "10.9.10.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/0",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": "10.9.10.2",
+        "out_interface": "Eth0/0",
+        "connected": false
+      }
+    ],
+    "R10": [
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/0",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/1",
+        "connected": true
+      },
+      {
+        "destination": "10.10.0.0/24",
+        "next_hop": null,
+        "out_interface": "Eth0/2",
+        "connected": true
+      }
+    ]
+  },
+  "connectors": [
+    {
+      "id": "Conn-R1-R2-1",
+      "port1": "R1-Eth0/0",
+      "port2": "R2-Eth0/0"
+    },
+    {
+      "id": "Conn-R1-R2-2",
+      "port1": "R1-Eth0/1",
+      "port2": "R2-Eth0/3"
+    },
+    {
+      "id": "Conn-R1-R3",
+      "port1": "R1-Eth0/2",
+      "port2": "R3-Eth0/2"
+    },
+    {
+      "id": "Conn-R2-R4-1",
+      "port1": "R2-Eth0/1",
+      "port2": "R4-Eth0/2"
+    },
+    {
+      "id": "Conn-R2-R5",
+      "port1": "R2-Eth0/2",
+      "port2": "R5-Eth0/2"
+    },
+    {
+      "id": "Conn-R3-R5",
+      "port1": "R3-Eth0/0",
+      "port2": "R5-Eth0/1"
+    },
+    {
+      "id": "Conn-R3-R6",
+      "port1": "R3-Eth0/1",
+      "port2": "R6-Eth0/2"
+    },
+    {
+      "id": "Conn-R4-R6",
+      "port1": "R4-Eth0/1",
+      "port2": "R6-Eth0/1"
+    },
+    {
+      "id": "Conn-R4-R7",
+      "port1": "R4-Eth0/0",
+      "port2": "R7-Eth0/2"
+    },
+    {
+      "id": "Conn-R5-R7",
+      "port1": "R5-Eth0/0",
+      "port2": "R7-Eth0/3"
+    },
+    {
+      "id": "Conn-R6-R8",
+      "port1": "R6-Eth0/0",
+      "port2": "R8-Eth0/1"
+    },
+    {
+      "id": "Conn-R7-R10-1",
+      "port1": "R7-Eth0/0",
+      "port2": "R10-Eth0/0"
+    },
+    {
+      "id": "Conn-R7-R10-2",
+      "port1": "R7-Eth0/1",
+      "port2": "R10-Eth0/2"
+    },
+    {
+      "id": "Conn-R8-R9",
+      "port1": "R8-Eth0/0",
+      "port2": "R9-Eth0/1"
+    },
+    {
+      "id": "Conn-R9-R10",
+      "port1": "R9-Eth0/0",
+      "port2": "R10-Eth0/1"
+    }
+  ],
+  "paths": [
+    {
+      "id": "Path1",
+      "description": "R1 -> R2 -> R4 -> R7 -> R10",
+      "hops": 5,
+      "nodes": ["R1", "R2", "R4", "R7", "R10"],
+      "ports": [
+        {"node": "R1", "in_port": null, "out_port": "Eth0/0"},
+        {"node": "R2", "in_port": "Eth0/0", "out_port": "Eth0/1"},
+        {"node": "R4", "in_port": "Eth0/2", "out_port": "Eth0/0"},
+        {"node": "R7", "in_port": "Eth0/2", "out_port": "Eth0/0"},
+        {"node": "R10", "in_port": "Eth0/0", "out_port": null}
+      ],
+      "type": "basic"
+    },
+    {
+      "id": "Path2",
+      "description": "R1 -> R2 -> R5 -> R7 -> R10",
+      "hops": 5,
+      "nodes": ["R1", "R2", "R5", "R7", "R10"],
+      "ports": [
+        {"node": "R1", "in_port": null, "out_port": "Eth0/1"},
+        {"node": "R2", "in_port": "Eth0/3", "out_port": "Eth0/2"},
+        {"node": "R5", "in_port": "Eth0/2", "out_port": "Eth0/0"},
+        {"node": "R7", "in_port": "Eth0/3", "out_port": "Eth0/0"},
+        {"node": "R10", "in_port": "Eth0/0", "out_port": null}
+      ],
+      "type": "ecmp",
+      "ecmp_group": "R1-ECMP-1"
+    },
+    {
+      "id": "Path3",
+      "description": "R1 -> R3 -> R5 -> R7 -> R10",
+      "hops": 5,
+      "nodes": ["R1", "R3", "R5", "R7", "R10"],
+      "ports": [
+        {"node": "R1", "in_port": null, "out_port": "Eth0/2"},
+        {"node": "R3", "in_port": "Eth0/2", "out_port": "Eth0/0"},
+        {"node": "R5", "in_port": "Eth0/1", "out_port": "Eth0/0"},
+        {"node": "R7", "in_port": "Eth0/3", "out_port": "Eth0/0"},
+        {"node": "R10", "in_port": "Eth0/0", "out_port": null}
+      ],
+      "type": "ecmp",
+      "ecmp_group": "R1-ECMP-1"
+    },
+    {
+      "id": "Path4",
+      "description": "R1 -> R3 -> R6 -> R8 -> R9 -> R10",
+      "hops": 6,
+      "nodes": ["R1", "R3", "R6", "R8", "R9", "R10"],
+      "ports": [
+        {"node": "R1", "in_port": null, "out_port": "Eth0/2"},
+        {"node": "R3", "in_port": "Eth0/2", "out_port": "Eth0/1"},
+        {"node": "R6", "in_port": "Eth0/2", "out_port": "Eth0/0"},
+        {"node": "R8", "in_port": "Eth0/1", "out_port": "Eth0/0"},
+        {"node": "R9", "in_port": "Eth0/1", "out_port": "Eth0/0"},
+        {"node": "R10", "in_port": "Eth0/1", "out_port": null}
+      ],
+      "type": "merge",
+      "merge_points": ["R6", "R8", "R9"]
+    },
+    {
+      "id": "Path5",
+      "description": "R1 -> R2 -> R4 -> R6 -> R8 -> R9 -> R10",
+      "hops": 7,
+      "nodes": ["R1", "R2", "R4", "R6", "R8", "R9", "R10"],
+      "ports": [
+        {"node": "R1", "in_port": null, "out_port": "Eth0/0"},
+        {"node": "R2", "in_port": "Eth0/0", "out_port": "Eth0/1"},
+        {"node": "R4", "in_port": "Eth0/2", "out_port": "Eth0/1"},
+        {"node": "R6", "in_port": "Eth0/1", "out_port": "Eth0/0"},
+        {"node": "R8", "in_port": "Eth0/1", "out_port": "Eth0/0"},
+        {"node": "R9", "in_port": "Eth0/1", "out_port": "Eth0/0"},
+        {"node": "R10", "in_port": "Eth0/1", "out_port": null}
+      ],
+      "type": "merge",
+      "merge_points": ["R6", "R8", "R9"]
+    }
+  ],
+  "ecmp_groups": [
+    {
+      "id": "R1-ECMP-1",
+      "node": "R1",
+      "destination": "10.10.0.0/24",
+      "paths": ["Path1", "Path2", "Path3"],
+      "count": 3
+    },
+    {
+      "id": "R2-ECMP-1",
+      "node": "R2",
+      "destination": "10.10.0.0/24",
+      "paths": ["Path1", "Path2"],
+      "count": 2
+    },
+    {
+      "id": "R3-ECMP-1",
+      "node": "R3",
+      "destination": "10.10.0.0/24",
+      "paths": ["Path3", "Path4"],
+      "count": 2
+    },
+    {
+      "id": "R4-ECMP-1",
+      "node": "R4",
+      "destination": "10.10.0.0/24",
+      "paths": ["Path1", "Path5"],
+      "count": 2
+    },
+    {
+      "id": "R7-ECMP-1",
+      "node": "R7",
+      "destination": "10.10.0.0/24",
+      "paths": ["Path1", "Path2", "Path3"],
+      "count": 2
+    }
+  ],
+  "merge_points": [
+    {
+      "node": "R5",
+      "incoming_paths": ["Path2", "Path3"],
+      "outgoing_paths": ["Path2", "Path3"]
+    },
+    {
+      "node": "R6",
+      "incoming_paths": ["Path4", "Path5"],
+      "outgoing_paths": ["Path4", "Path5"]
+    },
+    {
+      "node": "R7",
+      "incoming_paths": ["Path1", "Path2", "Path3"],
+      "outgoing_paths": ["Path1", "Path2", "Path3"]
+    },
+    {
+      "node": "R8",
+      "incoming_paths": ["Path4", "Path5"],
+      "outgoing_paths": ["Path4", "Path5"]
+    },
+    {
+      "node": "R9",
+      "incoming_paths": ["Path4", "Path5"],
+      "outgoing_paths": ["Path4", "Path5"]
+    }
+  ]
+}
+

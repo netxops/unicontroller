@@ -1,0 +1,910 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "outputParams": [
+            {
+                "relationshipKey": "code",
+                "name": "code",
+                "docrequired": "否",
+                "type": "int",
+                "description": "错误码"
+            },
+            {
+                "relationshipKey": "message",
+                "name": "message",
+                "docrequired": "否",
+                "type": "string",
+                "description": "错误信息"
+            },
+            {
+                "relationshipKey": "data",
+                "name": "data",
+                "docrequired": "是",
+                "type": "object",
+                "description": "分页数据"
+            },
+            {
+                "relationshipKey": "data.totalItems",
+                "extra": [],
+                "name": "totalItems",
+                "docrequired": "--",
+                "type": "int32",
+                "description": "总共多少项目"
+            },
+            {
+                "relationshipKey": "data.totalPages",
+                "extra": [],
+                "name": "totalPages",
+                "docrequired": "--",
+                "type": "int32",
+                "description": "总共多少页"
+            },
+            {
+                "relationshipKey": "data.pageNumber",
+                "extra": [],
+                "name": "pageNumber",
+                "docrequired": "--",
+                "type": "int32",
+                "description": "当前页码，从 1 开始"
+            },
+            {
+                "relationshipKey": "data.pageSize",
+                "extra": [],
+                "name": "pageSize",
+                "docrequired": "--",
+                "type": "int32",
+                "description": "每页多大"
+            },
+            {
+                "relationshipKey": "data.itemsOffset",
+                "extra": [],
+                "name": "itemsOffset",
+                "docrequired": "--",
+                "type": "int32",
+                "description": "当前条目偏移，从 0 开始"
+            },
+            {
+                "relationshipKey": "data.itemLength",
+                "extra": [],
+                "name": "itemLength",
+                "docrequired": "--",
+                "type": "int32",
+                "description": "数据列表长度"
+            },
+            {
+                "relationshipKey": "data.privateOffset",
+                "extra": [],
+                "name": "privateOffset",
+                "docrequired": "--",
+                "type": "uint64",
+                "description": "内部偏移"
+            },
+            {
+                "relationshipKey": "data.items",
+                "extra": [],
+                "name": "items",
+                "docrequired": "--",
+                "type": "object[]",
+                "description": "有效数据列表"
+            },
+            {
+                "relationshipKey": "data.items.uuid",
+                "extra": [],
+                "name": "uuid",
+                "docrequired": "--",
+                "type": "string",
+                "description": "uuid"
+            },
+            {
+                "relationshipKey": "data.items.name",
+                "extra": {
+                    "maxLength": 95,
+                    "minLength": 1,
+                    "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                },
+                "name": "name",
+                "docrequired": "是",
+                "type": "string",
+                "description": "应用控制策略名称"
+            },
+            {
+                "relationshipKey": "data.items.showname",
+                "extra": {
+                    "maxLength": 95,
+                    "minLength": 1,
+                    "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                },
+                "name": "showname",
+                "docrequired": "--",
+                "type": "string",
+                "description": "策略显示名称"
+            },
+            {
+                "relationshipKey": "data.items.description",
+                "extra": {
+                    "maxLength": 256,
+                    "minLength": 0,
+                    "pattern desc": "描述字段不能包含`~!#$%^&*+=\\|{}\"'/<>? 特殊字符"
+                },
+                "name": "description",
+                "docrequired": "否",
+                "type": "string",
+                "description": "应用控制策略描述"
+            },
+            {
+                "relationshipKey": "data.items.position",
+                "extra": [],
+                "name": "position",
+                "docrequired": "--",
+                "type": "int32",
+                "description": "应用控制策略位置"
+            },
+            {
+                "relationshipKey": "data.items.enable",
+                "extra": {
+                    "default": false
+                },
+                "name": "enable",
+                "docrequired": "是",
+                "type": "bool",
+                "description": "应用控制策略启禁用"
+            },
+            {
+                "relationshipKey": "data.items.updateTime",
+                "extra": {
+                    "pattern desc": "请输入有效日期时间，且格式必须为YYYY-MM-DD HH:MM:SS"
+                },
+                "name": "updateTime",
+                "docrequired": "--",
+                "type": "string",
+                "description": "应用控制策略更新时间"
+            },
+            {
+                "relationshipKey": "data.items.durationTime",
+                "extra": {
+                    "pattern desc": "请输入有效日期时间，且格式必须为YYYY-MM-DD HH:MM:SS"
+                },
+                "name": "durationTime",
+                "docrequired": "--",
+                "type": "string",
+                "description": "应用控制策略最近一次状态更新时间"
+            },
+            {
+                "relationshipKey": "data.items.group",
+                "extra": [],
+                "name": "group",
+                "docrequired": "是",
+                "type": "string",
+                "description": "应用控制策略组"
+            },
+            {
+                "relationshipKey": "data.items.labels",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "labels",
+                "docrequired": "否",
+                "type": "string[]",
+                "description": "应用控制策略标签列表"
+            },
+            {
+                "relationshipKey": "data.items.src",
+                "extra": [],
+                "name": "src",
+                "docrequired": "是",
+                "type": "object",
+                "description": "应用控制策略源地址"
+            },
+            {
+                "relationshipKey": "data.items.src.srcZones",
+                "extra": [],
+                "name": "srcZones",
+                "docrequired": "否",
+                "type": "string[]",
+                "description": "源区域列表"
+            },
+            {
+                "relationshipKey": "data.items.src.srcAddrs",
+                "extra": [],
+                "name": "srcAddrs",
+                "docrequired": "是",
+                "type": "object",
+                "description": "源地址信息"
+            },
+            {
+                "relationshipKey": "data.items.src.srcAddrs.srcAddrType",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "NETOBJECT",
+                            "description": "ip组"
+                        },
+                        {
+                            "value": "USERGROUP",
+                            "description": "用户及用户组"
+                        },
+                        {
+                            "value": "MAC",
+                            "description": "mac地址"
+                        }
+                    ]
+                },
+                "name": "srcAddrType",
+                "docrequired": "是",
+                "type": "string",
+                "description": "源地址类型"
+            },
+            {
+                "relationshipKey": "data.items.src.srcAddrs.srcMacAddrs",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "srcMacAddrs",
+                "docrequired": "按条件选择",
+                "type": "string[]",
+                "description": "源mac地址列表，源地址类型为\"MAC\"时使用"
+            },
+            {
+                "relationshipKey": "data.items.src.srcAddrs.users",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "users",
+                "docrequired": "按条件选择",
+                "type": "string[]",
+                "description": "用户列表，源地址类型为\"USERGROUP\"时使用"
+            },
+            {
+                "relationshipKey": "data.items.src.srcAddrs.userGroups",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "userGroups",
+                "docrequired": "按条件选择",
+                "type": "string[]",
+                "description": "用户组列表，源地址类型为\"USERGROUP\"时使用"
+            },
+            {
+                "relationshipKey": "data.items.src.srcAddrs.srcIpGroups",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "srcIpGroups",
+                "docrequired": "按条件选择",
+                "type": "string[]",
+                "description": "源ip组列表，源地址类型为\"NETOBJECT\"时使用"
+            },
+            {
+                "relationshipKey": "data.items.src.srcAddrs.userAllList",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "userAllList",
+                "docrequired": "--",
+                "type": "string[]",
+                "description": "appcontrol: user all list"
+            },
+            {
+                "relationshipKey": "data.items.dst",
+                "extra": [],
+                "name": "dst",
+                "docrequired": "是",
+                "type": "object",
+                "description": "应用控制策略目的地址"
+            },
+            {
+                "relationshipKey": "data.items.dst.dstZones",
+                "extra": [],
+                "name": "dstZones",
+                "docrequired": "否",
+                "type": "string[]",
+                "description": "引用目的区域列表"
+            },
+            {
+                "relationshipKey": "data.items.dst.dstAddrs",
+                "extra": [],
+                "name": "dstAddrs",
+                "docrequired": "是",
+                "type": "object",
+                "description": "目的地址"
+            },
+            {
+                "relationshipKey": "data.items.dst.dstAddrs.dstAddrType",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "NETOBJECT",
+                            "description": "ip组"
+                        },
+                        {
+                            "value": "MAC",
+                            "description": "mac地址"
+                        },
+                        {
+                            "value": "DOMAIN",
+                            "description": "域名"
+                        }
+                    ]
+                },
+                "name": "dstAddrType",
+                "docrequired": "是",
+                "type": "string",
+                "description": "目的地址类型"
+            },
+            {
+                "relationshipKey": "data.items.dst.dstAddrs.dstMacAddrs",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "dstMacAddrs",
+                "docrequired": "按条件选择",
+                "type": "string[]",
+                "description": "目的mac地址列表，目的地址类型为\"MAC\"时使用"
+            },
+            {
+                "relationshipKey": "data.items.dst.dstAddrs.domains",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "domains",
+                "docrequired": "按条件选择",
+                "type": "string[]",
+                "description": "域名列表，目的地址类型为\"DOMAIN\"时使用 -- 该参数暂不支持使用"
+            },
+            {
+                "relationshipKey": "data.items.dst.dstAddrs.dstIpGroups",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "dstIpGroups",
+                "docrequired": "按条件选择",
+                "type": "string[]",
+                "description": "目的ip组列表，目的地址类型为\"NETOBJECT\"时使用"
+            },
+            {
+                "relationshipKey": "data.items.dst.services",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "services",
+                "docrequired": "是",
+                "type": "string[]",
+                "description": "服务引用列表"
+            },
+            {
+                "relationshipKey": "data.items.dst.applications",
+                "extra": [],
+                "name": "applications",
+                "docrequired": "是",
+                "type": "string[]",
+                "description": "应用引用列表"
+            },
+            {
+                "relationshipKey": "data.items.action",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": 0,
+                            "description": "拒绝"
+                        },
+                        {
+                            "value": 1,
+                            "description": "允许"
+                        }
+                    ]
+                },
+                "name": "action",
+                "docrequired": "否",
+                "type": "uint32",
+                "description": "应用控制策略动作，允许或拒绝"
+            },
+            {
+                "relationshipKey": "data.items.schedule",
+                "extra": [],
+                "name": "schedule",
+                "docrequired": "是",
+                "type": "string",
+                "description": "应用控制策略生效时间"
+            },
+            {
+                "relationshipKey": "data.items.advanceOption",
+                "extra": [],
+                "name": "advanceOption",
+                "docrequired": "否",
+                "type": "object",
+                "description": "应用控制策略高级选项"
+            },
+            {
+                "relationshipKey": "data.items.advanceOption.logEnable",
+                "extra": {
+                    "default": false
+                },
+                "name": "logEnable",
+                "docrequired": "否",
+                "type": "bool",
+                "description": "是否开启会话日志策略命中记录"
+            },
+            {
+                "relationshipKey": "data.items.advanceOption.sessionDestroyLogEnable",
+                "extra": {
+                    "default": false
+                },
+                "name": "sessionDestroyLogEnable",
+                "docrequired": "否",
+                "type": "bool",
+                "description": "是否开启会话结束日志"
+            },
+            {
+                "relationshipKey": "data.items.advanceOption.autoSynDNS",
+                "extra": [],
+                "name": "autoSynDNS",
+                "docrequired": "否",
+                "type": "bool",
+                "description": "是否开启主动查询域名 -- 该参数暂不支持使用"
+            },
+            {
+                "relationshipKey": "data.items.advanceOption.keepAlive",
+                "extra": {
+                    "range": "0,1,3,7,10,15"
+                },
+                "name": "keepAlive",
+                "docrequired": "否",
+                "type": "uint8",
+                "description": "设置长连接，可选值[0,1,3,7,10,15]"
+            },
+            {
+                "relationshipKey": "data.items.reason",
+                "extra": {
+                    "maxLength": 256,
+                    "minLength": 0,
+                    "pattern desc": "变更原因不能包含`~!#$%^&*+=\\|{}\"'/<>? 特殊字符"
+                },
+                "name": "reason",
+                "docrequired": "否",
+                "type": "string",
+                "description": "应用控制策略变更原因 -- 该参数暂不支持使用"
+            },
+            {
+                "relationshipKey": "data.items.isdefault",
+                "extra": {
+                    "default": false
+                },
+                "name": "isdefault",
+                "docrequired": "--",
+                "type": "bool",
+                "description": "是否是默认策略"
+            },
+            {
+                "relationshipKey": "data.items.lastHitTime",
+                "extra": {
+                    "pattern desc": "请输入有效日期时间，且格式必须为YYYY-MM-DD HH:MM:SS"
+                },
+                "name": "lastHitTime",
+                "docrequired": "--",
+                "type": "string",
+                "description": "策略最近一次匹配命中时间"
+            },
+            {
+                "relationshipKey": "data.items.hits",
+                "extra": [],
+                "name": "hits",
+                "docrequired": "--",
+                "type": "uint64",
+                "description": "应用控制策略命中匹配次数"
+            },
+            {
+                "relationshipKey": "data.items.profile",
+                "extra": [],
+                "name": "profile",
+                "docrequired": "--",
+                "type": "string",
+                "description": "acl policy profile"
+            }
+        ],
+        "apiname": "getAppcontrols",
+        "inputSamples": {
+            "request": "GET https://192.168.1.1/api/v1/namespaces/public/appcontrols/policys?_start=0&_length=100",
+            "description": "获取多条应用控制策略配置信息，查询条件：起始位置为0，最多展示100条"
+        },
+        "title": "获取应用控制策略列表",
+        "outputSamples": {
+            "correct": {
+                "message": "成功",
+                "data": {
+                    "itemsOffset": 0,
+                    "itemLength": 2,
+                    "pageSize": 100,
+                    "items": [
+                        {
+                            "dst": {
+                                "applications": [
+                                    "全部"
+                                ],
+                                "dstAddrs": {
+                                    "dstIpGroups": [
+                                        "全部"
+                                    ],
+                                    "dstAddrType": "NETOBJECT"
+                                },
+                                "dstZones": [],
+                                "services": [
+                                    "any"
+                                ]
+                            },
+                            "updateTime": "2020-07-09 12:06:57",
+                            "enable": true,
+                            "schedule": "all-week",
+                            "name": "test",
+                            "description": "",
+                            "lastHitTime": "2020-07-09 12:46:03",
+                            "action": 1,
+                            "isdefault": false,
+                            "position": 0,
+                            "src": {
+                                "srcAddrs": {
+                                    "srcIpGroups": [
+                                        "全部"
+                                    ],
+                                    "srcAddrType": "NETOBJECT"
+                                },
+                                "srcZones": []
+                            },
+                            "group": "默认策略组",
+                            "hits": 45,
+                            "advanceOption": {
+                                "keepAlive": 0,
+                                "logEnable": false,
+                                "autoSynDNS": false
+                            },
+                            "labels": [],
+                            "uuid": "D05035431A434AC895D7B8396A8CB4BC",
+                            "durationTime": "2020-07-09 12:06:57"
+                        },
+                        {
+                            "dst": {
+                                "applications": [
+                                    "全部"
+                                ],
+                                "dstAddrs": {
+                                    "dstIpGroups": [
+                                        "全部"
+                                    ],
+                                    "dstAddrType": "NETOBJECT"
+                                },
+                                "dstZones": [],
+                                "services": [
+                                    "any"
+                                ]
+                            },
+                            "updateTime": "2020-07-09 13:41:10",
+                            "enable": true,
+                            "schedule": "all-week",
+                            "name": "default-policy",
+                            "description": "",
+                            "showname": "默认策略",
+                            "lastHitTime": "1970-01-01 08:00:00",
+                            "action": 0,
+                            "isdefault": true,
+                            "uuid": "00000000010000000000000000000003",
+                            "src": {
+                                "srcAddrs": {
+                                    "srcIpGroups": [
+                                        "全部"
+                                    ],
+                                    "srcAddrType": "NETOBJECT"
+                                },
+                                "srcZones": []
+                            },
+                            "group": "默认策略组",
+                            "position": 1,
+                            "hits": 0,
+                            "advanceOption": {
+                                "keepAlive": 0,
+                                "logEnable": false,
+                                "autoSynDNS": false
+                            },
+                            "labels": [
+                                "默认"
+                            ],
+                            "durationTime": "2020-06-29 11:29:29"
+                        }
+                    ],
+                    "totalPages": 1,
+                    "pageNumber": 1,
+                    "totalItems": 2
+                },
+                "code": 0
+            },
+            "incorrect": {
+                "message": "无效参数",
+                "data": "",
+                "code": 22
+            }
+        },
+        "position": "7.3.1.1.1",
+        "inputParams": {
+            "headers": [],
+            "cookies": [
+                {
+                    "relationshipKey": "token",
+                    "extra": "{\"maxLength\":64}",
+                    "name": "token",
+                    "docrequired": "是",
+                    "type": "string",
+                    "description": "认证令牌"
+                },
+                {
+                    "relationshipKey": "SESSID",
+                    "extra": "{\"maxLength\":256}",
+                    "name": "SESSID",
+                    "docrequired": "是",
+                    "type": "string",
+                    "description": "认证会话"
+                }
+            ],
+            "uri": [
+                {
+                    "relationshipKey": "id",
+                    "extra": [],
+                    "name": "id",
+                    "docrequired": "否",
+                    "type": "uint32",
+                    "description": "过滤id，保留字段"
+                },
+                {
+                    "relationshipKey": "dstIp",
+                    "extra": {
+                        "format": "ip-address"
+                    },
+                    "name": "dstIp",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "匹配目的ip地址"
+                },
+                {
+                    "relationshipKey": "_search",
+                    "extra": {
+                        "maxLength": 95
+                    },
+                    "name": "_search",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "模糊搜索关键字"
+                },
+                {
+                    "relationshipKey": "_start",
+                    "extra": {
+                        "minimum": 0,
+                        "maximum": 2000000,
+                        "default": 0
+                    },
+                    "name": "_start",
+                    "docrequired": "否",
+                    "type": "int32",
+                    "description": "起始位置，从 0 开始"
+                },
+                {
+                    "relationshipKey": "_length",
+                    "extra": {
+                        "minimum": 1,
+                        "maximum": 200,
+                        "default": 100
+                    },
+                    "name": "_length",
+                    "docrequired": "否",
+                    "type": "int32",
+                    "description": "获取最大长度，限制最大值，如果数据不够可能返回小于 length"
+                },
+                {
+                    "relationshipKey": "action",
+                    "extra": {
+                        "enums": [
+                            {
+                                "value": 1,
+                                "description": "动作允许"
+                            },
+                            {
+                                "value": 0,
+                                "description": "动作拒绝"
+                            }
+                        ]
+                    },
+                    "name": "action",
+                    "docrequired": "否",
+                    "type": "uint32",
+                    "description": "过滤动作"
+                },
+                {
+                    "relationshipKey": "_sortby",
+                    "extra": {
+                        "maxLength": 100
+                    },
+                    "name": "_sortby",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "指定排序字段"
+                },
+                {
+                    "relationshipKey": "_order",
+                    "extra": {
+                        "default": "asc",
+                        "enums": [
+                            {
+                                "value": "asc",
+                                "description": "按升序排列"
+                            },
+                            {
+                                "value": "desc",
+                                "description": "按降序排列"
+                            }
+                        ]
+                    },
+                    "name": "_order",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "指定排序方式（正序/倒序）"
+                },
+                {
+                    "relationshipKey": "_select",
+                    "extra": {
+                        "maxLength": 1000
+                    },
+                    "name": "_select",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "选择字段，字段用逗号分隔"
+                },
+                {
+                    "relationshipKey": "invalidStatus",
+                    "extra": [],
+                    "name": "invalidStatus",
+                    "docrequired": "否",
+                    "type": "bool",
+                    "description": "过滤失效状态策略"
+                },
+                {
+                    "relationshipKey": "srcIp",
+                    "extra": {
+                        "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.10"
+                    },
+                    "name": "srcIp",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "匹配源ip地址"
+                },
+                {
+                    "relationshipKey": "policyGroup",
+                    "extra": {
+                        "maxLength": 95,
+                        "minLength": 1,
+                        "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                    },
+                    "name": "policyGroup",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "过滤策略组"
+                },
+                {
+                    "relationshipKey": "name",
+                    "extra": {
+                        "maxLength": 1440
+                    },
+                    "name": "name",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "资源名"
+                },
+                {
+                    "relationshipKey": "label",
+                    "extra": {
+                        "maxLength": 95,
+                        "minLength": 1,
+                        "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                    },
+                    "name": "label",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "过滤标签"
+                },
+                {
+                    "relationshipKey": "uuid",
+                    "extra": {
+                        "maxLength": 32
+                    },
+                    "name": "uuid",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "资源全局唯一ID"
+                },
+                {
+                    "relationshipKey": "enable",
+                    "extra": [],
+                    "name": "enable",
+                    "docrequired": "否",
+                    "type": "bool",
+                    "description": "过滤启禁用"
+                },
+                {
+                    "relationshipKey": "dstZone",
+                    "extra": {
+                        "maxLength": 95,
+                        "minLength": 1,
+                        "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                    },
+                    "name": "dstZone",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "过滤或匹配目的区域"
+                },
+                {
+                    "relationshipKey": "actionTime",
+                    "extra": {
+                        "pattern desc": "模拟匹配时间格式错误"
+                    },
+                    "name": "actionTime",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "匹配时间"
+                },
+                {
+                    "relationshipKey": "protoNum",
+                    "extra": {
+                        "minimum": 0,
+                        "maximum": 255
+                    },
+                    "name": "protoNum",
+                    "docrequired": "否",
+                    "type": "uint8",
+                    "description": "匹配协议"
+                },
+                {
+                    "relationshipKey": "dstPort",
+                    "extra": {
+                        "minimum": 0,
+                        "maximum": 65535
+                    },
+                    "name": "dstPort",
+                    "docrequired": "否",
+                    "type": "uint16",
+                    "description": "匹配目的端口"
+                },
+                {
+                    "relationshipKey": "srcPort",
+                    "extra": {
+                        "minimum": 0,
+                        "maximum": 65535
+                    },
+                    "name": "srcPort",
+                    "docrequired": "否",
+                    "type": "uint16",
+                    "description": "匹配源端口"
+                },
+                {
+                    "relationshipKey": "srcZone",
+                    "extra": {
+                        "maxLength": 95,
+                        "minLength": 1,
+                        "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                    },
+                    "name": "srcZone",
+                    "docrequired": "否",
+                    "type": "string",
+                    "description": "过滤或匹配源区域"
+                }
+            ]
+        },
+        "description": "获取应用控制策略列表",
+        "chapters": [
+            "策略",
+            "访问控制",
+            "应用控制策略相关",
+            "应用控制策略"
+        ],
+        "api": {
+            "url": "https://{host}/api/v1/namespaces/@namespace/appcontrols/policys",
+            "method": "GET"
+        },
+        "chapter": "应用控制策略"
+    }
+}

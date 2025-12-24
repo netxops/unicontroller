@@ -1,0 +1,56 @@
+[
+  {
+    "name": "mapA",
+    "meta_nodes": [
+      {
+        "name": "设备名FIREWALL",
+        "node_type": "FIREWALL",
+        "model": "ASA",
+        "ipv4_areas": [
+          {
+            "interface": "outside",
+            "name": "Internet"
+          }
+        ],
+        "ipv6_areas": [
+          {
+            "interface": "outside",
+            "name": "Internet"
+          }
+        ]
+      },
+
+      {
+        "name": "设备名LB",
+        "node_type": "LB",
+        "model": "F5",
+        "device_interconnections": [
+          {
+            "interface": "/Common/vlanif-1106",
+            "peer_vrf": [
+              "OTC-NJ:OTC-NJ_VRF"
+            ],
+            "vrf": "default"
+          }
+        ],
+        "vs_ranges": [
+          {
+            "type": "IPv4",
+            "network": "132.224.23.0/24",
+            "vrf": "default"
+          },
+          {
+            "type": "IPv4",
+            "network": "10.233.252.0/24",
+            "vrf": "default"
+          },
+          {
+            "type": "IPv4",
+            "network": "10.148.254.0/24",
+            "vrf": "default"
+          }
+        ]
+      }
+    ]
+  }
+]

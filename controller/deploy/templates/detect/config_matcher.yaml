@@ -1,0 +1,83 @@
+# 配置匹配策略
+# 定义如何根据检测结果查找设备配置
+
+name: configMatcher
+
+strategies:
+  # 策略1: 精确匹配（manufacturer + platform + version）
+  - name: exactMatch
+    priority: 1
+    match:
+      manufacturer: exact
+      platform: exact
+      version: exact
+    pathTemplate: "{manufacturer}/{platform}/v{version}/config.yaml"
+    fallback:
+      - pathTemplate: "{manufacturer}/{platform}/base/config.yaml"
+  
+  # 策略2: 平台匹配（manufacturer + platform，忽略版本）
+  - name: platformMatch
+    priority: 2
+    match:
+      manufacturer: exact
+      platform: exact
+      version: any
+    pathTemplate: "{manufacturer}/{platform}/config.yaml"
+    fallback:
+      - pathTemplate: "{manufacturer}/{platform}/base/config.yaml"
+  
+  # 策略3: 厂商匹配（使用默认平台）
+  - name: manufacturerMatch
+    priority: 3
+    match:
+      manufacturer: exact
+      platform: default
+      version: any
+    defaultPlatforms:
+      Cisco: IOS
+      Huawei: VRP
+      H3C: Comware
+      Dell: Ubuntu
+      Dptech: FWNFV
+      Sangfor: SangforOS
+      Ruijie: Ruijie
+      server: base_linux
+    pathTemplate: "{manufacturer}/{defaultPlatform}/config.yaml"
+  
+  # 策略4: 分类匹配（使用通用配置）
+  - name: catalogMatch
+    priority: 4
+    match:
+      catalog: exact
+      manufacturer: default
+      platform: default
+    catalogDefaults:
+      NETWORK:
+        manufacturer: Cisco
+        platform: IOS
+      SERVER:
+        manufacturer: server
+        platform: base_linux
+      FIREWALL:
+        manufacturer: Cisco
+        platform: ASA
+      SWITCH:
+        manufacturer: Cisco
+        platform: IOS
+    pathTemplate: "{catalog}/default/config.yaml"
+
+# 版本映射配置
+versionMappings:
+  # 版本号到版本目录的映射规则
+  - pattern: "^v?(\\d+)\\.(\\d+)"
+    template: "v{1}_{2}"
+  - pattern: "^v?(\\d+)"
+    template: "v{1}"
+
+# 默认配置路径
+defaultConfigs:
+  NETWORK: "network/default/config.yaml"
+  SERVER: "server/default/config.yaml"
+  FIREWALL: "firewall/default/config.yaml"
+  SWITCH: "switch/default/config.yaml"
+

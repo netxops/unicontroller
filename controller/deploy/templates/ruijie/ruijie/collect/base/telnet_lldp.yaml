@@ -1,0 +1,6 @@
+name: telnetLldp
+method: TELNET
+target: show lldp neighbors detail
+dataType: map[string]string
+timeout: 5s
+expectedType: JSON

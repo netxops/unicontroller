@@ -1,0 +1,13 @@
+bandwidth_list:
+  - bandwidth: 1
+    first_select: 1
+    second_select: 10
+  - bandwidth: 10
+    first_select: 10
+    second_select: 40
+  - bandwidth: 40
+    first_select: 40
+    second_select: 100
+  - bandwidth: 100
+    first_select: 100
+

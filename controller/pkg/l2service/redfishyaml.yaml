@@ -1,0 +1,14 @@
+RedfishConfig:
+  Cpu:
+    redfish:
+      - version: [ 1 ]
+        method: [NETTRIX_GoFish_CPUV1]
+    snmp:
+      - version: [ 1 ]
+        method: [NETTRIX_GoFish_CPUV1]
+
+  Mem:
+  Disk:
+  Network:
+  Power:
+

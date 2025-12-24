@@ -1,0 +1,21 @@
+version: '3'
+services:
+  ubuntu-test:
+    build:
+      context: ../..
+      dockerfile: cmd/deployment-agent/docker/ubuntu.Dockerfile
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cap_add:
+      - SYS_ADMIN
+
+
+
+  # centos-test:
+  #   build:
+  #     context: ../..
+  #     dockerfile: cmd/deployment-agent/docker/centos.Dockerfile
+  #   volumes:
+  #     - ../..:/app
+  #   env_file: .env

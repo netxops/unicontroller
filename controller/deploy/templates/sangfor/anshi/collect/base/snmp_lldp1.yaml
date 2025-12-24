@@ -1,0 +1,8 @@
+name: snmpLldp1
+method: SNMP
+dataType: "[]map[string]string"
+target: 1.0.8802.1.1.2.1.4.1.1
+expectedType: SNMPList
+inputFields: []
+fields:
+  - snmpLldp1

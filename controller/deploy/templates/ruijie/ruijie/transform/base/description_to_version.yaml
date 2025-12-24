@@ -1,0 +1,18 @@
+# 转换配置的名称，用于从系统描述中提取版本信息
+name: descriptionToVersion
+
+# 指定输出数据的类型为字符串到字符串的映射
+dataType: map[string]string
+
+# 定义一系列数据映射规则
+mappings:
+  # 第一个映射规则：从系统描述中提取版本信息
+  - inputField: sysVersionProcess#description  # 输入字段，来自 sysVersionProcess 的 description 字段
+    outputField: version                       # 输出字段名称
+    regex: "S\\S+\\s+(\\S+)"                    # 使用正则表达式提取版本号
+                                               # \\S+ 匹配一个或多个非空白字符
+
+  # 第二个映射规则：提取系统主机名
+  - inputField: sysDescrProcess#hostname     # 输入字段，来自 sysVersionProcess 的 hostname 字段
+    outputField: hostname                       # 输出字段名称
+    unchanged: true                            # 保持值不变，直接复制输入到输出

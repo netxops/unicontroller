@@ -1,0 +1,2389 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "chapters": [
+            "网络",
+            "接口"
+        ],
+        "apiname": "getInterfaces",
+        "outputParams": [
+            {
+                "name": "code",
+                "type": "int",
+                "relationshipKey": "code",
+                "description": "错误码",
+                "docrequired": "否"
+            },
+            {
+                "name": "message",
+                "type": "string",
+                "relationshipKey": "message",
+                "description": "错误信息",
+                "docrequired": "否"
+            },
+            {
+                "name": "data",
+                "type": "object",
+                "relationshipKey": "data",
+                "description": "分页数据",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "totalItems",
+                "type": "int32",
+                "relationshipKey": "data.totalItems",
+                "description": "总共多少项目",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "totalPages",
+                "type": "int32",
+                "relationshipKey": "data.totalPages",
+                "description": "总共多少页",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "pageNumber",
+                "type": "int32",
+                "relationshipKey": "data.pageNumber",
+                "description": "当前页码，从 1 开始",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "pageSize",
+                "type": "int32",
+                "relationshipKey": "data.pageSize",
+                "description": "每页多大",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "itemsOffset",
+                "type": "int32",
+                "relationshipKey": "data.itemsOffset",
+                "description": "当前条目偏移，从 0 开始",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "itemLength",
+                "type": "int32",
+                "relationshipKey": "data.itemLength",
+                "description": "数据列表长度",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "privateOffset",
+                "type": "uint64",
+                "relationshipKey": "data.privateOffset",
+                "description": "内部偏移",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "items",
+                "type": "object[]",
+                "relationshipKey": "data.items",
+                "description": "有效数据列表",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "uuid",
+                "type": "string",
+                "relationshipKey": "data.items.uuid",
+                "description": "uuid",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "pattern desc": "接口名称格式错误"
+                },
+                "name": "name",
+                "type": "string",
+                "relationshipKey": "data.items.name",
+                "description": "接口名称",
+                "docrequired": "是"
+            },
+            {
+                "extra": {
+                    "pattern desc": "描述字段不能包含`~!#$%^&*+\\|{};:\"'/<>? 特殊字符",
+                    "maxLength": 95,
+                    "minLength": 0
+                },
+                "name": "description",
+                "type": "string",
+                "relationshipKey": "data.items.description",
+                "description": "接口描述",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "vsys",
+                "type": "string[]",
+                "relationshipKey": "data.items.vsys",
+                "description": "虚拟系统",
+                "docrequired": "否"
+            },
+            {
+                "extra": {
+                    "maximum": 1500,
+                    "minimum": 68
+                },
+                "name": "mtu",
+                "type": "int32",
+                "relationshipKey": "data.items.mtu",
+                "description": "最大传输单元",
+                "docrequired": "否"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "物理口",
+                            "value": "PHYSICALIF"
+                        },
+                        {
+                            "description": "子接口",
+                            "value": "SUBIF"
+                        },
+                        {
+                            "description": "聚合口",
+                            "value": "CHANNELIF"
+                        },
+                        {
+                            "description": "vlan对应的3层接口",
+                            "value": "VLANIF"
+                        },
+                        {
+                            "description": "vpn隧道口",
+                            "value": "VPNTUN"
+                        },
+                        {
+                            "description": "回环口",
+                            "value": "LOOPBACK"
+                        },
+                        {
+                            "description": "GRE隧道口",
+                            "value": "GRETUN"
+                        },
+                        {
+                            "description": "SSL隧道口",
+                            "value": "SSLTUN"
+                        },
+                        {
+                            "description": "虚拟系统的虚拟接口",
+                            "value": "VSYSIF"
+                        },
+                        {
+                            "description": "隧道口",
+                            "value": "TUNNELIF"
+                        }
+                    ]
+                },
+                "name": "ifType",
+                "type": "string",
+                "relationshipKey": "data.items.ifType",
+                "description": "表示接口类型",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "mac",
+                "type": "string",
+                "relationshipKey": "data.items.mac",
+                "description": "接口的mac地址，接口类型为物理口和聚合口时使用",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "shutdown",
+                "type": "bool",
+                "relationshipKey": "data.items.shutdown",
+                "description": "接口的启用或禁用，接口类型为物理口和聚合口时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "路由类型，接口作为3层接口，提供IP地址配置，路由配置转发等功能",
+                            "value": "ROUTE"
+                        },
+                        {
+                            "description": "交换类型，接口作为2层接口，提供二层转发、vlan配置等功能",
+                            "value": "SWITCH"
+                        },
+                        {
+                            "description": "虚拟线类型，接口作为虚拟线的一端，透明传输报文",
+                            "value": "VIRTUALLINE"
+                        },
+                        {
+                            "description": "旁路镜像类型，该模式进来的报文，只处理不转发",
+                            "value": "BYPASSMIRROR"
+                        }
+                    ]
+                },
+                "name": "ifMode",
+                "type": "string",
+                "relationshipKey": "data.items.ifMode",
+                "description": "接口的工作模式，接口类型为物理口和聚合口时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "ipv4",
+                "type": "object",
+                "relationshipKey": "data.items.ipv4",
+                "description": "接口ipv4相关配置，三层模式时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "静态配置",
+                            "value": "STATIC"
+                        },
+                        {
+                            "description": "dhcp方式获取",
+                            "value": "DHCP"
+                        },
+                        {
+                            "description": "pppoe方式获取",
+                            "value": "PPPOE"
+                        }
+                    ]
+                },
+                "name": "ipv4Mode",
+                "type": "string",
+                "relationshipKey": "data.items.ipv4.ipv4Mode",
+                "description": "IPv4地址获取类型",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "staticIp",
+                "type": "object[]",
+                "relationshipKey": "data.items.ipv4.staticIp",
+                "description": "IPv4地址列表，三层模式IPv4为静态IP时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "format": "ip-range"
+                },
+                "name": "ipaddress",
+                "type": "object",
+                "relationshipKey": "data.items.ipv4.staticIp.ipaddress",
+                "description": "IPv4地址",
+                "docrequired": "是"
+            },
+            {
+                "extra": {
+                    "format": "ip-address"
+                },
+                "name": "start",
+                "type": "string",
+                "relationshipKey": "data.items.ipv4.staticIp.ipaddress.start",
+                "description": "ip范围的起始位置",
+                "docrequired": "是"
+            },
+            {
+                "extra": {
+                    "format": "ip-address"
+                },
+                "name": "end",
+                "type": "string",
+                "relationshipKey": "data.items.ipv4.staticIp.ipaddress.end",
+                "description": "ip范围的终止位置",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "bits",
+                "type": "uint8",
+                "relationshipKey": "data.items.ipv4.staticIp.ipaddress.bits",
+                "description": "ip掩码简写",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "isSync",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv4.staticIp.isSync",
+                "description": "是否不同步到备机的选项",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "dhcp",
+                "type": "object",
+                "relationshipKey": "data.items.ipv4.dhcp",
+                "description": "dhcp4 client配置，三层模式IPv4为DHCP时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "gateway",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv4.dhcp.gateway",
+                "description": "是否设置dhcp gateway",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "dns",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv4.dhcp.dns",
+                "description": "设置dns",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "unicast",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv4.dhcp.unicast",
+                "description": "是否设置dhcp 单播模式",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "pppoeGroupName",
+                "type": "string",
+                "relationshipKey": "data.items.ipv4.pppoeGroupName",
+                "description": "PPPoE名称，三层模式IPv4为PPPoE时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "ipv6",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6",
+                "description": "接口ipv6相关配置，三层模式时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "static IP",
+                            "value": "STATIC"
+                        },
+                        {
+                            "description": "dhcp6",
+                            "value": "DHCP6"
+                        }
+                    ]
+                },
+                "name": "ipv6Mode",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.ipv6Mode",
+                "description": "IPv6地址获取类型，路由模式有效",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "autoconfigEnable",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.autoconfigEnable",
+                "description": "AUTOCONFIG模式是否开启",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "autoconfigDefaultRoute",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.autoconfigDefaultRoute",
+                "description": "default route 是否设置",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "staticIp",
+                "type": "object[]",
+                "relationshipKey": "data.items.ipv6.staticIp",
+                "description": "IPv6地址列表，IPv6地址为静态IP时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "format": "ip-address"
+                },
+                "name": "start",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.staticIp.start",
+                "description": "ip范围的起始位置",
+                "docrequired": "是"
+            },
+            {
+                "extra": {
+                    "format": "ip-address"
+                },
+                "name": "end",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.staticIp.end",
+                "description": "ip范围的终止位置",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "bits",
+                "type": "uint8",
+                "relationshipKey": "data.items.ipv6.staticIp.bits",
+                "description": "ip掩码简写",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "dhcp6",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6.dhcp6",
+                "description": "dhcp6客户端配置",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "dhcp6 client addr模式",
+                            "value": "ADDR"
+                        }
+                    ]
+                },
+                "name": "clientMode",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.dhcp6.clientMode",
+                "description": "客户端模式",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "format": "ip-range"
+                },
+                "name": "serverIp",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6.dhcp6.serverIp",
+                "description": "dhcp6客户端指定的server ip",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "format": "ip-address"
+                },
+                "name": "start",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.dhcp6.serverIp.start",
+                "description": "ip范围的起始位置",
+                "docrequired": "是"
+            },
+            {
+                "extra": {
+                    "format": "ip-address"
+                },
+                "name": "end",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.dhcp6.serverIp.end",
+                "description": "ip范围的终止位置",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "bits",
+                "type": "uint8",
+                "relationshipKey": "data.items.ipv6.dhcp6.serverIp.bits",
+                "description": "ip掩码简写",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "rapidOption",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.dhcp6.rapidOption",
+                "description": "是否开启dhcp6 rapid-commit(快速分配)选项",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "infoOnlyOption",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.dhcp6.infoOnlyOption",
+                "description": "是否开启dhcp6 info-only(只获取信息)选项",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "ipv6Param",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6.ipv6Param",
+                "description": "ipv6参数",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "enable",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.enable",
+                "description": "是否启用ipv6",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 1500,
+                    "minimum": 1280
+                },
+                "name": "mtu",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.mtu",
+                "description": "最大传输单元设置",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "nd_learning",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd_learning",
+                "description": "是否启用nd学习",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "nd_inspection",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd_inspection",
+                "description": "ND检查",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "丢包",
+                            "value": "DROP"
+                        },
+                        {
+                            "description": "转发",
+                            "value": "FORWARD"
+                        },
+                        {
+                            "description": "关闭",
+                            "value": "OFF"
+                        }
+                    ]
+                },
+                "name": "inspectionType",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd_inspection.inspectionType",
+                "description": "NDP检查模式",
+                "docrequired": "是"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "trust",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd_inspection.trust",
+                "description": "接口可信",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "denyra",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd_inspection.denyra",
+                "description": "禁止接收RA",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 10000,
+                    "minimum": 0
+                },
+                "name": "rate_limit",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd_inspection.rate_limit",
+                "description": "NDP报文速率限制",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "nd",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd",
+                "description": "ipv6ND协议配置",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "dad",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.dad",
+                "description": "重复地址检测消息配置",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 3600000,
+                    "minimum": 1000
+                },
+                "name": "time",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.dad.time",
+                "description": "发送DAD的间隔",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 600,
+                    "minimum": 0
+                },
+                "name": "attempts",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.dad.attempts",
+                "description": "尝试的次数，超过则认为DAD检测成功",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "nud",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.nud",
+                "description": "邻居不可达检测配置",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 3,
+                    "minimum": 1
+                },
+                "name": "retry_base",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.nud.retry_base",
+                "description": "失败次数超过则nd表项做状态切换",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 10,
+                    "minimum": 1
+                },
+                "name": "attempts",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.nud.attempts",
+                "description": "发送NUD次数",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 3600000,
+                    "minimum": 1000
+                },
+                "name": "interval",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.nud.interval",
+                "description": "发送NUD间隔",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 3600000,
+                    "minimum": 1000
+                },
+                "name": "reachable_time",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.nud.reachable_time",
+                "description": "判断ipv6节点是否可达的最大时间，超过则认为不可达",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "router",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router",
+                "description": "ipv6，路由相关配置",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "ra_interval_option",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.ra_interval_option",
+                "description": "ra中公告间隔选项是否打开",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "高优先级",
+                            "value": "HIGH"
+                        },
+                        {
+                            "description": "低优先级",
+                            "value": "LOW"
+                        },
+                        {
+                            "description": "中优先级",
+                            "value": "MEDIUM"
+                        }
+                    ]
+                },
+                "name": "prefence",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.prefence",
+                "description": "路由器的优先级",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 1800,
+                    "minimum": 3
+                },
+                "name": "ra_min_interval",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.ra_min_interval",
+                "description": "RA发送最小间隔，单位s",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 1800,
+                    "minimum": 4
+                },
+                "name": "ra_max_interval",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.ra_max_interval",
+                "description": "RA发送最大间隔，单位s，max必须大于min",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 9000,
+                    "minimum": 0
+                },
+                "name": "ra_lifetime",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.ra_lifetime",
+                "description": "RA中路由器的生命周期",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "周期性发送RA",
+                            "value": "ALL"
+                        },
+                        {
+                            "description": "不主动发送RA，收到RS会回应",
+                            "value": "PART"
+                        },
+                        {
+                            "description": "不主动发送，也不应答",
+                            "value": "DISABLE"
+                        }
+                    ]
+                },
+                "name": "ra_supress",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.ra_supress",
+                "description": "ra的抑制配置",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "manage_flag",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.manage_flag",
+                "description": "RA报文中M标记位，主机收到RA报文M为1时会发起dhcp6请求地址",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "other_flag",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.other_flag",
+                "description": "RA报文中O标记位，主机收到RA报文O为1时会发起dhcp6请求其他网络配置（如dns），为0则使用RA中的",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "no_linkmtu",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.no_linkmtu",
+                "description": "用来配置RA消息中不携带MTU选项,true时不携带选项，false时携带MTU选项",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "dns_server",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.dns_server",
+                "description": "RA消息中dns服务器配置",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "format": "ip6-address"
+                },
+                "name": "ipv6Address",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.dns_server.ipv6Address",
+                "description": "dns服务器地址",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 4294967295,
+                    "minimum": 0
+                },
+                "name": "lifetime",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.dns_server.lifetime",
+                "description": "首选生存时间",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "dns_domain",
+                "type": "object",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.dns_domain",
+                "description": "RA消息中dns域名",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maxLength": 127
+                },
+                "name": "name",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.dns_domain.name",
+                "description": "dns域名",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 4294967295,
+                    "minimum": 0
+                },
+                "name": "lifetime",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.dns_domain.lifetime",
+                "description": "首选生存时间",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 255,
+                    "minimum": 0
+                },
+                "name": "hopLimit",
+                "type": "uint16",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.router.hopLimit",
+                "description": "TTL",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "ra_prefix",
+                "type": "object[]",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.ra_prefix",
+                "description": "ipv6 RA参数",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "prefix",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.ra_prefix.prefix",
+                "description": "IPV6 ND前缀信息(前缀信息或者default)",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 4294967295,
+                    "minimum": 0
+                },
+                "name": "validLifetime",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.ra_prefix.validLifetime",
+                "description": "有效生存时间",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 4294967295,
+                    "minimum": 0
+                },
+                "name": "perferredLifetime",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.ra_prefix.perferredLifetime",
+                "description": "首选生存时间",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "noAutoconfig",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.ra_prefix.noAutoconfig",
+                "description": "IPV6 ND前缀autoconfig选项",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "offLink",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.ra_prefix.offLink",
+                "description": "控制IPV6 ND前缀分配给本地链路开关选项",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "noAdvertise",
+                "type": "bool",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.ra_prefix.noAdvertise",
+                "description": "控制IPV6 ND前缀是否包含在RA消息中开关选项",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "name": "route_prefix",
+                "type": "object[]",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.route_prefix",
+                "description": "ipv6 ROUTE参数",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "pattern desc": "IPv6地址格式错误, 输入示例:fe80::40ca:81ff:fea9:a768/24"
+                },
+                "name": "prefix",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.route_prefix.prefix",
+                "description": "IPV6 路由前缀信息",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 4294967295,
+                    "minimum": 0
+                },
+                "name": "lifetime",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.route_prefix.lifetime",
+                "description": "生存时间",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "高优先级",
+                            "value": "HIGH"
+                        },
+                        {
+                            "description": "低优先级",
+                            "value": "LOW"
+                        },
+                        {
+                            "description": "中优先级",
+                            "value": "MEDIUM"
+                        }
+                    ]
+                },
+                "name": "prefence",
+                "type": "string",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.route_prefix.prefence",
+                "description": "路由前缀的优先级",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 4294967295,
+                    "minimum": 1000
+                },
+                "name": "ns_interval",
+                "type": "uint32",
+                "relationshipKey": "data.items.ipv6.ipv6Param.nd.ns_interval",
+                "description": "NS重传间隔,单位为毫秒",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "wanEnable",
+                "type": "bool",
+                "relationshipKey": "data.items.wanEnable",
+                "description": "是否开启接口的wan模式，接口类型为物理口和聚合口时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "defaultGateway",
+                "type": "object",
+                "relationshipKey": "data.items.defaultGateway",
+                "description": "接口默认网关",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.10"
+                },
+                "name": "ipv4Gateway",
+                "type": "string",
+                "relationshipKey": "data.items.defaultGateway.ipv4Gateway",
+                "description": "ipv4 gateway",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "format": "ip6-address"
+                },
+                "name": "ipv6Gateway",
+                "type": "string",
+                "relationshipKey": "data.items.defaultGateway.ipv6Gateway",
+                "description": "ipv6 gateway",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "reverseRoute",
+                "type": "object",
+                "relationshipKey": "data.items.reverseRoute",
+                "description": "接口源进源出下一跳",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.10"
+                },
+                "name": "ipv4Nexthop",
+                "type": "string",
+                "relationshipKey": "data.items.reverseRoute.ipv4Nexthop",
+                "description": "reverse route ipv4 gnexthop",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "format": "ip6-address"
+                },
+                "name": "ipv6Nexthop",
+                "type": "string",
+                "relationshipKey": "data.items.reverseRoute.ipv6Nexthop",
+                "description": "reverse route ipv6 gnexthop",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "reverseRouteEnable",
+                "type": "bool",
+                "relationshipKey": "data.items.reverseRouteEnable",
+                "description": "标识接口是否开启源进源出",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "bandSwitch",
+                "type": "object",
+                "relationshipKey": "data.items.bandSwitch",
+                "description": "接口接收或发送的带宽限制，物理口和聚合口的路由模式时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "ingressbandSwitch",
+                "type": "object",
+                "relationshipKey": "data.items.bandSwitch.ingressbandSwitch",
+                "description": "接口接收的带宽限制",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "maximum": 1099511627776,
+                    "minimum": 0
+                },
+                "name": "value",
+                "type": "uint64",
+                "relationshipKey": "data.items.bandSwitch.ingressbandSwitch.value",
+                "description": "数值大小",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "egressbandSwitch",
+                "type": "object",
+                "relationshipKey": "data.items.bandSwitch.egressbandSwitch",
+                "description": "接口发送的带宽限制",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "maximum": 1099511627776,
+                    "minimum": 0
+                },
+                "name": "value",
+                "type": "uint64",
+                "relationshipKey": "data.items.bandSwitch.egressbandSwitch.value",
+                "description": "数值大小",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "manage",
+                "type": "object",
+                "relationshipKey": "data.items.manage",
+                "description": "本地策略控制，接口上控制是否放行对应类型的报文，三层模式时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "ssh",
+                "type": "bool",
+                "relationshipKey": "data.items.manage.ssh",
+                "description": "是否启用ssh",
+                "docrequired": "否"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "snmp",
+                "type": "bool",
+                "relationshipKey": "data.items.manage.snmp",
+                "description": "是否启用snmp",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "https",
+                "type": "bool",
+                "relationshipKey": "data.items.manage.https",
+                "description": "是否启用https",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "ping",
+                "type": "bool",
+                "relationshipKey": "data.items.manage.ping",
+                "description": "是否启用ping",
+                "docrequired": "否"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "jumbo",
+                "type": "bool",
+                "relationshipKey": "data.items.jumbo",
+                "description": "巨帧模式",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "vlan",
+                "type": "object",
+                "relationshipKey": "data.items.vlan",
+                "description": "vlan配置，物理口和聚合口透明模式时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "access模式",
+                            "value": "ACCESS"
+                        },
+                        {
+                            "description": "trunk模式",
+                            "value": "TRUNK"
+                        }
+                    ]
+                },
+                "name": "vlanMode",
+                "type": "string",
+                "relationshipKey": "data.items.vlan.vlanMode",
+                "description": "vlan模式",
+                "docrequired": "否"
+            },
+            {
+                "extra": {
+                    "maximum": 4094,
+                    "minimum": 1
+                },
+                "name": "accessId",
+                "type": "uint32",
+                "relationshipKey": "data.items.vlan.accessId",
+                "description": "access vlan id，透明模式下选择access时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "trunkConfig",
+                "type": "object",
+                "relationshipKey": "data.items.vlan.trunkConfig",
+                "description": "trunk配置，透明模式下选择trunk时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "maximum": 4094,
+                    "minimum": 1
+                },
+                "name": "nativeId",
+                "type": "int32",
+                "relationshipKey": "data.items.vlan.trunkConfig.nativeId",
+                "description": "trunk native vlanid",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "trunkRange",
+                "type": "object[]",
+                "relationshipKey": "data.items.vlan.trunkConfig.trunkRange",
+                "description": "trunk vlan 范围",
+                "docrequired": "是"
+            },
+            {
+                "extra": {
+                    "maximum": 4094,
+                    "minimum": 1
+                },
+                "name": "start",
+                "type": "uint32",
+                "relationshipKey": "data.items.vlan.trunkConfig.trunkRange.start",
+                "description": "vlan范围起始值",
+                "docrequired": "是"
+            },
+            {
+                "extra": {
+                    "maximum": 4094,
+                    "minimum": 1
+                },
+                "name": "end",
+                "type": "uint32",
+                "relationshipKey": "data.items.vlan.trunkConfig.trunkRange.end",
+                "description": "vlan范围结束值",
+                "docrequired": "否"
+            },
+            {
+                "extra": {
+                    "maximum": 4094,
+                    "minimum": 0
+                },
+                "name": "vlanId",
+                "type": "uint32",
+                "relationshipKey": "data.items.vlanId",
+                "description": "标识子接口和vlan口的vlanid，接口类型为物理口和聚合口时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "physicalif",
+                "type": "object",
+                "relationshipKey": "data.items.physicalif",
+                "description": "物理口相关配置，接口类型为物理接口时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "speedDuplex",
+                "type": "object",
+                "relationshipKey": "data.items.physicalif.speedDuplex",
+                "description": "速率双工配置",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "autoneg",
+                "type": "bool",
+                "relationshipKey": "data.items.physicalif.speedDuplex.autoneg",
+                "description": "接口速率工作模式自动协商，为true时speed和duplex不再生效",
+                "docrequired": "否"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "选择100Mbps",
+                            "value": 100
+                        },
+                        {
+                            "description": "选择1000Mbps",
+                            "value": 1000
+                        },
+                        {
+                            "description": "选择10000Mbps",
+                            "value": 10000
+                        },
+                        {
+                            "description": "选择40000Mbps",
+                            "value": 40000
+                        },
+                        {
+                            "description": "选择100000Mbps",
+                            "value": 100000
+                        }
+                    ]
+                },
+                "name": "speed",
+                "type": "uint32",
+                "relationshipKey": "data.items.physicalif.speedDuplex.speed",
+                "description": "接口速率，autoneg为false时speed配置生效",
+                "docrequired": "否"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "半双工模式",
+                            "value": "half"
+                        },
+                        {
+                            "description": "全双工模式",
+                            "value": "full"
+                        }
+                    ]
+                },
+                "name": "duplex",
+                "type": "string",
+                "relationshipKey": "data.items.physicalif.speedDuplex.duplex",
+                "description": "双工模式，autoneg为false时duplex配置生效",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "bypassMirror",
+                "type": "object",
+                "relationshipKey": "data.items.physicalif.bypassMirror",
+                "description": "旁路镜像模式配置，物理接口旁路镜像模式时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "statsEnable",
+                "type": "bool",
+                "relationshipKey": "data.items.physicalif.bypassMirror.statsEnable",
+                "description": "是否启用流量统计",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "ipGroup",
+                "type": "string[]",
+                "relationshipKey": "data.items.physicalif.bypassMirror.ipGroup",
+                "description": "内网网络对象，旁路镜像模式开启流量统计时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "subif",
+                "type": "object",
+                "relationshipKey": "data.items.subif",
+                "description": "子接口相关配置，接口类型为子接口时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "fatherInterface",
+                "type": "string",
+                "relationshipKey": "data.items.subif.fatherInterface",
+                "description": "接口的父接口，子接口时表示父接口",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "channelif",
+                "type": "object",
+                "relationshipKey": "data.items.channelif",
+                "description": "聚合口相关配置，接口类型为聚合接口时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "静态",
+                            "value": "STATIC"
+                        },
+                        {
+                            "description": "动态",
+                            "value": "LACP"
+                        }
+                    ]
+                },
+                "name": "channelMode",
+                "type": "string",
+                "relationshipKey": "data.items.channelif.channelMode",
+                "description": "汇聚口的工作模式配置",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "channelStatic",
+                "type": "object",
+                "relationshipKey": "data.items.channelif.channelStatic",
+                "description": "聚合口静态模式下的相关配置，聚合口工作模式为静态时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "故障转移",
+                            "value": "FAILOVER"
+                        },
+                        {
+                            "description": "负载均衡",
+                            "value": "LOADBALANCE"
+                        }
+                    ]
+                },
+                "name": "staticMode",
+                "type": "string",
+                "relationshipKey": "data.items.channelif.channelStatic.staticMode",
+                "description": "模式选择",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "failover",
+                "type": "object",
+                "relationshipKey": "data.items.channelif.channelStatic.failover",
+                "description": "故障转移",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "preempt",
+                "type": "bool",
+                "relationshipKey": "data.items.channelif.channelStatic.failover.preempt",
+                "description": "主备模式下的抢占或非抢占",
+                "docrequired": "否"
+            },
+            {
+                "extra": [],
+                "name": "channelPrimary",
+                "type": "string",
+                "relationshipKey": "data.items.channelif.channelStatic.failover.channelPrimary",
+                "description": "聚合口主备模式的主接口，状态字段，配置无效",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "平衡轮询策略",
+                            "value": "ROUNDROBIN"
+                        },
+                        {
+                            "description": "hash负载分担平衡策略",
+                            "value": "L2HASH"
+                        },
+                        {
+                            "description": "hash负载分担平衡策略",
+                            "value": "L3HASH"
+                        },
+                        {
+                            "description": "hash负载分担平衡策略",
+                            "value": "L4HASH"
+                        },
+                        {
+                            "description": "tlb策略",
+                            "value": "TLB"
+                        }
+                    ]
+                },
+                "name": "loadbalance",
+                "type": "string",
+                "relationshipKey": "data.items.channelif.channelStatic.loadbalance",
+                "description": "负载均衡的方法，聚合口静态模式选择负载均衡时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "channelLacp",
+                "type": "object",
+                "relationshipKey": "data.items.channelif.channelLacp",
+                "description": "聚合口动态模式下的相关配置，聚合口工作模式为动态时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "源与目的mac",
+                            "value": "MAC"
+                        },
+                        {
+                            "description": "源与目的IP、mac",
+                            "value": "2TUPLE"
+                        },
+                        {
+                            "description": "源与目的IP、mac、port",
+                            "value": "3TUPLE"
+                        }
+                    ]
+                },
+                "name": "hashMode",
+                "type": "string",
+                "relationshipKey": "data.items.channelif.channelLacp.hashMode",
+                "description": "哈希策略",
+                "docrequired": "是"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "源与目的IP",
+                            "value": "INITIATIVE"
+                        },
+                        {
+                            "description": "源与目的IP、mac",
+                            "value": "PASSIVE"
+                        }
+                    ]
+                },
+                "name": "negotiateMode",
+                "type": "string",
+                "relationshipKey": "data.items.channelif.channelLacp.negotiateMode",
+                "description": "协商模式",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "ethSelect",
+                "type": "string[]",
+                "relationshipKey": "data.items.channelif.ethSelect",
+                "description": "选择的物理口列表",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "bypassMirror",
+                "type": "object",
+                "relationshipKey": "data.items.channelif.bypassMirror",
+                "description": "旁路镜像模式有效",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "statsEnable",
+                "type": "bool",
+                "relationshipKey": "data.items.channelif.bypassMirror.statsEnable",
+                "description": "是否启用流量统计",
+                "docrequired": "是"
+            },
+            {
+                "extra": [],
+                "name": "ipGroup",
+                "type": "string[]",
+                "relationshipKey": "data.items.channelif.bypassMirror.ipGroup",
+                "description": "内网网络对象，旁路镜像模式开启流量统计时使用",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": [],
+                "name": "gretunif",
+                "type": "object",
+                "relationshipKey": "data.items.gretunif",
+                "description": "GRE隧道口相关配置",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "IPV4 隧道封装",
+                            "value": "IPV4"
+                        },
+                        {
+                            "description": "IPV6 隧道封装",
+                            "value": "IPV6"
+                        }
+                    ]
+                },
+                "name": "type",
+                "type": "string",
+                "relationshipKey": "data.items.gretunif.type",
+                "description": "隧道IP地址类型",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "format": "ip-address"
+                },
+                "name": "tunnelSrc",
+                "type": "string",
+                "relationshipKey": "data.items.gretunif.tunnelSrc",
+                "description": "隧道的源地址",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "format": "ip-address"
+                },
+                "name": "tunnelDst",
+                "type": "string",
+                "relationshipKey": "data.items.gretunif.tunnelDst",
+                "description": "隧道的目的地址",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 4294967295,
+                    "minimum": -1
+                },
+                "name": "greKey",
+                "type": "int64",
+                "relationshipKey": "data.items.gretunif.greKey",
+                "description": "gre的密钥",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "checkSumEnable",
+                "type": "bool",
+                "relationshipKey": "data.items.gretunif.checkSumEnable",
+                "description": "是否开启报文检验和",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "keepalive",
+                "type": "object",
+                "relationshipKey": "data.items.gretunif.keepalive",
+                "description": "keepalive相关配置",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "aliveEnable",
+                "type": "bool",
+                "relationshipKey": "data.items.gretunif.keepalive.aliveEnable",
+                "description": "是否开启keepalive保活功能",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 32767,
+                    "minimum": 1
+                },
+                "name": "interval",
+                "type": "uint16",
+                "relationshipKey": "data.items.gretunif.keepalive.interval",
+                "description": "间隔时间",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 255,
+                    "minimum": 1
+                },
+                "name": "attempt",
+                "type": "uint16",
+                "relationshipKey": "data.items.gretunif.keepalive.attempt",
+                "description": "最大发送次数",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "pattern desc": "请输入有效日期时间，且格式必须为YYYY-MM-DD HH:MM:SS"
+                },
+                "name": "createTime",
+                "type": "string",
+                "relationshipKey": "data.items.gretunif.createTime",
+                "description": "隧道创建时间",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "tunnelif",
+                "type": "object",
+                "relationshipKey": "data.items.tunnelif",
+                "description": "隧道口相关配置",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "IPv4 over IPv6隧道",
+                            "value": "IPIPV6"
+                        },
+                        {
+                            "description": "IPv6 over IPv4隧道",
+                            "value": "IPV6IP"
+                        },
+                        {
+                            "description": "6to4自动隧道",
+                            "value": "6TO4"
+                        },
+                        {
+                            "description": "ISATAP自动隧道",
+                            "value": "ISATAP"
+                        }
+                    ]
+                },
+                "name": "type",
+                "type": "string",
+                "relationshipKey": "data.items.tunnelif.type",
+                "description": "隧道类型",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "source",
+                "type": "string",
+                "relationshipKey": "data.items.tunnelif.source",
+                "description": "隧道源信息",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "format": "ip-address"
+                },
+                "name": "destination",
+                "type": "string",
+                "relationshipKey": "data.items.tunnelif.destination",
+                "description": "隧道目的信息",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "oobManage",
+                "type": "bool",
+                "relationshipKey": "data.items.oobManage",
+                "description": "带外管理起禁用",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "lldpConfig",
+                "type": "object",
+                "relationshipKey": "data.items.lldpConfig",
+                "description": "接口lldp参数配置信息",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "既不能接收LLDP报文，也不能发送LLDP报文",
+                            "value": "DISABLE"
+                        },
+                        {
+                            "description": "只能接收LLDP报文",
+                            "value": "RX"
+                        },
+                        {
+                            "description": "只能发送LLDP报文",
+                            "value": "TX"
+                        },
+                        {
+                            "description": "既能接收LLDP报文，也能发送LLDP报文",
+                            "value": "TXRX"
+                        }
+                    ]
+                },
+                "name": "state",
+                "type": "string",
+                "relationshipKey": "data.items.lldpConfig.state",
+                "description": "工作模式",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "basicTlv",
+                "type": "object",
+                "relationshipKey": "data.items.lldpConfig.basicTlv",
+                "description": "基本tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "managementAddress",
+                "type": "bool",
+                "relationshipKey": "data.items.lldpConfig.basicTlv.managementAddress",
+                "description": "管理地址tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "systemCapability",
+                "type": "bool",
+                "relationshipKey": "data.items.lldpConfig.basicTlv.systemCapability",
+                "description": "系统能力tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "systemDescription",
+                "type": "bool",
+                "relationshipKey": "data.items.lldpConfig.basicTlv.systemDescription",
+                "description": "系统描述tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "systemName",
+                "type": "bool",
+                "relationshipKey": "data.items.lldpConfig.basicTlv.systemName",
+                "description": "系统名称tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "portDescription",
+                "type": "bool",
+                "relationshipKey": "data.items.lldpConfig.basicTlv.portDescription",
+                "description": "端口描述tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "dot1Tlv",
+                "type": "object",
+                "relationshipKey": "data.items.lldpConfig.dot1Tlv",
+                "description": "802.1tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "portVlanId",
+                "type": "bool",
+                "relationshipKey": "data.items.lldpConfig.dot1Tlv.portVlanId",
+                "description": "端口vlan id tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "dot3Tlv",
+                "type": "object",
+                "relationshipKey": "data.items.lldpConfig.dot3Tlv",
+                "description": "802.3tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "linkAggregation",
+                "type": "bool",
+                "relationshipKey": "data.items.lldpConfig.dot3Tlv.linkAggregation",
+                "description": "链路聚合tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "macPhysic",
+                "type": "bool",
+                "relationshipKey": "data.items.lldpConfig.dot3Tlv.macPhysic",
+                "description": "物理信息tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "maximumFrameSize",
+                "type": "bool",
+                "relationshipKey": "data.items.lldpConfig.dot3Tlv.maximumFrameSize",
+                "description": "最大帧长度tlv",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "rstp",
+                "type": "object",
+                "relationshipKey": "data.items.rstp",
+                "description": "rstp接口配置信息",
+                "docrequired": "按条件选择"
+            },
+            {
+                "extra": {
+                    "default": false
+                },
+                "name": "rstpState",
+                "type": "bool",
+                "relationshipKey": "data.items.rstp.rstpState",
+                "description": "接口是否起禁用rstp",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 240,
+                    "minimum": 0
+                },
+                "name": "rstpPriority",
+                "type": "uint8",
+                "relationshipKey": "data.items.rstp.rstpPriority",
+                "description": "端口优先级",
+                "docrequired": "--"
+            },
+            {
+                "extra": [],
+                "name": "portEdge",
+                "type": "bool",
+                "relationshipKey": "data.items.rstp.portEdge",
+                "description": "设置边缘端口, 为true时，自动管理；false时：强制指定为非边缘端口",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "maximum": 200000000,
+                    "minimum": 1
+                },
+                "name": "portPathCost",
+                "type": "uint32",
+                "relationshipKey": "data.items.rstp.portPathCost",
+                "description": "rstp端口开销",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "强制指定为点对点链路",
+                            "value": "FORCETRUE"
+                        },
+                        {
+                            "description": "强制指定为非点对点链路",
+                            "value": "FORCEFALSE"
+                        },
+                        {
+                            "description": "系统自动检测是否为点对点链路",
+                            "value": "AUTO"
+                        }
+                    ]
+                },
+                "name": "portP2P",
+                "type": "string",
+                "relationshipKey": "data.items.rstp.portP2P",
+                "description": "指定端口是否是点对点链路",
+                "docrequired": "--"
+            },
+            {
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "禁用",
+                            "value": "DISABLE"
+                        },
+                        {
+                            "description": "宽松模式",
+                            "value": "LOOSE"
+                        },
+                        {
+                            "description": "严格模式",
+                            "value": "STRICT"
+                        }
+                    ]
+                },
+                "name": "ipmacBind",
+                "type": "string",
+                "relationshipKey": "data.items.ipmacBind",
+                "description": "ip-mac绑定",
+                "docrequired": "--"
+            }
+        ],
+        "inputSamples": {
+            "request": "GET https://192.168.1.1/api/v1/namespaces/public/interfaces?_start=0&_length=100",
+            "description": "获取多个接口配置信息，查询条件：起始位置为0，最多展示100条"
+        },
+        "description": "获取接口列表",
+        "position": "6.2.1",
+        "outputSamples": {
+            "correct": {
+                "message": "成功",
+                "data": {
+                    "itemsOffset": 0,
+                    "itemLength": 1,
+                    "pageSize": 100,
+                    "items": [
+                        {
+                            "shutdown": false,
+                            "mtu": 1500,
+                            "physicalif": {
+                                "speedDuplex": {
+                                    "duplex": "full",
+                                    "autoneg": true,
+                                    "speed": 1000
+                                }
+                            },
+                            "ifType": "PHYSICALIF",
+                            "description": "",
+                            "mac": "FE:FC:FE:0B:D1:BB",
+                            "ipv4": {
+                                "ipv4Mode": "STATIC",
+                                "staticIp": []
+                            },
+                            "ifMode": "ROUTE",
+                            "manage": {
+                                "snmp": false,
+                                "https": true,
+                                "ping": true,
+                                "ssh": false
+                            },
+                            "name": "eth1",
+                            "ipv6": {
+                                "staticIp": [],
+                                "ipv6Mode": "STATIC"
+                            },
+                            "uuid": "00000000000000000000000500000001",
+                            "bandSwitch": {
+                                "ingressbandSwitch": {
+                                    "value": 1073741824
+                                },
+                                "egressbandSwitch": {
+                                    "value": 1073741824
+                                }
+                            },
+                            "wanEnable": false
+                        }
+                    ],
+                    "totalPages": 1,
+                    "pageNumber": 1,
+                    "totalItems": 1
+                },
+                "code": 0
+            },
+            "incorrect": {
+                "message": "无效参数",
+                "data": "",
+                "code": 22
+            }
+        },
+        "api": {
+            "url": "https://{host}/api/v1/namespaces/@namespace/interfaces",
+            "method": "GET"
+        },
+        "inputParams": {
+            "headers": [],
+            "uri": [
+                {
+                    "extra": [],
+                    "name": "haItf",
+                    "type": "bool",
+                    "relationshipKey": "haItf",
+                    "description": "获取可选择的HA接口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "VirtualHaItf",
+                    "type": "bool",
+                    "relationshipKey": "VirtualHaItf",
+                    "description": "获取虚拟IP可使用的接口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "haMonitorItf",
+                    "type": "bool",
+                    "relationshipKey": "haMonitorItf",
+                    "description": "获取监视端口vlan和接口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": {
+                        "maxLength": 95
+                    },
+                    "name": "_search",
+                    "type": "string",
+                    "relationshipKey": "_search",
+                    "description": "模糊搜索关键字",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": {
+                        "enums": [
+                            {
+                                "description": "物理口",
+                                "value": "PHYSICALIF"
+                            },
+                            {
+                                "description": "子接口",
+                                "value": "SUBIF"
+                            },
+                            {
+                                "description": "汇聚口",
+                                "value": "CHANNELIF"
+                            },
+                            {
+                                "description": "vlan对应的3层接口",
+                                "value": "VLANIF"
+                            },
+                            {
+                                "description": "本地环回口",
+                                "value": "LOOPBACK"
+                            },
+                            {
+                                "description": "GRE隧道",
+                                "value": "GRETUN"
+                            },
+                            {
+                                "description": "虚拟接口",
+                                "value": "VSYSIF"
+                            },
+                            {
+                                "description": "隧道口",
+                                "value": "TUNNELIF"
+                            }
+                        ]
+                    },
+                    "name": "ifType",
+                    "type": "string",
+                    "relationshipKey": "ifType",
+                    "description": "过滤参数：接口类型",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": {
+                        "maximum": 2000000,
+                        "default": 0,
+                        "minimum": 0
+                    },
+                    "name": "_start",
+                    "type": "int32",
+                    "relationshipKey": "_start",
+                    "description": "起始位置，从 0 开始",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": {
+                        "maximum": 200,
+                        "default": 100,
+                        "minimum": 1
+                    },
+                    "name": "_length",
+                    "type": "int32",
+                    "relationshipKey": "_length",
+                    "description": "获取最大长度，限制最大值，如果数据不够可能返回小于 length",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": {
+                        "enums": [
+                            {
+                                "description": "路由类型，接口作为3层接口，提供IP地址配置，路由配置转发等功能",
+                                "value": "ROUTE"
+                            },
+                            {
+                                "description": "交换类型，接口作为2层接口，提供二层转发、vlan配置等功能",
+                                "value": "SWITCH"
+                            },
+                            {
+                                "description": "虚拟线类型，接口作为虚拟线的一端，透明传输报文",
+                                "value": "VIRTUALLINE"
+                            },
+                            {
+                                "description": "旁路镜像类型，该模式进来的报文，只处理不转发",
+                                "value": "BYPASSMIRROR"
+                            }
+                        ]
+                    },
+                    "name": "ifMode",
+                    "type": "string",
+                    "relationshipKey": "ifMode",
+                    "description": "过滤参数：接口模式，用于物理口，聚合口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": {
+                        "maxLength": 100
+                    },
+                    "name": "_sortby",
+                    "type": "string",
+                    "relationshipKey": "_sortby",
+                    "description": "指定排序字段",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": {
+                        "default": "asc",
+                        "enums": [
+                            {
+                                "description": "按升序排列",
+                                "value": "asc"
+                            },
+                            {
+                                "description": "按降序排列",
+                                "value": "desc"
+                            }
+                        ]
+                    },
+                    "name": "_order",
+                    "type": "string",
+                    "relationshipKey": "_order",
+                    "description": "指定排序方式（正序/倒序）",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": {
+                        "maxLength": 1000
+                    },
+                    "name": "_select",
+                    "type": "string",
+                    "relationshipKey": "_select",
+                    "description": "选择字段，字段用逗号分隔",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "wanEnable",
+                    "type": "bool",
+                    "relationshipKey": "wanEnable",
+                    "description": "过滤wan口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "optionalItf",
+                    "type": "bool",
+                    "relationshipKey": "optionalItf",
+                    "description": "是否去除被聚合口选择的物理口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "subFatherItf",
+                    "type": "bool",
+                    "relationshipKey": "subFatherItf",
+                    "description": "获取子接口可用的父接口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "selectChannel",
+                    "type": "bool",
+                    "relationshipKey": "selectChannel",
+                    "description": "否为聚合口可选择的物理口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "filterInterfaces",
+                    "type": "string",
+                    "relationshipKey": "filterInterfaces",
+                    "description": "接口对外公用插件",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": {
+                        "pattern desc": "接口名称格式错误"
+                    },
+                    "name": "getChannel",
+                    "type": "string",
+                    "relationshipKey": "getChannel",
+                    "description": "获取该接口所属于的聚合口的配置",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "filterVeth0",
+                    "type": "bool",
+                    "relationshipKey": "filterVeth0",
+                    "description": "过滤接口veth.0",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "mkptItf",
+                    "type": "bool",
+                    "relationshipKey": "mkptItf",
+                    "description": "获取本地可用同步/传输网口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "zoneItf",
+                    "type": "bool",
+                    "relationshipKey": "zoneItf",
+                    "description": "是否为区域可选择的接口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "oobManage",
+                    "type": "bool",
+                    "relationshipKey": "oobManage",
+                    "description": "过滤管理口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "routeItf",
+                    "type": "bool",
+                    "relationshipKey": "routeItf",
+                    "description": "获取所有三层接口",
+                    "docrequired": "否"
+                },
+                {
+                    "extra": [],
+                    "name": "traffics",
+                    "type": "bool",
+                    "relationshipKey": "traffics",
+                    "description": "显示流量趋势支持的接口",
+                    "docrequired": "否"
+                }
+            ],
+            "cookies": [
+                {
+                    "extra": "{\"maxLength\":64}",
+                    "name": "token",
+                    "type": "string",
+                    "relationshipKey": "token",
+                    "description": "认证令牌",
+                    "docrequired": "是"
+                },
+                {
+                    "extra": "{\"maxLength\":256}",
+                    "name": "SESSID",
+                    "type": "string",
+                    "relationshipKey": "SESSID",
+                    "description": "认证会话",
+                    "docrequired": "是"
+                }
+            ]
+        },
+        "title": "获取接口列表",
+        "chapter": "接口"
+    }
+}

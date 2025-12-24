@@ -1,0 +1,82 @@
+base_mode_config: mode_config/base_mode_config.yaml
+hub_config: 
+base_templates:
+  - collect/base/snmp_sysDescr.yaml
+  - collect/base/ssh_interfaceBrief.yaml
+  - parse/base/version_extract.yaml
+  - textfsm/base/interface_brief.textfsm
+
+version_rules:
+  - range: ">=V100R001C00"
+    templates:
+      - collect/v1/snmp_sysDescr.yaml
+      - collect/v1/ssh_interfaceBrief.yaml
+    priority: 60
+  - range: ">=V200R001C00 <V300R001C00"
+    # templates:
+    #   - collect/v2/snmp_sysDescr.yaml
+    #   - parse/v2/version_extract.yaml
+    # priority: 50
+  - regex: "V800R0[0-9]{2}C00"
+    templates:
+      - collect/v8/snmp_sysDescr.yaml
+      - collect/v8/ssh_interfaceBrief.yaml
+      - parse/v8/version_extract.yaml
+      - textfsm/v8/interface_brief.textfsm
+  - range: ">=V900R001C00"
+    templates:
+      - collect/v9/enhanced_snmp_sysDescr.yaml  # 原临时替换现在成为标准模板
+      - collect/v9/advanced_interface_collect.yaml
+    priority: 60
+
+
+# 新增的配置部分，源自临时方案
+custom_rules:
+  - name: "CUST001_HQ_Config"
+    conditions:
+      customer_id: "CUST001"
+      site: "HQ"
+    templates:
+      - custom/CUST001/hq_specific_collect.yaml
+      - custom/CUST001/hq_specific_parse.yaml
+    priority: 50
+
+dynamic_template_types:
+  - name: "CustomDataCollection"
+    path: "custom_collect/*.yaml"
+  - name: "CustomParsingScripts"
+    path: "custom_parse/*.py"
+
+
+# hub_config_rules:
+#   - range: ">=V300R001C00 <V300R002C00"
+#     config: "hub_configs/v1_override.yaml"
+#   - range: ">=V300R002C00"
+#     config: "hub_configs/v2_override.yaml"
+#   - regex: "V300R003C.*"
+#     config: "hub_configs/v3_override.yaml"
+
+
+# mode_config_rules:
+#   - range: ">=V300R001C00,<V300R002C00"
+#     config: "mode_config/mode_config_v300r001.yaml"
+#   - range: ">=V300R002C00,<V300R003C00"
+#     config: "mode_config/mode_config_v300r002.yaml"
+#   - regex: "V300R003C\\d+"
+#     config: "mode_config/mode_config_v300r003.yaml"
+
+# custom_mode_config_rules:
+#   - name: "special_config_for_datacenter"
+#     conditions:
+#       location: "datacenter"
+#       model: "S5700"
+#     config: "mode_config/mode_config_datacenter_s5700.yaml"
+#   - name: "config_for_campus_switches"
+#     conditions:
+#       location: "campus"
+#       type: "switch"
+#     config: "mode_config/mode_config_campus_switch.yaml"
+#   - name: "config_for_high_security"
+#     conditions:
+#       security_level: "high"
+#     config: "mode_config/mode_config_high_security.yaml"

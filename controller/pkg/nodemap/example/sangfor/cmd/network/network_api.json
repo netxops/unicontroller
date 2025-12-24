@@ -1,0 +1,467 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "totalItems": 18,
+        "totalPages": 1,
+        "pageNumber": 1,
+        "pageSize": 100,
+        "itemsOffset": 0,
+        "itemLength": 18,
+        "privateOffset": 0,
+        "items": [
+            {
+                "uuid": "5FE8FDA10D8343CB9310E8B252E94C74",
+                "name": "All",
+                "id": 1,
+                "description": "所有IP地址",
+                "businessType": "IP",
+                "addressType": "",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "0.0.0.0",
+                        "end": "255.255.255.255",
+                        "bits": 0
+                    },
+                    {
+                        "start": "::",
+                        "end": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": true,
+                "isdefault": true,
+                "showname": ""
+            },
+            {
+                "uuid": "C75D170C491545B6B7BBD70FD9F9A1B3",
+                "name": "192.168.100.0-24",
+                "id": 3,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.168.100.0",
+                        "end": "192.168.100.255",
+                        "bits": 0
+                    },
+                    {
+                        "start": "172.32.2.0",
+                        "end": "172.32.2.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": true,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "D077900186544B2F8B1CA94BB7EB6DC6",
+                "name": "dst-text1",
+                "id": 4,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.168.100.0",
+                        "end": "192.168.100.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": true,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "9E6DD46FD536482CA69AAE78379976C9",
+                "name": "text-2",
+                "id": 5,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "172.32.2.0",
+                        "end": "172.32.2.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": true,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "13E7F0A592964968BDC3FBCAA3A49D35",
+                "name": "dest-text-2",
+                "id": 6,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "1.1.1.1",
+                        "end": "",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": false,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "5806CFDAEAD9471DA8749F77005AD1CD",
+                "name": "source-3",
+                "id": 7,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.168.1.0",
+                        "end": "192.168.1.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": false,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "C01ADC714F994EBABE6EE0E86B87D10C",
+                "name": "dest-3",
+                "id": 8,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.18.0.0",
+                        "end": "192.18.0.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": false,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "23A506E404544CB1AC1D1C2D7E14B7DD",
+                "name": "192.168.232.0/24",
+                "id": 9,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.168.232.0",
+                        "end": "192.168.232.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": false,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "B770828C18E943988874F7DF1AAD99D5",
+                "name": "192.168.101.0-24",
+                "id": 10,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.168.101.0",
+                        "end": "192.168.101.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": false,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "2F45E0C5242943ACB99289699B7FCA4F",
+                "name": "172.32.101.0",
+                "id": 11,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "172.32.101.0",
+                        "end": "172.32.101.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": false,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "8722A3EBB42B42C988A6D248CCD34B7A",
+                "name": "192.168.112.0",
+                "id": 12,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.168.112.0",
+                        "end": "192.168.112.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": true,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "981A5BE7E1D74F0FAADF25453B519DD2",
+                "name": "192.168.113.0",
+                "id": 13,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.168.113.0",
+                        "end": "192.168.113.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": true,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "BAB8BC0959C54D09B2083A8FE656A48B",
+                "name": "192.168.114.0",
+                "id": 14,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.168.114.0",
+                        "end": "192.168.114.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": true,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "0200E746C8CA408AB1E9E83A9686B3A4",
+                "name": "192.168.115.0",
+                "id": 15,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.168.115.0",
+                        "end": "192.168.115.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": true,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "73400160135E4661873059B4C2BADFC1",
+                "name": "192.168.116.0",
+                "id": 16,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "192.168.116.0",
+                        "end": "192.168.116.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": true,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "7265DD8CAE954DCBB53B7A44F23AB6F0",
+                "name": "172.16.33.0",
+                "id": 17,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "172.16.33.0",
+                        "end": "172.16.33.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": false,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "2D2DABAF725F4A0C91FF2D2E2E389F0F",
+                "name": "172.32.2.1",
+                "id": 18,
+                "description": "",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "172.32.2.1",
+                        "end": "",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": true,
+                "isdefault": false,
+                "showname": ""
+            },
+            {
+                "uuid": "22A180730D98436DB4FD54BBB1674137",
+                "name": "private-network",
+                "id": 2,
+                "description": "私有IP地址",
+                "businessType": "IP",
+                "addressType": "IPV4",
+                "important": "COMMON",
+                "ipRanges": [
+                    {
+                        "start": "10.0.0.0",
+                        "end": "10.255.255.255",
+                        "bits": 0
+                    },
+                    {
+                        "start": "172.16.0.0",
+                        "end": "172.31.255.255",
+                        "bits": 0
+                    },
+                    {
+                        "start": "192.168.0.0",
+                        "end": "192.168.255.255",
+                        "bits": 0
+                    }
+                ],
+                "refIpGroup": null,
+                "domains": null,
+                "domainsDetectMode": "",
+                "dataStatus": "",
+                "pageNum": 0,
+                "hasref": false,
+                "isdefault": true,
+                "showname": ""
+            }
+        ]
+    }
+}

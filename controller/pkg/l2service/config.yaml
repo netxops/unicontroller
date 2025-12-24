@@ -1,0 +1,22 @@
+# redis configuration
+redis:
+  db: 4
+  host: '10.45.7.145:6379'
+  pass_word: '123456'
+
+# mysql configuration
+mysql:
+  path: '10.45.7.145:3306'
+  config: 'charset=utf8mb4&parseTime=True&loc=Local'
+  db-name: 'go_cli'
+  username: 'root'
+  password: '1qazdfzq'
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: false
+  log-zap: ""
+etcd:
+  addr: '127.0.0.1:2379'
+
+ping_streaming:
+  window: 30

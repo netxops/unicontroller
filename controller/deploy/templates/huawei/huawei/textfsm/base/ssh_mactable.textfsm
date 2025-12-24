@@ -1,0 +1,16 @@
+name: sshMacTableTextFSM
+template: |
+  Value mac (\w{4}-\w{4}-\w{4})
+  Value vlan (\S+)
+  Value name (.+?)
+  Value type (.+?)
+
+  Start
+    ^${mac}\s+${vlan}\s+${name}\s+${type}\s* -> Record
+
+inputField: sshMacTable#value
+rowFields:
+  - mac
+  - vlan
+  - name
+  - type

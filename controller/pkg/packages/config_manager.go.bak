@@ -1,0 +1,694 @@
+package packages
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"path/filepath"
+	"reflect"
+	"strings"
+
+	"github.com/BurntSushi/toml"
+	"gopkg.in/yaml.v2"
+)
+
+type mergeStrategy int
+
+const (
+	OverwriteStrategy         mergeStrategy = iota // 默认策略，覆盖已存在的配置
+	MergeStrategy                                  // 合并策略的设计是只添加新键而不更新现有键，如果目标对象为list，则直接进行扩展
+	MergeAndOverwriteStrategy                      // 合并已存在的配置，但新值会覆盖旧值，如果目标对象为list，则直接进行扩展
+	MergeOrErrorStrategy                           // 合并已存在的配置，如果有冲突则失败，如果目标对象为list，则直接进行扩展
+)
+
+// ConfigOption 定义了 AddConfig 和 AddConfigSection 的选项
+type ConfigMergeOption func(*configMergeOptions)
+
+type configMergeOptions struct {
+	mergeStrategy mergeStrategy
+}
+
+func WithMergeStrategy(strategy mergeStrategy) ConfigMergeOption {
+	return func(o *configMergeOptions) {
+		o.mergeStrategy = strategy
+	}
+}
+
+// Config 表示一个通用的配置结构
+type Config struct {
+	Data map[string]interface{}
+}
+
+type ConfigManager interface {
+	Load() (*Config, error)
+	Save() error
+	AddConfig(key string, value interface{}, opts ...ConfigMergeOption) error
+	DeleteConfig(key string, value interface{}) error
+	Apply() error
+	GetPath() string
+	GetFormat() string
+}
+
+// UnifiedConfigManager 整合了 FileConfig 和 CompositeConfig 的功能
+type UnifiedConfigManager struct {
+	Package    Package
+	ConfigFile string
+	Strategy   ApplyStrategy
+	SubConfigs []ConfigManager
+	Format     string
+	ConfigPath string
+	Config     *Config
+	Observable
+	TelegrafConfig *TelegrafConfig
+}
+
+type unifyConfigOption struct {
+	isTelegraf bool
+	// configFile string
+	// configDir  string
+	// format     string
+	// pkg        *Package
+}
+
+type ConfigOption func(*unifyConfigOption)
+
+func WithTelegraf(b bool) ConfigOption {
+	return func(uco *unifyConfigOption) {
+		uco.isTelegraf = b
+	}
+}
+
+func NewUnifiedConfigManager(pkg Package, strategy ApplyStrategy, opts ...ConfigOption) *UnifiedConfigManager {
+	options := &unifyConfigOption{
+		isTelegraf: false,
+	}
+	for _, opt := range opts {
+		opt(options)
+	}
+
+	ucm := &UnifiedConfigManager{
+		Package:    pkg,
+		ConfigPath: pkg.ConfigDir(),
+		ConfigFile: pkg.ConfigFile(),
+		Format:     pkg.ConfigFileFormat(),
+		Strategy:   strategy,
+	}
+
+	if options.isTelegraf {
+		ucm.TelegrafConfig = NewTelegrafConfig(pkg.ConfigFile(), pkg.ConfigDir())
+		if _, err := ucm.TelegrafConfig.Load(); err != nil {
+			return nil
+		}
+
+		ucm.Format = "toml"
+		return ucm
+	}
+
+	return ucm
+}
+
+func (ucm *UnifiedConfigManager) Apply() error {
+	return ucm.Strategy.Apply(ucm)
+}
+
+func (ucm *UnifiedConfigManager) Load() (*Config, error) {
+	if ucm.TelegrafConfig != nil {
+		return ucm.TelegrafConfig.Load()
+	}
+	var err error
+	ucm.Config, err = ucm.loadFile()
+	return ucm.Config, err
+}
+
+func (ucm *UnifiedConfigManager) GetAllConfig() (*Config, error) {
+	if ucm.TelegrafConfig != nil {
+		return &Config{
+			Data: ucm.TelegrafConfig.Config.AllSettings(),
+		}, nil
+	}
+
+	return ucm.Load()
+}
+
+func (ucm *UnifiedConfigManager) loadFile() (*Config, error) {
+	data, err := ioutil.ReadFile(ucm.ConfigFile)
+	if err != nil {
+		return nil, err
+	}
+	config := &Config{Data: make(map[string]interface{})}
+	switch ucm.Format {
+	case "json":
+		err = json.Unmarshal(data, &config.Data)
+	case "yaml":
+		err = yaml.Unmarshal(data, &config.Data)
+	case "toml":
+		err = toml.Unmarshal(data, &config.Data)
+	default:
+		return nil, fmt.Errorf("unsupported format: %s", ucm.Format)
+	}
+
+	return config, err
+}
+
+func (ucm *UnifiedConfigManager) Save() error {
+	if ucm.TelegrafConfig != nil {
+		return ucm.TelegrafConfig.Save()
+	}
+	var err error
+	err = ucm.saveFile()
+
+	if err == nil {
+		ucm.NotifyObservers()
+	}
+	return err
+}
+
+func (ucm *UnifiedConfigManager) saveFile() error {
+	config := ucm.Config
+	var data []byte
+	var err error
+	switch ucm.Format {
+	case "json":
+		data, err = json.MarshalIndent(config.Data, "", "  ")
+	case "yaml":
+		data, err = yaml.Marshal(config.Data)
+	case "toml":
+		buf := new(bytes.Buffer)
+		err = toml.NewEncoder(buf).Encode(config.Data)
+		data = buf.Bytes()
+	default:
+		return fmt.Errorf("unsupported format: %s", ucm.Format)
+	}
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(ucm.ConfigFile, data, 0644)
+}
+
+// func (ucm *UnifiedConfigManager) saveComposite(config *Config) error {
+// 	for _, c := range ucm.SubConfigs {
+// 		subConfig, ok := config.Data[c.GetPath()].(map[string]interface{})
+// 		if !ok {
+// 			return fmt.Errorf("invalid config type for %s", c.GetPath())
+// 		}
+// 		if err := c.Save(&Config{Data: subConfig}); err != nil {
+// 			return err
+// 		}
+// 	}
+// 	return nil
+// }
+
+// func (ucm *UnifiedConfigManager) saveSchema(config *Config) error {
+// 	for _, configItem := range ucm.Package.Schema.Configs {
+// 		if subConfig, ok := config.Data[configItem.Arg]; ok {
+// 			subPath := filepath.Join(ucm.ConfigFile, configItem.File)
+// 			subFormat := getFormatFromFilename(configItem.File)
+// 			subManager := &UnifiedConfigManager{
+// 				ConfigFile: subPath,
+// 				Format:     subFormat,
+// 			}
+// 			err := subManager.Save(&Config{Data: subConfig.(map[string]interface{})})
+// 			if err != nil {
+// 				return fmt.Errorf("error saving config for %s: %v", configItem.Arg, err)
+// 			}
+// 		}
+// 	}
+// 	return nil
+// }
+
+func (ucm *UnifiedConfigManager) isConfigChanged() (bool, error) {
+	// 实现配置变更检测逻辑
+	// 这可能涉及到比较当前配置与上次应用的配置
+	return false, nil
+}
+
+func (ucm *UnifiedConfigManager) GetPath() string {
+	return ucm.ConfigFile
+}
+
+func (ucm *UnifiedConfigManager) GetFormat() string {
+	// if ucm.Package.Schema.Package != "" {
+	// 	return "schema"
+	// }
+	// if len(ucm.SubConfigs) > 0 {
+	// 	return "composite"
+	// }
+	return ucm.Format
+}
+
+// func (ucm *UnifiedConfigManager) AddConfig(key string, value interface{}) error {
+// 	// 如果是 Telegraf 配置，使用 TelegrafConfig 的方法
+// 	if ucm.TelegrafConfig != nil {
+// 		return ucm.addTelegrafConfig(key, value)
+// 	}
+
+// 	// 对于其他配置
+// 	config, err := ucm.Load()
+// 	if err != nil {
+// 		return fmt.Errorf("failed to load config: %v", err)
+// 	}
+
+// 	// 使用点号分隔的键来支持嵌套配置
+// 	keys := strings.Split(key, ".")
+// 	currentMap := config.Data
+
+// 	for i, k := range keys {
+// 		if i == len(keys)-1 {
+// 			currentMap[k] = value
+// 		} else {
+// 			if _, exists := currentMap[k]; !exists {
+// 				currentMap[k] = make(map[string]interface{})
+// 			}
+// 			currentMap = currentMap[k].(map[string]interface{})
+// 		}
+// 	}
+
+// 	err = ucm.Save(config)
+// 	if err != nil {
+// 		return fmt.Errorf("failed to save config: %v", err)
+// 	}
+
+//		ucm.NotifyObservers()
+//		return nil
+//	}
+func (ucm *UnifiedConfigManager) AddConfig(key string, value interface{}, opts ...ConfigMergeOption) error {
+	options := &configMergeOptions{
+		mergeStrategy: OverwriteStrategy,
+	}
+	for _, opt := range opts {
+		opt(options)
+	}
+
+	if ucm.TelegrafConfig != nil {
+		return ucm.TelegrafConfig.AddConfigWithStrategy(key, value, options.mergeStrategy)
+	}
+
+	return ucm.addConfigInternal(key, value, options.mergeStrategy)
+}
+func (ucm *UnifiedConfigManager) DeleteConfig(key string, value interface{}) error {
+	// 如果是 Telegraf 配置，使用 TelegrafConfig 的方法
+	if ucm.TelegrafConfig != nil {
+		return ucm.removeTelegrafConfig(key, value)
+	}
+
+	// 对于其他配置
+	config, err := ucm.Load()
+	if err != nil {
+		return fmt.Errorf("failed to load config: %v", err)
+	}
+
+	// 使用点号分隔的键来支持嵌套配置
+	keys := strings.Split(key, ".")
+	currentMap := config.Data
+
+	for i, k := range keys {
+		if i == len(keys)-1 {
+			delete(currentMap, k)
+		} else {
+			if nextMap, exists := currentMap[k]; exists {
+				if nextMapAsserted, ok := nextMap.(map[string]interface{}); ok {
+					currentMap = nextMapAsserted
+				} else {
+					return fmt.Errorf("invalid nested structure for key: %s", key)
+				}
+			} else {
+				// 如果中间的键不存在，则无需进行删除操作
+				return nil
+			}
+		}
+	}
+
+	ucm.Config = config
+	err = ucm.Save()
+	if err != nil {
+		return fmt.Errorf("failed to save config: %v", err)
+	}
+
+	ucm.NotifyObservers()
+	return nil
+}
+
+// func (ucm *UnifiedConfigManager) AddConfigSection(key string, section string) error {
+// 	// 如果是 Telegraf 配置，使用 TelegrafConfig 的方法
+// 	if ucm.TelegrafConfig != nil {
+// 		return ucm.addTelegrafConfigSection(key, section)
+// 	}
+
+// 	// 对于其他配置
+// 	config, err := ucm.Load()
+// 	if err != nil {
+// 		return fmt.Errorf("failed to load config: %v", err)
+// 	}
+
+// 	// 解析section字符串为map[string]interface{}
+// 	var sectionData map[string]interface{}
+// 	switch ucm.Format {
+// 	case "json":
+// 		err = json.Unmarshal([]byte(section), &sectionData)
+// 	case "yaml":
+// 		err = yaml.Unmarshal([]byte(section), &sectionData)
+// 	case "toml":
+// 		err = toml.Unmarshal([]byte(section), &sectionData)
+// 	default:
+// 		return fmt.Errorf("unsupported format: %s", ucm.Format)
+// 	}
+// 	if err != nil {
+// 		return fmt.Errorf("failed to parse section: %v", err)
+// 	}
+
+// 	// 使用点号分隔的键来支持嵌套配置
+// 	keys := strings.Split(key, ".")
+// 	currentMap := config.Data
+
+// 	for i, k := range keys {
+// 		if i == len(keys)-1 {
+// 			currentMap[k] = sectionData
+// 		} else {
+// 			if _, exists := currentMap[k]; !exists {
+// 				currentMap[k] = make(map[string]interface{})
+// 			}
+// 			currentMap = currentMap[k].(map[string]interface{})
+// 		}
+// 	}
+
+// 	err = ucm.Save(config)
+// 	if err != nil {
+// 		return fmt.Errorf("failed to save config: %v", err)
+// 	}
+
+//		ucm.NotifyObservers()
+//		return nil
+//	}
+func (ucm *UnifiedConfigManager) AddConfigSection(key string, section string, opts ...ConfigMergeOption) error {
+	options := &configMergeOptions{
+		mergeStrategy: OverwriteStrategy,
+	}
+	for _, opt := range opts {
+		opt(options)
+	}
+
+	if ucm.TelegrafConfig != nil {
+		return ucm.TelegrafConfig.AddConfigSection(key, section, options.mergeStrategy)
+	}
+
+	var sectionData map[string]interface{}
+	err := ucm.unmarshalSection(section, &sectionData)
+	if err != nil {
+		return fmt.Errorf("failed to parse section: %v", err)
+	}
+
+	return ucm.addConfigInternal(key, sectionData, options.mergeStrategy)
+}
+
+func (ucm *UnifiedConfigManager) addConfigInternal(key string, value interface{}, strategy mergeStrategy) error {
+	// 如果是 Telegraf 配置，使用 TelegrafConfig 的方法
+	// if ucm.TelegrafConfig != nil {
+	// 	return ucm.addTelegrafConfig(key, value, strategy)
+	// }
+
+	// 对于其他配置
+	config, err := ucm.Load()
+	if err != nil {
+		return fmt.Errorf("failed to load config: %v", err)
+	}
+
+	// 使用点号分隔的键来支持嵌套配置
+	keys := strings.Split(key, ".")
+	currentMap := config.Data
+
+	for i, k := range keys {
+		if i == len(keys)-1 {
+			mergedValue, err := ucm.mergeValues(currentMap[k], value, strategy)
+			if err != nil {
+				return fmt.Errorf("failed to merge values: %v", err)
+			}
+			currentMap[k] = mergedValue
+		} else {
+			if _, exists := currentMap[k]; !exists {
+				currentMap[k] = make(map[string]interface{})
+			}
+			currentMap = currentMap[k].(map[string]interface{})
+		}
+	}
+
+	ucm.Config = config
+	err = ucm.Save()
+	if err != nil {
+		return fmt.Errorf("failed to save config: %v", err)
+	}
+
+	ucm.NotifyObservers()
+	return nil
+}
+
+func (ucm *UnifiedConfigManager) mergeValues(existing, new interface{}, strategy mergeStrategy) (interface{}, error) {
+	switch strategy {
+	case OverwriteStrategy:
+		return new, nil
+	case MergeStrategy:
+		return ucm.mergeMap(existing, new, false, false)
+	case MergeAndOverwriteStrategy:
+		return ucm.mergeMap(existing, new, true, false)
+	case MergeOrErrorStrategy:
+		return ucm.mergeMap(existing, new, false, true)
+	default:
+		return new, nil
+	}
+}
+
+func (ucm *UnifiedConfigManager) mergeMap(existing, new interface{}, overwrite, errorOnConflict bool) (interface{}, error) {
+	existingMap, existingOk := existing.(map[string]interface{})
+	newMap, newOk := new.(map[string]interface{})
+
+	if !existingOk || !newOk {
+		if overwrite {
+			return new, nil
+		}
+		if errorOnConflict && existing != nil && !reflect.DeepEqual(existing, new) {
+			return nil, fmt.Errorf("conflict detected: cannot merge non-map values")
+		}
+		return existing, nil
+	}
+
+	result := make(map[string]interface{})
+	for k, v := range existingMap {
+		result[k] = v
+	}
+
+	for k, v := range newMap {
+		if existing, ok := result[k]; ok {
+			mergedValue, err := ucm.mergeMap(existing, v, overwrite, errorOnConflict)
+			if err != nil {
+				return nil, fmt.Errorf("conflict at key '%s': %v", k, err)
+			}
+			result[k] = mergedValue
+		} else {
+			result[k] = v
+		}
+	}
+
+	return result, nil
+}
+
+func (ucm *UnifiedConfigManager) unmarshalSection(section string, sectionData *map[string]interface{}) error {
+	switch ucm.Format {
+	case "json":
+		return json.Unmarshal([]byte(section), sectionData)
+	case "yaml":
+		return yaml.Unmarshal([]byte(section), sectionData)
+	case "toml":
+		return toml.Unmarshal([]byte(section), sectionData)
+	default:
+		return fmt.Errorf("unsupported format: %s", ucm.Format)
+	}
+}
+
+// func (ucm *UnifiedConfigManager) addTelegrafConfigSection(key string, section string) error {
+// 	if err := ucm.TelegrafConfig.Load(); err != nil {
+// 		return fmt.Errorf("failed to load Telegraf config: %v", err)
+// 	}
+
+// 	// 解析section字符串为map[string]interface{}
+// 	var sectionData map[string]interface{}
+// 	err := toml.Unmarshal([]byte(section), &sectionData)
+// 	if err != nil {
+// 		return fmt.Errorf("failed to parse Telegraf config section: %v", err)
+// 	}
+
+// 	// 使用TelegrafConfig的AddConfig方法添加每个键值对
+// 	for k, v := range sectionData {
+// 		fullKey := key + "." + k
+// 		if err := ucm.TelegrafConfig.AddConfig(fullKey, v); err != nil {
+// 			return fmt.Errorf("failed to add Telegraf config: %v", err)
+// 		}
+// 	}
+
+// 	if err := ucm.TelegrafConfig.Save(); err != nil {
+// 		return fmt.Errorf("failed to save Telegraf config: %v", err)
+// 	}
+
+// 	ucm.NotifyObservers()
+// 	return nil
+// }
+
+// func (ucm *UnifiedConfigManager) addTelegrafConfigSection(key string, section string, strategy mergeStrategy) error {
+// 	if err := ucm.TelegrafConfig.Load(); err != nil {
+// 		return fmt.Errorf("failed to load Telegraf config: %v", err)
+// 	}
+
+// 	// 解析section字符串为map[string]interface{}
+// 	var sectionData map[string]interface{}
+// 	err := toml.Unmarshal([]byte(section), &sectionData)
+// 	if err != nil {
+// 		return fmt.Errorf("failed to parse Telegraf config section: %v", err)
+// 	}
+
+// 	// 使用TelegrafConfig的AddConfigWithStrategy方法添加每个键值对
+// 	for k, v := range sectionData {
+// 		fullKey := key + "." + k
+// 		if err := ucm.TelegrafConfig.AddConfigWithStrategy(fullKey, v, TelegrafMergeStrategy(strategy)); err != nil {
+// 			return fmt.Errorf("failed to add Telegraf config: %v", err)
+// 		}
+// 	}
+
+// 	if err := ucm.TelegrafConfig.Save(); err != nil {
+// 		return fmt.Errorf("failed to save Telegraf config: %v", err)
+// 	}
+
+// 	ucm.NotifyObservers()
+// 	return nil
+// }
+
+func (ucm *UnifiedConfigManager) addTelegrafConfig(key string, value interface{}, strategy mergeStrategy) error {
+	if _, err := ucm.TelegrafConfig.Load(); err != nil {
+		return fmt.Errorf("failed to load Telegraf config: %v", err)
+	}
+
+	// 使用 AddConfigWithStrategy 方法来支持合并策略
+	if err := ucm.TelegrafConfig.AddConfigWithStrategy(key, value, strategy); err != nil {
+		return fmt.Errorf("failed to add Telegraf config: %v", err)
+	}
+
+	// if err := ucm.TelegrafConfig.Save(); err != nil {
+	// 	return fmt.Errorf("failed to save Telegraf config: %v", err)
+	// }
+
+	ucm.NotifyObservers()
+	return nil
+}
+
+func (ucm *UnifiedConfigManager) removeTelegrafConfig(key string, value interface{}) error {
+	if _, err := ucm.TelegrafConfig.Load(); err != nil {
+		return fmt.Errorf("failed to load Telegraf config: %v", err)
+	}
+
+	if err := ucm.TelegrafConfig.DeleteConfig(key, value); err != nil {
+		return fmt.Errorf("failed to remove Telegraf config: %v", err)
+	}
+
+	if err := ucm.TelegrafConfig.Save(); err != nil {
+		return fmt.Errorf("failed to save Telegraf config: %v", err)
+	}
+
+	ucm.NotifyObservers()
+	return nil
+}
+
+// ApplyStrategy 定义了配置应用策略
+type ApplyStrategy interface {
+	Apply(config ConfigManager) error
+}
+
+// RestartStrategy 实现了重启应用策略
+type RestartStrategy struct {
+	RestartFunc func() error
+}
+
+func (rs *RestartStrategy) Apply(config ConfigManager) error {
+	fmt.Printf("Applying restart strategy for config: %s\n", config.GetPath())
+	if rs.RestartFunc != nil {
+		return rs.RestartFunc()
+	}
+	return nil
+}
+
+// HotUpdateStrategy 实现了热更新应用策略
+type HotUpdateStrategy struct {
+	HotUpdateFunc func() error
+}
+
+func (hus *HotUpdateStrategy) Apply(config ConfigManager) error {
+	fmt.Printf("Applying hot update strategy for config: %s\n", config.GetPath())
+	if hus.HotUpdateFunc != nil {
+		return hus.HotUpdateFunc()
+	}
+	return nil
+}
+
+// ConfigDecorator 用于增加和删除配置的装饰器接口
+type ConfigDecorator interface {
+	ConfigManager
+	// AddConfig(key string, value interface{}) error
+	RemoveConfig(key string) error
+}
+
+// PartialUpdateDecorator 实现了部分增加和删除配置的装饰器
+type PartialUpdateDecorator struct {
+	ConfigManager
+}
+
+// ConfigObserver 定义了配置变更的观察者接口
+type ConfigObserver interface {
+	OnConfigChanged() // 移除参数
+}
+
+// Observable 定义了可被观察的配置管理器
+type Observable struct {
+	observers []ConfigObserver
+}
+
+// // 实现部分更新装饰器的方法
+// func (pud *PartialUpdateDecorator) AddConfig(key string, value interface{}) error {
+// 	config, err := pud.Load()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	config.Data[key] = value
+// 	return pud.Save(config)
+// }
+
+// func (pud *PartialUpdateDecorator) RemoveConfig(key string) error {
+// 	config, err := pud.Load()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	delete(config.Data, key)
+
+// 	return pud.Save(config)
+// }
+
+// 实现 Observable 的方法
+func (o *Observable) AddObserver(observer ConfigObserver) {
+	o.observers = append(o.observers, observer)
+}
+
+func (o *Observable) NotifyObservers() { // 移除参数
+	for _, observer := range o.observers {
+		observer.OnConfigChanged()
+	}
+}
+
+func getFormatFromFilename(filename string) string {
+	ext := filepath.Ext(filename)
+	switch ext {
+	case ".json":
+		return "json"
+	case ".yaml", ".yml":
+		return "yaml"
+	case ".toml":
+		return "toml"
+	default:
+		return "unknown"
+	}
+}

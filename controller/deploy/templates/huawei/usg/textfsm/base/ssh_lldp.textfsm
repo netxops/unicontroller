@@ -1,0 +1,21 @@
+name: sshLldpTextFSM
+template: |
+  Value OUTGOING (\S+)
+  Value COUNT (\d+)
+  Value PEER_INTERFACE (.+)
+  Value NAME (.+)
+  Value IP ([\d\.]+)
+
+  Start
+    ^${OUTGOING} has ${COUNT} neighbor
+    ^Port ID\s+:${PEER_INTERFACE}
+    ^System name\s+:${NAME}
+    ^Management address.*:${IP} -> Record
+
+inputField: sshLldp#value
+rowFields:
+  - OUTGOING
+  - COUNT
+  - PEER_INTERFACE
+  - NAME
+  - IP

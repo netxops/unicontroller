@@ -1,0 +1,1276 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "chapters": [
+            "策略",
+            "地址转换",
+            "NAT策略"
+        ],
+        "apiname": "getNats",
+        "inputParams": {
+            "headers": [],
+            "uri": [
+                {
+                    "description": "起始位置，从 0 开始",
+                    "name": "_start",
+                    "type": "int32",
+                    "extra": {
+                        "minimum": 0,
+                        "default": 0,
+                        "maximum": 2000000
+                    },
+                    "relationshipKey": "_start",
+                    "docrequired": "否"
+                },
+                {
+                    "description": "移动搜索参数项",
+                    "name": "movesearch",
+                    "type": "string",
+                    "extra": {
+                        "minLength": 1,
+                        "maxLength": 95
+                    },
+                    "relationshipKey": "movesearch",
+                    "docrequired": "否"
+                },
+                {
+                    "description": "获取最大长度，限制最大值，如果数据不够可能返回小于 length",
+                    "name": "_length",
+                    "type": "int32",
+                    "extra": {
+                        "minimum": 1,
+                        "default": 100,
+                        "maximum": 200
+                    },
+                    "relationshipKey": "_length",
+                    "docrequired": "否"
+                },
+                {
+                    "description": "移动搜索位置参数项",
+                    "name": "position",
+                    "type": "int32",
+                    "extra": [],
+                    "relationshipKey": "position",
+                    "docrequired": "否"
+                },
+                {
+                    "description": "选择字段，字段用逗号分隔",
+                    "name": "_select",
+                    "type": "string",
+                    "extra": {
+                        "maxLength": 1000
+                    },
+                    "relationshipKey": "_select",
+                    "docrequired": "否"
+                },
+                {
+                    "description": "NAT名字前缀过滤",
+                    "name": "__nameprefix",
+                    "type": "string",
+                    "extra": {
+                        "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符",
+                        "maxLength": 95,
+                        "minLength": 1
+                    },
+                    "relationshipKey": "__nameprefix",
+                    "docrequired": "否"
+                },
+                {
+                    "description": "模糊搜索关键字",
+                    "name": "_search",
+                    "type": "string",
+                    "extra": {
+                        "maxLength": 95
+                    },
+                    "relationshipKey": "_search",
+                    "docrequired": "否"
+                },
+                {
+                    "description": "用于指定转换类型, 可选SNAT,DNAT,BNAT",
+                    "name": "transType",
+                    "type": "string",
+                    "extra": {
+                        "enums": [
+                            {
+                                "value": "SNAT",
+                                "description": "转换类型为snat"
+                            },
+                            {
+                                "value": "DNAT",
+                                "description": "转换类型为dnat"
+                            },
+                            {
+                                "value": "BNAT",
+                                "description": "转换类型为bnat"
+                            }
+                        ]
+                    },
+                    "relationshipKey": "transType",
+                    "docrequired": "否"
+                }
+            ],
+            "cookies": [
+                {
+                    "description": "认证令牌",
+                    "name": "token",
+                    "type": "string",
+                    "extra": "{\"maxLength\":64}",
+                    "relationshipKey": "token",
+                    "docrequired": "是"
+                },
+                {
+                    "description": "认证会话",
+                    "name": "SESSID",
+                    "type": "string",
+                    "extra": "{\"maxLength\":256}",
+                    "relationshipKey": "SESSID",
+                    "docrequired": "是"
+                }
+            ]
+        },
+        "position": "7.1.1.1",
+        "description": "获取nat策略",
+        "outputParams": [
+            {
+                "description": "错误码",
+                "name": "code",
+                "type": "int",
+                "relationshipKey": "code",
+                "docrequired": "否"
+            },
+            {
+                "description": "错误信息",
+                "name": "message",
+                "type": "string",
+                "relationshipKey": "message",
+                "docrequired": "否"
+            },
+            {
+                "description": "分页数据",
+                "name": "data",
+                "type": "object",
+                "relationshipKey": "data",
+                "docrequired": "是"
+            },
+            {
+                "description": "总共多少项目",
+                "name": "totalItems",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.totalItems",
+                "docrequired": "--"
+            },
+            {
+                "description": "总共多少页",
+                "name": "totalPages",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.totalPages",
+                "docrequired": "--"
+            },
+            {
+                "description": "当前页码，从 1 开始",
+                "name": "pageNumber",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.pageNumber",
+                "docrequired": "--"
+            },
+            {
+                "description": "每页多大",
+                "name": "pageSize",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.pageSize",
+                "docrequired": "--"
+            },
+            {
+                "description": "当前条目偏移，从 0 开始",
+                "name": "itemsOffset",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.itemsOffset",
+                "docrequired": "--"
+            },
+            {
+                "description": "数据列表长度",
+                "name": "itemLength",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.itemLength",
+                "docrequired": "--"
+            },
+            {
+                "description": "内部偏移",
+                "name": "privateOffset",
+                "type": "uint64",
+                "extra": [],
+                "relationshipKey": "data.privateOffset",
+                "docrequired": "--"
+            },
+            {
+                "description": "有效数据列表",
+                "name": "items",
+                "type": "object[]",
+                "extra": [],
+                "relationshipKey": "data.items",
+                "docrequired": "--"
+            },
+            {
+                "description": "唯一标识ID",
+                "name": "uuid",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.uuid",
+                "docrequired": "--"
+            },
+            {
+                "description": "策略名称",
+                "name": "name",
+                "type": "string",
+                "extra": {
+                    "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符",
+                    "maxLength": 95,
+                    "minLength": 1
+                },
+                "relationshipKey": "data.items.name",
+                "docrequired": "是"
+            },
+            {
+                "description": "nat策略匹配次数",
+                "name": "natHit",
+                "type": "uint64",
+                "extra": [],
+                "relationshipKey": "data.items.natHit",
+                "docrequired": "否"
+            },
+            {
+                "description": "是否启用",
+                "name": "enable",
+                "type": "bool",
+                "extra": [],
+                "relationshipKey": "data.items.enable",
+                "docrequired": "否"
+            },
+            {
+                "description": "表示位置状态",
+                "name": "position",
+                "type": "int32",
+                "extra": [],
+                "relationshipKey": "data.items.position",
+                "docrequired": "否"
+            },
+            {
+                "description": "nat类型",
+                "name": "natType",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "SNAT",
+                            "description": "转换类型为源地址转换"
+                        },
+                        {
+                            "value": "DNAT",
+                            "description": "转换类型为目的地址转换"
+                        },
+                        {
+                            "value": "BNAT",
+                            "description": "转换类型为双向地址转换"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.natType",
+                "docrequired": "是"
+            },
+            {
+                "description": "描述",
+                "name": "description",
+                "type": "string",
+                "extra": {
+                    "pattern desc": "描述字段不能包含`~!#$%^&*+\\|{};:\"'/<>? 特殊字符",
+                    "maxLength": 95,
+                    "minLength": 0
+                },
+                "relationshipKey": "data.items.description",
+                "docrequired": "否"
+            },
+            {
+                "description": "生效时间，引用时间计划对象",
+                "name": "schedule",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.schedule",
+                "docrequired": "否"
+            },
+            {
+                "description": "snat信息,策略类型为源地址转换时使用",
+                "name": "snat",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.snat",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "需要匹配的源区域",
+                "name": "srcZones",
+                "type": "string[]",
+                "extra": [],
+                "relationshipKey": "data.items.snat.srcZones",
+                "docrequired": "是"
+            },
+            {
+                "description": "需要匹配的源IP组",
+                "name": "srcIpGroups",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.snat.srcIpGroups",
+                "docrequired": "是"
+            },
+            {
+                "description": "需要匹配的目的区域或者接口",
+                "name": "dstNetobj",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.snat.dstNetobj",
+                "docrequired": "是"
+            },
+            {
+                "description": "需要匹配的目的类型",
+                "name": "dstNetobjType",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "ZONE",
+                            "description": "区域"
+                        },
+                        {
+                            "value": "INTERFACE",
+                            "description": "接口"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.snat.dstNetobj.dstNetobjType",
+                "docrequired": "是"
+            },
+            {
+                "description": "目的接口，当dstNetobjType类型为INTERFACE时选择",
+                "name": "interface",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.snat.dstNetobj.interface",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "目的区域，当dstNetobjType类型为ZONE时选择",
+                "name": "zone",
+                "type": "string[]",
+                "extra": [],
+                "relationshipKey": "data.items.snat.dstNetobj.zone",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "需要匹配的目的IP组",
+                "name": "dstIpGroups",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.snat.dstIpGroups",
+                "docrequired": "是"
+            },
+            {
+                "description": "引用的服务组",
+                "name": "natService",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.snat.natService",
+                "docrequired": "是"
+            },
+            {
+                "description": "源地址转换相关数据",
+                "name": "transfer",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.snat.transfer",
+                "docrequired": "是"
+            },
+            {
+                "description": "源转换类型",
+                "name": "transferType",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "OUTIF_IP",
+                            "description": "出接口ip"
+                        },
+                        {
+                            "value": "IP_RANGE",
+                            "description": "ip范围"
+                        },
+                        {
+                            "value": "IP",
+                            "description": "单个IP"
+                        },
+                        {
+                            "value": "IPGROUP",
+                            "description": "ip组"
+                        },
+                        {
+                            "value": "NO_TRANS",
+                            "description": "不转换"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.snat.transfer.transferType",
+                "docrequired": "是"
+            },
+            {
+                "description": "转换模式开关",
+                "name": "sticky",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "OFF",
+                            "description": "关闭sticky功能"
+                        },
+                        {
+                            "value": "STRICT",
+                            "description": "开启sticky功能严格模式"
+                        },
+                        {
+                            "value": "LOOSE",
+                            "description": "开启sticky功能宽松模式"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.snat.transfer.sticky",
+                "docrequired": "是"
+            },
+            {
+                "description": "源转换IP范围参数，当transferType转换类型为IP_RANGE时选择",
+                "name": "ipRange",
+                "type": "object",
+                "extra": {
+                    "format": "ip-range"
+                },
+                "relationshipKey": "data.items.snat.transfer.ipRange",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "IP范围起始地址",
+                "name": "start",
+                "type": "string",
+                "extra": {
+                    "format": "ip-address"
+                },
+                "relationshipKey": "data.items.snat.transfer.ipRange.start",
+                "docrequired": "是"
+            },
+            {
+                "description": "IP范围结束地址",
+                "name": "end",
+                "type": "string",
+                "extra": {
+                    "format": "ip-address"
+                },
+                "relationshipKey": "data.items.snat.transfer.ipRange.end",
+                "docrequired": "是"
+            },
+            {
+                "description": "IP范围转换模式",
+                "name": "tranferMode",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "STATIC",
+                            "description": "静态转换"
+                        },
+                        {
+                            "value": "DYNAMIC",
+                            "description": "动态转换"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.snat.transfer.ipRange.tranferMode",
+                "docrequired": "否"
+            },
+            {
+                "description": "转换的单个IP",
+                "name": "specifyIp",
+                "type": "string",
+                "extra": {
+                    "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.10"
+                },
+                "relationshipKey": "data.items.snat.transfer.specifyIp",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "转换的IP组",
+                "name": "ipGroups",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.snat.transfer.ipGroups",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "源转换端口配置参数",
+                "name": "transPort",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.snat.transfer.transPort",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "端口分配类型",
+                "name": "portMode",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "RANDOM",
+                            "description": "自由分配"
+                        },
+                        {
+                            "value": "STATIC_BLOCK",
+                            "description": "静态端口段"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.snat.transfer.transPort.portMode",
+                "docrequired": "是"
+            },
+            {
+                "description": "端口范围",
+                "name": "portRange",
+                "type": "object",
+                "extra": {
+                    "format": "int-range"
+                },
+                "relationshipKey": "data.items.snat.transfer.transPort.portRange",
+                "docrequired": "是"
+            },
+            {
+                "description": "网络端口起始值",
+                "name": "start",
+                "type": "int32",
+                "extra": {
+                    "maximum": 65535,
+                    "minimum": 0
+                },
+                "relationshipKey": "data.items.snat.transfer.transPort.portRange.start",
+                "docrequired": "是"
+            },
+            {
+                "description": "网络端口结束值",
+                "name": "end",
+                "type": "int32",
+                "extra": {
+                    "maximum": 65535,
+                    "minimum": 0
+                },
+                "relationshipKey": "data.items.snat.transfer.transPort.portRange.end",
+                "docrequired": "否"
+            },
+            {
+                "description": "端口段大小",
+                "name": "blockSize",
+                "type": "uint16",
+                "extra": [],
+                "relationshipKey": "data.items.snat.transfer.transPort.blockSize",
+                "docrequired": "是"
+            },
+            {
+                "description": "dnat信息,策略类型为目的地址转换时使用",
+                "name": "dnat",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.dnat",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "需要匹配的源区域",
+                "name": "srcZones",
+                "type": "string[]",
+                "extra": [],
+                "relationshipKey": "data.items.dnat.srcZones",
+                "docrequired": "是"
+            },
+            {
+                "description": "需要匹配的源IP组",
+                "name": "srcIpGroups",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.dnat.srcIpGroups",
+                "docrequired": "是"
+            },
+            {
+                "description": "需要匹配的目的IP组或者IP",
+                "name": "dstIpobj",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.dnat.dstIpobj",
+                "docrequired": "是"
+            },
+            {
+                "description": "目的类型",
+                "name": "dstIpobjType",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "IPGROUP",
+                            "description": "IP组"
+                        },
+                        {
+                            "value": "IP",
+                            "description": "指定的IP列表"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.dnat.dstIpobj.dstIpobjType",
+                "docrequired": "是"
+            },
+            {
+                "description": "指定的IP数组，当dstIpobjType目的类型为IP时选择",
+                "name": "specifyIp",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.dnat.dstIpobj.specifyIp",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "目的地址指定的IP组，当dstIpobjType目的类型为IPGROUP时选择",
+                "name": "ipGroups",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.dnat.dstIpobj.ipGroups",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "引用的服务组",
+                "name": "natService",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.dnat.natService",
+                "docrequired": "是"
+            },
+            {
+                "description": "目的地址转换相关数据",
+                "name": "transfer",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.dnat.transfer",
+                "docrequired": "是"
+            },
+            {
+                "description": "目的转换类型",
+                "name": "transferType",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "IP_RANGE",
+                            "description": "ip范围"
+                        },
+                        {
+                            "value": "IP",
+                            "description": "单个IP"
+                        },
+                        {
+                            "value": "IP_PREFIX",
+                            "description": "转换前缀"
+                        },
+                        {
+                            "value": "IPGROUP",
+                            "description": "ip组"
+                        },
+                        {
+                            "value": "NO_TRANS",
+                            "description": "不转换"
+                        },
+                        {
+                            "value": "SLB_POOL",
+                            "description": "slb地址池转换"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.dnat.transfer.transferType",
+                "docrequired": "是"
+            },
+            {
+                "description": "目的转换使用负载均衡，开启系统->通用配置->网络参数->高级配置开关时才能生效",
+                "name": "dnatEnableScheduling",
+                "type": "bool",
+                "extra": {
+                    "default": false
+                },
+                "relationshipKey": "data.items.dnat.transfer.dnatEnableScheduling",
+                "docrequired": "否"
+            },
+            {
+                "description": "转换的IP范围，当transferType转换类型为IP_RANGE时选择",
+                "name": "ipRange",
+                "type": "object",
+                "extra": {
+                    "format": "ip-range"
+                },
+                "relationshipKey": "data.items.dnat.transfer.ipRange",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "IP范围起始地址",
+                "name": "start",
+                "type": "string",
+                "extra": {
+                    "format": "ip-address"
+                },
+                "relationshipKey": "data.items.dnat.transfer.ipRange.start",
+                "docrequired": "是"
+            },
+            {
+                "description": "IP范围结束地址",
+                "name": "end",
+                "type": "string",
+                "extra": {
+                    "format": "ip-address"
+                },
+                "relationshipKey": "data.items.dnat.transfer.ipRange.end",
+                "docrequired": "是"
+            },
+            {
+                "description": "转换的单个IP",
+                "name": "specifyIp",
+                "type": "string",
+                "extra": {
+                    "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.10"
+                },
+                "relationshipKey": "data.items.dnat.transfer.specifyIp",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "IPv4网段,掩码格式",
+                "name": "ipPrefix",
+                "type": "string",
+                "extra": {
+                    "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.0/24"
+                },
+                "relationshipKey": "data.items.dnat.transfer.ipPrefix",
+                "docrequired": "是"
+            },
+            {
+                "description": "转换的IP组",
+                "name": "ipGroups",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.dnat.transfer.ipGroups",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "转换端口，数组为空表示不转换端口",
+                "name": "transferPort",
+                "type": "object[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.dnat.transfer.transferPort",
+                "docrequired": "是"
+            },
+            {
+                "description": "网络端口起始值",
+                "name": "start",
+                "type": "int32",
+                "extra": {
+                    "maximum": 65535,
+                    "minimum": 0
+                },
+                "relationshipKey": "data.items.dnat.transfer.transferPort.start",
+                "docrequired": "是"
+            },
+            {
+                "description": "网络端口结束值",
+                "name": "end",
+                "type": "int32",
+                "extra": {
+                    "maximum": 65535,
+                    "minimum": 0
+                },
+                "relationshipKey": "data.items.dnat.transfer.transferPort.end",
+                "docrequired": "否"
+            },
+            {
+                "description": "引用负载均衡地址池对象",
+                "name": "slbPool",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.dnat.transfer.slbPool",
+                "docrequired": "--"
+            },
+            {
+                "description": "忽略访问控制",
+                "name": "dnatIgnoreAcl",
+                "type": "bool",
+                "extra": [],
+                "relationshipKey": "data.items.dnat.dnatIgnoreAcl",
+                "docrequired": "否"
+            },
+            {
+                "description": "忽略访问控制匹配上策略上报会话日志",
+                "name": "bypassAclLog",
+                "type": "bool",
+                "extra": {
+                    "default": false
+                },
+                "relationshipKey": "data.items.dnat.bypassAclLog",
+                "docrequired": "否"
+            },
+            {
+                "description": "bnat信息,策略类型为双向转换时使用",
+                "name": "bnat",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.bnat",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "需要匹配的源区域",
+                "name": "srcZones",
+                "type": "string[]",
+                "extra": [],
+                "relationshipKey": "data.items.bnat.srcZones",
+                "docrequired": "是"
+            },
+            {
+                "description": "需要匹配的源IP组",
+                "name": "srcIpGroups",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.bnat.srcIpGroups",
+                "docrequired": "是"
+            },
+            {
+                "description": "需要匹配的目的IP组或者IP",
+                "name": "dstIpobj",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.bnat.dstIpobj",
+                "docrequired": "是"
+            },
+            {
+                "description": "目的类型",
+                "name": "dstIpobjType",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "IPGROUP",
+                            "description": "IP组"
+                        },
+                        {
+                            "value": "IP",
+                            "description": "指定的IP列表"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.bnat.dstIpobj.dstIpobjType",
+                "docrequired": "是"
+            },
+            {
+                "description": "IP列表，当dstIpobjType类型为IP时选择",
+                "name": "specifyIp",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.bnat.dstIpobj.specifyIp",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "IP组，当dstIpobjType类型为IPGROUP时选择",
+                "name": "ipGroups",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.bnat.dstIpobj.ipGroups",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "引用的服务组",
+                "name": "natService",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.bnat.natService",
+                "docrequired": "是"
+            },
+            {
+                "description": "目的转换相关数据",
+                "name": "transferDst",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.bnat.transferDst",
+                "docrequired": "是"
+            },
+            {
+                "description": "转换类型",
+                "name": "transferType",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "IP_RANGE",
+                            "description": "ip范围"
+                        },
+                        {
+                            "value": "IP",
+                            "description": "单个IP"
+                        },
+                        {
+                            "value": "IP_PREFIX",
+                            "description": "转换前缀"
+                        },
+                        {
+                            "value": "IPGROUP",
+                            "description": "ip组"
+                        },
+                        {
+                            "value": "NO_TRANS",
+                            "description": "不转换"
+                        },
+                        {
+                            "value": "SLB_POOL",
+                            "description": "slb地址池转换"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.bnat.transferDst.transferType",
+                "docrequired": "是"
+            },
+            {
+                "description": "双向转换使用负载均衡，开启资质才能生效",
+                "name": "dnatEnableScheduling",
+                "type": "bool",
+                "extra": {
+                    "default": false
+                },
+                "relationshipKey": "data.items.bnat.transferDst.dnatEnableScheduling",
+                "docrequired": "否"
+            },
+            {
+                "description": "转换的IP范围，当transferType转换类型为IP_RANGE时选择",
+                "name": "ipRange",
+                "type": "object",
+                "extra": {
+                    "format": "ip-range"
+                },
+                "relationshipKey": "data.items.bnat.transferDst.ipRange",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "IP范围起始地址",
+                "name": "start",
+                "type": "string",
+                "extra": {
+                    "format": "ip-address"
+                },
+                "relationshipKey": "data.items.bnat.transferDst.ipRange.start",
+                "docrequired": "是"
+            },
+            {
+                "description": "IP范围结束地址",
+                "name": "end",
+                "type": "string",
+                "extra": {
+                    "format": "ip-address"
+                },
+                "relationshipKey": "data.items.bnat.transferDst.ipRange.end",
+                "docrequired": "是"
+            },
+            {
+                "description": "转换的单个IP，当transferType转换类型为IP时选择",
+                "name": "specifyIp",
+                "type": "string",
+                "extra": {
+                    "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.10"
+                },
+                "relationshipKey": "data.items.bnat.transferDst.specifyIp",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "IPv4网段,掩码格式",
+                "name": "ipPrefix",
+                "type": "string",
+                "extra": {
+                    "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.0/24"
+                },
+                "relationshipKey": "data.items.bnat.transferDst.ipPrefix",
+                "docrequired": "是"
+            },
+            {
+                "description": "转换的IP组，当transferType转换类型为IPGROUP时选择",
+                "name": "ipGroups",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.bnat.transferDst.ipGroups",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "转换端口，数组为空表示不转换端口",
+                "name": "transferPort",
+                "type": "object[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.bnat.transferDst.transferPort",
+                "docrequired": "是"
+            },
+            {
+                "description": "网络端口起始值",
+                "name": "start",
+                "type": "int32",
+                "extra": {
+                    "maximum": 65535,
+                    "minimum": 0
+                },
+                "relationshipKey": "data.items.bnat.transferDst.transferPort.start",
+                "docrequired": "是"
+            },
+            {
+                "description": "网络端口结束值",
+                "name": "end",
+                "type": "int32",
+                "extra": {
+                    "maximum": 65535,
+                    "minimum": 0
+                },
+                "relationshipKey": "data.items.bnat.transferDst.transferPort.end",
+                "docrequired": "否"
+            },
+            {
+                "description": "引用负载均衡地址池对象",
+                "name": "slbPool",
+                "type": "string",
+                "extra": [],
+                "relationshipKey": "data.items.bnat.transferDst.slbPool",
+                "docrequired": "--"
+            },
+            {
+                "description": "忽略访问控制",
+                "name": "dnatIgnoreAcl",
+                "type": "bool",
+                "extra": [],
+                "relationshipKey": "data.items.bnat.dnatIgnoreAcl",
+                "docrequired": "是"
+            },
+            {
+                "description": "忽略访问控制匹配上策略上报会话日志",
+                "name": "bypassAclLog",
+                "type": "bool",
+                "extra": {
+                    "default": false
+                },
+                "relationshipKey": "data.items.bnat.bypassAclLog",
+                "docrequired": "否"
+            },
+            {
+                "description": "源转换相关数据",
+                "name": "transferSrc",
+                "type": "object",
+                "extra": [],
+                "relationshipKey": "data.items.bnat.transferSrc",
+                "docrequired": "是"
+            },
+            {
+                "description": "转换类型",
+                "name": "transferType",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "OUTIF_IP",
+                            "description": "出接口ip"
+                        },
+                        {
+                            "value": "IP_RANGE",
+                            "description": "ip范围"
+                        },
+                        {
+                            "value": "IP",
+                            "description": "单个IP"
+                        },
+                        {
+                            "value": "IPGROUP",
+                            "description": "ip组"
+                        },
+                        {
+                            "value": "NO_TRANS",
+                            "description": "不转换"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.bnat.transferSrc.transferType",
+                "docrequired": "是"
+            },
+            {
+                "description": "转换的IP范围，当transferType转换类型为IP_RANGE时选择",
+                "name": "ipRange",
+                "type": "object",
+                "extra": {
+                    "format": "ip-range"
+                },
+                "relationshipKey": "data.items.bnat.transferSrc.ipRange",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "IP范围起始地址",
+                "name": "start",
+                "type": "string",
+                "extra": {
+                    "format": "ip-address"
+                },
+                "relationshipKey": "data.items.bnat.transferSrc.ipRange.start",
+                "docrequired": "是"
+            },
+            {
+                "description": "IP范围结束地址",
+                "name": "end",
+                "type": "string",
+                "extra": {
+                    "format": "ip-address"
+                },
+                "relationshipKey": "data.items.bnat.transferSrc.ipRange.end",
+                "docrequired": "是"
+            },
+            {
+                "description": "转换模式",
+                "name": "tranferMode",
+                "type": "string",
+                "extra": {
+                    "enums": [
+                        {
+                            "value": "STATIC",
+                            "description": "静态转换"
+                        },
+                        {
+                            "value": "DYNAMIC",
+                            "description": "动态转换"
+                        }
+                    ]
+                },
+                "relationshipKey": "data.items.bnat.transferSrc.ipRange.tranferMode",
+                "docrequired": "否"
+            },
+            {
+                "description": "转换的单个IP，当transferType转换类型为IP时选择",
+                "name": "specifyIp",
+                "type": "string",
+                "extra": {
+                    "pattern desc": "IPv4地址格式错误, 输入示例:192.168.1.10"
+                },
+                "relationshipKey": "data.items.bnat.transferSrc.specifyIp",
+                "docrequired": "按条件选择"
+            },
+            {
+                "description": "转换的IP组，当transferType转换类型为IPGROUP时选择",
+                "name": "ipGroups",
+                "type": "string[]",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                },
+                "relationshipKey": "data.items.bnat.transferSrc.ipGroups",
+                "docrequired": "按条件选择"
+            }
+        ],
+        "api": {
+            "url": "https://{host}/api/v1/namespaces/@namespace/nats",
+            "method": "GET"
+        },
+        "inputSamples": {
+            "request": "GET https://192.168.1.1/api/v1/namespaces/public/nats?_start=0&_length=100",
+            "description": "获取符合过滤条件的全部NAT策略,查询条件：起始位置为0,返回最多100条数据"
+        },
+        "chapter": "NAT策略",
+        "title": "获取nat策略",
+        "outputSamples": {
+            "incorrect": {
+                "message": "无效参数",
+                "data": "",
+                "code": 22
+            },
+            "correct": {
+                "message": "成功",
+                "data": {
+                    "itemsOffset": 0,
+                    "itemLength": 1,
+                    "pageSize": 100,
+                    "items": [
+                        {
+                            "natHit": 0,
+                            "schedule": "all-week",
+                            "position": 0,
+                            "description": "",
+                            "name": "test",
+                            "enable": true,
+                            "uuid": "7FB24191361F44D7881E5638A0914BB5",
+                            "natType": "SNAT",
+                            "snat": {
+                                "srcIpGroups": [
+                                    "ipgTest"
+                                ],
+                                "natService": [
+                                    "any"
+                                ],
+                                "srcZones": [
+                                    "L3_manage"
+                                ],
+                                "dstNetobj": {
+                                    "dstNetobjType": "ZONE",
+                                    "zone": [
+                                        "L3_trust_A"
+                                    ]
+                                },
+                                "transfer": {
+                                    "transferType": "OUTIF_IP"
+                                },
+                                "dstIpGroups": [
+                                    "ipgTest"
+                                ]
+                            }
+                        }
+                    ],
+                    "totalPages": 1,
+                    "pageNumber": 1,
+                    "totalItems": 1
+                },
+                "code": 0
+            }
+        }
+    }
+}

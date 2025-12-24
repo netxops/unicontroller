@@ -1,0 +1,28 @@
+name: sshLldpTextFSM
+template: |
+  Value outgoing (\S+)
+  Value NEIGHBOR_INDEX (\d+)
+  Value peer_interface (\S+)
+  Value name ([^\r]+)
+  Value MANAGEMENT_IP ([\d\.]+)
+  Value CHASSIS_ID (\S+)
+  Value SYSTEM_DESC ([^\r]+)
+
+  Start
+    ^LLDP neighbor-information of port ${NEIGHBOR_INDEX}\[${outgoing}\]:
+    ^\s+Neighbor index\s+: ${NEIGHBOR_INDEX}
+    ^\s+Chassis ID\s+: ${CHASSIS_ID}
+    ^\s+Port ID\s+: ${peer_interface}
+    ^\s+System name\s+: ${name}
+    ^\s+System description\s+: ${SYSTEM_DESC}
+    ^\s+Management address\s+: ${MANAGEMENT_IP} -> Record
+
+inputField: sshLldp#value
+rowFields:
+  - outgoing
+  - NEIGHBOR_INDEX
+  - peer_interface
+  - name
+  - MANAGEMENT_IP
+  - CHASSIS_ID
+  - SYSTEM_DESC

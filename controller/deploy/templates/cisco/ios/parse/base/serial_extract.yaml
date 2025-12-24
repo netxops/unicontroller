@@ -1,0 +1,7 @@
+#name: SerialExtract
+#inputField: sysSerial
+#outputField: serial
+#dataType: map[string]string
+#expectedType: String
+#operation: Regex
+#pattern:

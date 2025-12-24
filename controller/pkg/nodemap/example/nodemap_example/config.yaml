@@ -1,0 +1,90 @@
+devices:
+  # - host: "192.168.100.219"
+  #   username: "admin"
+  #   password: "!@AsiaLink@2020"
+  #   port: 22
+  #   mode: "Dptech"
+  #   telnet: false
+  # - host: "172.32.1.7"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.2"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.10"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.11"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.12"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.25"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.26"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.8"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "FortiGate"
+  #   telnet: false
+  #   token: "r7Hnnfgym6NqNQmxGHmrxnnf0d1Qdb"
+
+
+nodemap:
+  name: "H3CNM"
+  force: false
+  task_id: 1
+config_file_path: "."
+policy:
+  source: "25.221.1.22/24"
+  destination: "8.8.8.8/32"
+  ticketNumber: HQWLTK20250327001
+  subTicket: "1"
+  service:
+    protocol: "tcp"
+    port: "80"
+  snat: "26.221.1.222"
+# policy:
+#   source: "0.0.0.0/0"
+#   destination: "26.221.1.23"
+#   realIp: 25.221.1.23
+#   realPort: 80
+#   ticketNumber: HQWLTK20250327001
+#   subTicket: "1"
+#   service:
+#     protocol: "tcp"
+#     port: "80"

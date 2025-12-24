@@ -1,0 +1,592 @@
+devices:
+  - host: "192.168.100.107"
+    username: "admin"
+    password: "yaan@123"
+    port: 22
+    mode: "Sangfor"
+    telnet: false
+    ipv4_area:
+      - interface: "eth1"
+        name: "Internet"
+        force: true
+    ipv4_stub:
+      - port_name: "eth0"
+      - port_name: "eth2"      
+    metadata:
+      policy_name_template: "{VAR:ticket_number}_policy_{SEQ:id:5:10000:1:MAIN}"
+      network_object_name_template: |
+        {set:network.separator="_"}
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_{if:is_source=="true"}SRC{else}DST{endif}_
+                    {if:type=="range"}{start}_{end}{else if:type=="subnet"}{cidr}{else}{ip}{endif}
+          {else}
+            {if:type=="range"}{start}_{end}
+            {else if:type=="subnet"}{cidr}{else}{ip}
+            {endif}
+          {endif}
+        {else}
+          {if:type=="range"}{start}_{end}
+          {else if:type=="subnet"}{cidr}
+          {else}{ip}
+          {endif}
+        {endif}
+      mip_name_template: |
+        {set:network.separator="_"}
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_{if:is_source=="true"}SRC{else}DST{endif}_
+                    {if:type=="range"}{start}_{end}{else if:type=="subnet"}{cidr}{else}{ip}{endif}
+          {else}
+            {if:type=="range"}{start}_{end}
+            {else if:type=="subnet"}{cidr}{else}{ip}
+            {endif}
+          {endif}
+        {else}
+          {if:type=="range"}{start}_{end}
+          {else if:type=="subnet"}{cidr}
+          {else}{ip}
+          {endif}
+        {endif}      
+      address_group_name_template: |
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_{if:is_source=="true"}SRC{else}DST{endif}_group
+          {else}
+            {if:is_source=="true"}SRC{else}DST{endif}_group
+          {endif}
+        {else}
+          {if:exist:nat_name=="true"}
+            {if:nat_name!=""}
+              {nat_name}_{if:is_source=="true"}SRC{else}DST{endif}_group
+            {else}
+              {if:is_source=="true"}SRC{else}DST{endif}_group
+            {endif}
+          {else}
+            {if:is_source=="true"}SRC{else}DST{endif}_group
+          {endif}
+        {endif}
+      service_group_name_template: |
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_SRV_GROUP
+          {else}
+            {if:service.protocol!=""}
+              {service.protocol:upper}_GROUP
+            {else}
+              SRV_GROUP
+            {endif}
+          {endif}
+        {else}
+          {if:exist:nat_name=="true"}
+            {if:nat_name!=""}
+              {nat_name}_SRV_GROUP
+            {else}
+              {if:service.protocol!=""}
+                {service.protocol:upper}_GROUP
+              {else}
+                SRV_GROUP
+              {endif}
+            {endif}
+          {else}
+            {if:service.protocol!=""}
+              {service.protocol:upper}_GROUP
+            {else}
+              SRV_GROUP
+            {endif}
+          {endif}
+        {endif}
+      service_object_name_template: |
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {protocol}{if:dst_port!=""}_{dst_port}{endif}
+          {else}
+            {protocol}{if:dst_port!=""}_{dst_port}{endif}
+          {endif}
+        {else}
+          {protocol}{if:dst_port!=""}_{dst_port}{endif}
+        {endif}
+
+      input.nat: "natpolicy.dnat"
+      output.nat: "natpolicy.snat"
+      dnat_object_type: "NETWORK_OBJECT"  # "NETWORK_OBJECT"/"MIP"/"VIP"/"INLINE"
+      snat_pool_type: "NETWORK_OBJECT"  # "NETWORK_OBJECT"/"INTERFACE"/"INLINE"/"SNAT_POOL " 
+      natpolicy.name_template: "{VAR:ticket_number}_nat_{SEQ:id:5:1:1:MAIN}"
+      natpolicy.dnat.mip_as_address_object: true  # true/false - MIP是否作为地址对象处理（默认 false）
+      securitypolicy.source_address_style: "object"  # "object"/"inline" - 控制源地址对象风格（如果未设置，使用 address_style）
+      securitypolicy.destination_address_style: "object"  # "object"/"inline" - 控制目标地址对象风格（如果未设置，使用 address_style）
+      securitypolicy.address_style: "object"  # "object"/"inline" - 通用地址对象风格（如果 source_address_style 和 destination_address_style 都未设置，则两者都使用此值）
+      securitypolicy.service_style: "object"  # "object"/"inline" - 控制服务对象风格
+      securitypolicy.reuse_address_object: true  # true/false - 是否复用已存在的地址对象（默认 false）
+      securitypolicy.reuse_service_object: true  # true/false - 是否复用已存在的服务对象（默认 false）
+      securitypolicy.enable: "true"  # "true"/"false" - 控制策略是否启用（默认 "true"）
+      securitypolicy.reuse_policy: true  # true/false - 是否复用已存在的策略（默认 false）
+      securitypolicy.empty_zone_matches_any: false  # true/false - 当zone列表为空时，是否匹配任何zone（默认 true）
+      action: "permit"  # "permit"/"deny" - 策略动作（Sangfor 使用 "pass"/"drop"）
+      
+
+  - host: "172.32.2.23"
+    username: "admin"
+    password: "!@AsiaLink@2020"
+    port: 22
+    mode: "USG"
+    telnet: false
+    # ipv4_area:
+    #   - interface: "GigabitEthernet1/0/3"
+    #     name: "CoreZone"
+    #     force: true
+    ipv4_stub:
+      - port_name: "GigabitEthernet1/0/0.1"
+      - port_name: "GigabitEthernet1/0/0.2"      
+    metadata:
+      policy_name_template: "{VAR:ticket_number}_policy_{SEQ:id:5:10000:1:MAIN}"
+      network_object_name_template: |
+        {set:network.separator="_"}
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_{if:is_source=="true"}SRC{else}DST{endif}_
+                    {if:type=="range"}{start}_{end}{else if:type=="subnet"}{cidr}{else}{ip}{endif}
+          {else}
+            {if:type=="range"}{start}_{end}
+            {else if:type=="subnet"}{cidr}{else}{ip}
+            {endif}
+          {endif}
+        {else}
+          {if:type=="range"}{start}_{end}
+          {else if:type=="subnet"}{cidr}
+          {else}{ip}
+          {endif}
+        {endif}
+      mip_name_template: |
+        {set:network.separator="_"}
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_{if:is_source=="true"}SRC{else}DST{endif}_
+                    {if:type=="range"}{start}_{end}{else if:type=="subnet"}{cidr}{else}{ip}{endif}
+          {else}
+            {if:type=="range"}{start}_{end}
+            {else if:type=="subnet"}{cidr}{else}{ip}
+            {endif}
+          {endif}
+        {else}
+          {if:type=="range"}{start}_{end}
+          {else if:type=="subnet"}{cidr}
+          {else}{ip}
+          {endif}
+        {endif}      
+      address_group_name_template: |
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_{if:is_source=="true"}SRC{else}DST{endif}_group
+          {else}
+            {if:is_source=="true"}SRC{else}DST{endif}_group
+          {endif}
+        {else}
+          {if:exist:nat_name=="true"}
+            {if:nat_name!=""}
+              {nat_name}_{if:is_source=="true"}SRC{else}DST{endif}_group
+            {else}
+              {if:is_source=="true"}SRC{else}DST{endif}_group
+            {endif}
+          {else}
+            {if:is_source=="true"}SRC{else}DST{endif}_group
+          {endif}
+        {endif}
+      service_group_name_template: |
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_SRV_GROUP
+          {else}
+            {if:service.protocol!=""}
+              {service.protocol:upper}_GROUP
+            {else}
+              SRV_GROUP
+            {endif}
+          {endif}
+        {else}
+          {if:exist:nat_name=="true"}
+            {if:nat_name!=""}
+              {nat_name}_SRV_GROUP
+            {else}
+              {if:service.protocol!=""}
+                {service.protocol:upper}_GROUP
+              {else}
+                SRV_GROUP
+              {endif}
+            {endif}
+          {else}
+            {if:service.protocol!=""}
+              {service.protocol:upper}_GROUP
+            {else}
+              SRV_GROUP
+            {endif}
+          {endif}
+        {endif}
+      service_object_name_template: |
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {protocol}{if:dst_port!=""}_{dst_port}{endif}
+          {else}
+            {protocol}{if:dst_port!=""}_{dst_port}{endif}
+          {endif}
+        {else}
+          {protocol}{if:dst_port!=""}_{dst_port}{endif}
+        {endif}
+
+      input.nat: "natpolicy.dnat"
+      output.nat: "natpolicy.snat"
+      
+      natpolicy.snat.source_style: "required"  # "none"/"optional"/"required" - 控制源地址对象生成
+      natpolicy.snat.destination_style: "required"  # "none"/"optional"/"required" - 控制目标地址对象生成
+      natpolicy.use_service_object: true  # 是否使用服务对象（布尔值，默认 false）
+      # 注意：Sangfor 不支持 interface 模式和 inline 模式的 SNAT，只支持 POOL 模式
+      
+      natpolicy.dnat.source_style: "required"  # "none"/"optional"/"required" - 控制源地址对象生成
+      natpolicy.dnat.destination_style: "required"  # "none"/"optional"/"required" - 控制目标地址对象生成
+      dnat_object_type: "NETWORK_OBJECT"  # "NETWORK_OBJECT"/"MIP"/"VIP"/"INLINE"
+      snat_pool_type: "NETWORK_OBJECT"  # "NETWORK_OBJECT"/"INTERFACE"/"INLINE"/"SNAT_POOL " 
+      
+      
+      # NAT策略命名模板（可选，用于生成NAT规则名称）
+      natpolicy.name_template: "{VAR:ticket_number}_nat_{SEQ:id:5:1:1:MAIN}"
+      natpolicy.dnat.mip_as_address_object: true  # true/false - MIP是否作为地址对象处理（默认 false）
+
+
+      # 安全策略的对象生成配置（v2 标准）
+      # 地址对象风格配置（支持分别控制源地址和目标地址）
+      securitypolicy.source_address_style: "object"  # "object"/"inline" - 控制源地址对象风格（如果未设置，使用 address_style）
+      securitypolicy.destination_address_style: "object"  # "object"/"inline" - 控制目标地址对象风格（如果未设置，使用 address_style）
+      securitypolicy.address_style: "object"  # "object"/"inline" - 通用地址对象风格（如果 source_address_style 和 destination_address_style 都未设置，则两者都使用此值）
+      # 服务对象风格配置
+      securitypolicy.service_style: "object"  # "object"/"inline" - 控制服务对象风格
+      # 对象复用配置
+      securitypolicy.reuse_address_object: true  # true/false - 是否复用已存在的地址对象（默认 false）
+      securitypolicy.reuse_service_object: true  # true/false - 是否复用已存在的服务对象（默认 false）
+      # 策略行为配置
+      securitypolicy.enable: "true"  # "true"/"false" - 控制策略是否启用（默认 "true"）
+      securitypolicy.reuse_policy: true  # true/false - 是否复用已存在的策略（默认 false）
+      securitypolicy.empty_zone_matches_any: false  # true/false - 当zone列表为空时，是否匹配任何zone（默认 true）
+      
+      # 策略动作配置
+      action: "permit"  # "permit"/"deny" - 策略动作（Sangfor 使用 "pass"/"drop"）
+      
+
+  - host: "172.32.2.64"
+    username: "admin"
+    password: "!@AsiaLink@2020"
+    port: 22
+    mode: "SecPath"
+    telnet: false
+    ipv4_area:
+      - interface: "GigabitEthernet4/0"
+        name: "Internet"
+        force: true
+    ipv4_stub:
+      - port_name: "GigabitEthernet1/0"
+      - port_name: "GigabitEthernet2/0"      
+    metadata:
+      policy_name_template: "{VAR:ticket_number}_policy_{SEQ:id:5:10000:1:MAIN}"
+      network_object_name_template: |
+        {set:network.separator="_"}
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_{if:is_source=="true"}SRC{else}DST{endif}_
+                    {if:type=="range"}{start}_{end}{else if:type=="subnet"}{cidr}{else}{ip}{endif}
+          {else}
+            {if:type=="range"}{start}_{end}
+            {else if:type=="subnet"}{cidr}{else}{ip}
+            {endif}
+          {endif}
+        {else}
+          {if:type=="range"}{start}_{end}
+          {else if:type=="subnet"}{cidr}
+          {else}{ip}
+          {endif}
+        {endif}
+      mip_name_template: |
+        {set:network.separator="_"}
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_{if:is_source=="true"}SRC{else}DST{endif}_
+                    {if:type=="range"}{start}_{end}{else if:type=="subnet"}{cidr}{else}{ip}{endif}
+          {else}
+            {if:type=="range"}{start}_{end}
+            {else if:type=="subnet"}{cidr}{else}{ip}
+            {endif}
+          {endif}
+        {else}
+          {if:type=="range"}{start}_{end}
+          {else if:type=="subnet"}{cidr}
+          {else}{ip}
+          {endif}
+        {endif}      
+      address_group_name_template: |
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_{if:is_source=="true"}SRC{else}DST{endif}_group
+          {else}
+            {if:is_source=="true"}SRC{else}DST{endif}_group
+          {endif}
+        {else}
+          {if:exist:nat_name=="true"}
+            {if:nat_name!=""}
+              {nat_name}_{if:is_source=="true"}SRC{else}DST{endif}_group
+            {else}
+              {if:is_source=="true"}SRC{else}DST{endif}_group
+            {endif}
+          {else}
+            {if:is_source=="true"}SRC{else}DST{endif}_group
+          {endif}
+        {endif}
+      service_group_name_template: |
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {policy_name}_SRV_GROUP
+          {else}
+            {if:service.protocol!=""}
+              {service.protocol:upper}_GROUP
+            {else}
+              SRV_GROUP
+            {endif}
+          {endif}
+        {else}
+          {if:exist:nat_name=="true"}
+            {if:nat_name!=""}
+              {nat_name}_SRV_GROUP
+            {else}
+              {if:service.protocol!=""}
+                {service.protocol:upper}_GROUP
+              {else}
+                SRV_GROUP
+              {endif}
+            {endif}
+          {else}
+            {if:service.protocol!=""}
+              {service.protocol:upper}_GROUP
+            {else}
+              SRV_GROUP
+            {endif}
+          {endif}
+        {endif}
+      service_object_name_template: |
+        {if:exist:policy_name=="true"}
+          {if:policy_name!=""}
+            {protocol}{if:dst_port!=""}_{dst_port}{endif}
+          {else}
+            {protocol}{if:dst_port!=""}_{dst_port}{endif}
+          {endif}
+        {else}
+          {protocol}{if:dst_port!=""}_{dst_port}{endif}
+        {endif}
+
+      input.nat: "natpolicy.dnat"
+      output.nat: "natpolicy.snat"
+      
+      natpolicy.snat.source_style: "required"  # "none"/"optional"/"required" - 控制源地址对象生成
+      natpolicy.snat.destination_style: "required"  # "none"/"optional"/"required" - 控制目标地址对象生成
+      natpolicy.use_service_object: true  # 是否使用服务对象（布尔值，默认 false）
+      # 注意：Sangfor 不支持 interface 模式和 inline 模式的 SNAT，只支持 POOL 模式
+      
+      natpolicy.dnat.source_style: "required"  # "none"/"optional"/"required" - 控制源地址对象生成
+      natpolicy.dnat.destination_style: "required"  # "none"/"optional"/"required" - 控制目标地址对象生成
+      dnat_object_type: "NETWORK_OBJECT"  # "NETWORK_OBJECT"/"MIP"/"VIP"/"INLINE"
+      snat_pool_type: "NETWORK_OBJECT"  # "NETWORK_OBJECT"/"INTERFACE"/"INLINE"/"SNAT_POOL " 
+      
+      
+      # NAT策略命名模板（可选，用于生成NAT规则名称）
+      natpolicy.name_template: "{VAR:ticket_number}_nat_{SEQ:id:5:1:1:MAIN}"
+      natpolicy.dnat.mip_as_address_object: true  # true/false - MIP是否作为地址对象处理（默认 false）
+
+
+      # 安全策略的对象生成配置（v2 标准）
+      # 地址对象风格配置（支持分别控制源地址和目标地址）
+      securitypolicy.source_address_style: "object"  # "object"/"inline" - 控制源地址对象风格（如果未设置，使用 address_style）
+      securitypolicy.destination_address_style: "object"  # "object"/"inline" - 控制目标地址对象风格（如果未设置，使用 address_style）
+      securitypolicy.address_style: "object"  # "object"/"inline" - 通用地址对象风格（如果 source_address_style 和 destination_address_style 都未设置，则两者都使用此值）
+      # 服务对象风格配置
+      securitypolicy.service_style: "object"  # "object"/"inline" - 控制服务对象风格
+      # 对象复用配置
+      securitypolicy.reuse_address_object: true  # true/false - 是否复用已存在的地址对象（默认 false）
+      securitypolicy.reuse_service_object: true  # true/false - 是否复用已存在的服务对象（默认 false）
+      # 策略行为配置
+      securitypolicy.enable: "true"  # "true"/"false" - 控制策略是否启用（默认 "true"）
+      securitypolicy.reuse_policy: true  # true/false - 是否复用已存在的策略（默认 false）
+      securitypolicy.empty_zone_matches_any: false  # true/false - 当zone列表为空时，是否匹配任何zone（默认 true）
+      
+      # 策略动作配置
+      action: "permit"  # "permit"/"deny" - 策略动作（Sangfor 使用 "pass"/"drop"）
+      
+
+
+
+nodemap:
+  name: "H3CNM"
+  force: true
+  task_id: 2
+# policy:
+  # # source: "192.168.11.11/32"
+  # source: "192.168.35.104-192.168.35.107"
+  # # destination: "132.224.11.11/32"
+  # destination: "132.224.22.1/32"
+  # ticketNumber: HQWLTK20250327001
+  # subTicket: "1"
+  # service:
+  #   protocol: "tcp"
+  #   port: "80"
+
+# policy:
+  # source: "132.224.218.249/32"
+  # destination: "132.252.45.210/32"
+  # realIp: 192.168.30.10
+  # realPort: 443
+  # ticketNumber: HQWLTK20250327001
+  # subTicket: "1"
+  # service:
+  #   protocol: "tcp"
+  #   port: "443"
+  # area: DCN
+  # metadata:
+  #   system_name: BSS
+  #   app_name: TongyiAPP
+  #   server_name: WEBUB
+  #   IsUserDefineService: "true"
+
+
+# policy:
+  # source: "132.252.43.0/25"
+  # destination: "132.224.7.1/32"
+  # ticketNumber: HQWLTK20250327001
+  # subTicket: "1"
+  # service:
+  #   protocol: "tcp"
+  #   port: "8443"
+  # metadata:
+  #   system_name: BSS
+  #   app_name: TongyiAPP
+  #   server_name: WEBUB
+  #   IsUserDefineService: "true"
+  #   purpose: "MonitorAccess"
+  #   direction: "Inbound"
+# policy:
+#   source: "132.254.24.53,132.252.35.26/31,132.252.136.58/31,132.252.136.93-132.252.136.98,132.252.136.135-132.252.136.137"
+#   destination: "132.252.128.223-132.252.128.225,132.252.128.227-132.252.128.228,132.252.128.231-132.252.128.232"
+#   ticketNumber: HQWLTK20250327001
+#   area: "QXDCN"
+#   subTicket: "1"
+#   # inputNode: "NJ-GL4F-G16U5-FW.RP.M9010"
+#   service:
+#     protocol: "tcp"
+#     port: "16492"
+#   metadata:
+#     system_name: BSS
+#     app_name: TongyiAPP
+#     server_name: WEBUB
+#     IsUserDefineService: "true"
+#     purpose: "MonitorAccess"
+#     direction: "Inbound"
+#  rule 3765 name GL4F-policy3765
+#   action pass
+#   source-zone QXMSS
+#   source-zone QXDCN
+#   destination-zone QXBSS
+#   source-ip-host 132.254.24.53,132.252.35.26/31,132.252.136.58/31,132.252.136.93-132.252.136.98,132.252.136.135-132.252.136.137 
+#   destination-ip-range 132.252.128.2231-32.252.128.225,132.252.128.227-132.252.128.228,132.252.128.231-132.252.128.232
+#   destination-ip-range 132.252.128.227 132.252.128.228 
+#   destination-ip-range 132.252.128.231 132.252.128.232 
+#   service-port tcp destination eq 16491
+
+# policy:
+#   source: "10.128.90.2,10.130.153.124"
+#   destination: "132.254.168.15-132.254.168.20"
+#   ticketNumber: "NETACC_20250327_558087"
+#   area: "QXDCN"
+#   service:
+#     protocol: "tcp"
+#     port: "28084,32083,32084"
+  # metadata:
+  #   system_name: "YiZ303"
+  #   app_name: "policy"
+  #   server_name: "1073"
+  #   IsUserDefineService: "true"
+  #   purpose: "NETACC"
+  #   direction: "Outbound"
+  #   source_zone: "QXDCN"
+  #   destination_zone: "QXTEST"
+
+#  rule name YiZ303_policy_1073
+#   description NETACC_20250327_558087
+#   source-zone QXDCN
+#   destination-zone QXTEST
+#   source-address 10.128.90.2 0.0.0.0
+#   source-address 10.130.153.124 0.0.0.0
+#   destination-address range 132.254.168.15 132.254.168.19
+#   service protocol tcp destination-port 28084 
+#   service protocol tcp destination-port 32083 
+#   service protocol tcp destination-port 32084 
+
+
+# policy:
+#   source: 0.0.0.0/0
+#   destination: 172.32.100.25/32
+#   service:
+#     protocol: "tcp"
+#     port: "8443"
+#   realIp: 182.168.112.25
+#   realPort: 443
+#   ticketNumber: NAT_112.25
+
+
+
+# policy:
+#   source: 172.25.101.0/24
+#   destination: 172.25.104.25/32
+#   service:
+#     protocol: "tcp"
+#     port: "8443"
+#   ticketNumber: NAT_112.25
+
+# policy:
+#   destination: 0.0.0.0/0
+#   source: 182.168.112.25/32
+#   service:
+#     protocol: "tcp"
+#     port: "8443"
+#   snat: 1.1.1.1
+#   ticketNumber: NAT_112.25
+
+# policy:
+#   source: 192.168.112.254/32,192.168.112.111-192.168.112.200
+#   destination: 172.32.2.1-172.32.2.32
+#   service:
+#     protocol: "tcp"
+#     port: "8443"
+#   ticketNumber: POLICY1
+
+# policy:
+#   source: 172.25.101.0/24
+#   destination: 172.25.104.25/32
+#   service:
+#     protocol: "tcp"
+#     port: "8443"
+#   ticketNumber: NAT_112.25
+
+# secpath snat
+# policy:
+#   destination: 172.26.100.0/24
+#   source: 172.22.1.17/32
+#   service:
+#     protocol: "tcp"
+#     port: "80,8080"
+#   snat: 172.26.120.1
+#   ticketNumber: POLICY1
+
+# secpath dnat
+policy:
+  destination: 172.26.110.1/24
+  source: 11.11.11.11/32,12.12.12.12-12.12.12.100
+  service:
+    protocol: "tcp"
+    port: "123"
+  realIp: 172.22.1.18
+  realPort: 8888
+  ticketNumber: POLICY1

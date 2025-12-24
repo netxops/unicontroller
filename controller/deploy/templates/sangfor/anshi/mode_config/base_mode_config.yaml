@@ -1,0 +1,24 @@
+prompts:
+  - "\\S+[^\n]+(>|#)$"
+err_prompts:
+  - "^输入的命令不完整"
+  - "^----- 输入参数错误"
+  - "% Too many parameters"
+  - "% Parameter error"
+  - "% Ambiguous command"
+  - "% Such file"
+  - "% Unrecognized command"
+  - "[\\r\\n] % \\w"
+  - "\\s+Error: "
+  - "Failed to move"
+pager_prompts:
+  - "^\\s*-{2}More-{2}$"
+pager_command: " "
+init_commands:
+  - "terminal length 0"
+save_commands:
+  - "save-configuration"
+first_chain:
+  - "do show running-config"
+last_chain:
+  - "do show running-config"

@@ -1,0 +1,8 @@
+name: snmpArpProcess
+indexPositions: [2,3,4,5]
+classifierPositions: [0]
+classifierToNameMap:
+  "2": "ip_mac"
+classifierProcessors:
+  "2": "MacPDU"
+inputField: snmpArp

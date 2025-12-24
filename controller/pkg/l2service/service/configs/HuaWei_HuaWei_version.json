@@ -1,0 +1,60 @@
+{
+    "vendor": "Huawei",
+    "platform": "VRP",
+    "configs": {
+      "version": {
+        "collectionMethod": "SSH",
+        "command": "display version",
+        "parser": "regex",
+        "regex": "VRP \\(R\\) software, Version ([\\d.]+).*?Huawei ([\\w-]+) .*?uptime is ([\\d:]+)",
+        "fields": ["version", "model", "uptime"],
+        "versionRegex": "(?P<major>\\d+)\\.(?P<minor>\\d+)\\((?P<build>[\\w]+)\\)",
+        "timeout": 30,
+        "retries": 2
+      },
+      "ports": {
+        "collectionMethod": "SSH",
+        "command": "display interface brief",
+        "parser": "regex",
+        "regex": "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*$",
+        "fields": ["interface", "physical", "protocol", "inUti", "outUti", "inErrors"],
+        "timeout": 60,
+        "retries": 2,
+        "filters": [
+          {
+            "field": "physical",
+            "regex": "^(up|down)$"
+          }
+        ],
+        "dataTransformers": {
+          "inUti": "parsePercentage",
+          "outUti": "parsePercentage"
+        }
+      },
+      "serial": {
+        "collectionMethod": "SSH",
+        "command": "display device manufacture-info",
+        "parser": "regex",
+        "regex": "BarCode=([\\w]+)",
+        "fields": ["serial"],
+        "timeout": 30,
+        "retries": 2
+      }
+    },
+    "snmpConfig": {
+      "version": "v2c",
+      "community": "public",
+      "port": 161,
+      "timeout": 5,
+      "retries": 3
+    },
+    "sshConfig": {
+      "port": 22,
+      "timeout": 10,
+      "retries": 3
+    },
+    "postProcessing": {
+      "version": "extractOSVersion",
+      "ports": "normalizeInterfaceNames"
+    }
+  }

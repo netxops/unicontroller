@@ -1,0 +1,9 @@
+name: snmpLldp1Process
+indexPositions: [1,2]
+classifierPositions: [0]
+classifierToNameMap:
+  "7": "peer_interface"
+  "9": "name"
+appendProcessors:
+  - LLdpIndexProcess
+inputField: snmpLldp1

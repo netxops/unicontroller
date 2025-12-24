@@ -1,0 +1,25 @@
+package v4
+
+import (
+	"github.com/netxops/keys"
+	v2 "github.com/influxdata/telegraf/controller/pkg/nodemap/node/device/firewall/common/v2"
+)
+
+// TemplatesV2Adapter 将 v2 的 TemplatesV2 适配为 v4 的 TemplatesV4
+// Deprecated: 请使用 Starlark 模板系统。使用 NewStarlarkTemplatesAdapter 或 NewStarlarkTemplatesAdapterFromNode 创建模板适配器。
+type TemplatesV2Adapter struct {
+	v2Templates v2.TemplatesV2
+}
+
+// NewTemplatesV2Adapter 创建适配器
+// Deprecated: 请使用 Starlark 模板系统。使用 NewStarlarkTemplatesAdapter 或 NewStarlarkTemplatesAdapterFromNode 创建模板适配器。
+func NewTemplatesV2Adapter(v2Templates v2.TemplatesV2) TemplatesV4 {
+	return &TemplatesV2Adapter{
+		v2Templates: v2Templates,
+	}
+}
+
+// GetLayout 实现 TemplatesV4 接口
+func (a *TemplatesV2Adapter) GetLayout(key keys.Keys) string {
+	return a.v2Templates.GetLayout(key)
+}

@@ -1,0 +1,364 @@
+# global_naming:
+#   policy_template: "{PREFIX}{SITE}_{PURPOSE}_{APP}_{SEQ}{SUFFIX}"
+#   object_template: "{TYPE}_{CONTENT}_{SEQ}"
+#   acl_template: "ACL_{DIRECTION}_{APP}_{SEQ}"
+#   nat_template: "NAT_{TYPE}_{APP}_{SEQ}"
+#   defaults:
+#     prefix: ""
+#     suffix: ""
+#     site: "DEFAULT"
+#     environment: "PROD"
+
+
+# devices:
+#   - host: "172.32.1.224"
+#     username: "sshadmin"
+#     password: "admin@123"
+#     port: 22
+#     mode: "Huawei"
+#     telnet: false
+#     ipv4_area:
+#       - interface: "Eth-Trunk2.10"
+#         name: "QXDCN"
+#         node_name: "USG6000V2"
+#         force: true
+#     ipv4_stub:
+#       - port_name: "Eth-Trunk2.11"
+#       - port_name: "Eth-Trunk2.12"
+#       - port_name: "Eth-Trunk2.13"
+#       - port_name: "Eth-Trunk2.14"
+#       - port_name: "Eth-Trunk2.15"
+#       - port_name: "Eth-Trunk2.16"
+#       - port_name: "Eth-Trunk2.17"
+#       - port_name: "Eth-Trunk2.18"
+#       - port_name: "Eth-Trunk2.19"
+#       - port_name: "Eth-Trunk2.20"
+#       - port_name: "Eth-Trunk2.21"
+#       - port_name: "Eth-Trunk2.22"
+#     naming:
+#       policy_name_template: "JiS_policy_{SEQ:ID:5:10000:1:MAIN}"
+#       object_template: "{SITE}_{TYPE}_{CONTENT}_{SEQ}"
+#     metadata:
+#       type: "object"
+#       policy_name_template: "JiS_policy_{SEQ:ID:5:10000:1:MAIN}"
+#       object_template: "{SITE}_{TYPE}_{CONTENT}_{SEQ}"
+#       input.nat: "natpolicy.dnat"   # Input NAT policy(nat.static.inbound, nat.static.inout)
+#       output.nat: "natpolicy.snat"  # Output NAT policy(nat.static.outbound, nat.dynamic.outbound)
+#       # nat.enableAclGeneration: "true"
+#       natpolicy.snat.object_style: "true"
+#       natpolicy.snat.source_object: "false"
+#       natpolicy.snat.destination_object: "false"
+#       natpolicy.snat.service_object: "true"
+#       natpolicy.dnat.object_style: "true"
+#       natpolicy.dnat.source_object: "false"
+#       natpolicy.dnat.destination_object: "false"
+#       natpolicy.dnat.service_object: "true"
+#       securitypolicy.object_style: "true"
+#       securitypolicy.source_object: "false"
+#       securitypolicy.destination_object: "false"
+#       securitypolicy.service_object: "true"
+      
+#   - host: "172.32.1.225"
+#     username: "admin"
+#     password: "!@AsiaLink@2020"
+#     port: 22
+#     mode: "SecPath"
+#     telnet: false
+#     ipv4_area:
+#       - interface: "Eth-Trunk2.10"
+#         name: "QXDCN"
+#         node_name: "USG6000V2"
+#         force: true
+#     metadata:
+#       base_acl_number: "3200"
+#       input.nat: "natpolicy.dnat"   # Input NAT policy(nat.static.inbound, nat.static.inout)
+#       output.nat: "natpolicy.snat"  # Output NAT policy(nat.static.outbound, nat.dynamic.outbound)
+#       # nat.enableAclGeneration: "true"
+#       policy_name_template: "JiS_policy_{SEQ:ID:5:10000:1:MAIN}"
+#       natpolicy.snat.object_style: "true"
+#       natpolicy.snat.source_object: "false"
+#       natpolicy.snat.destination_object: "false"
+#       natpolicy.snat.service_object: "true"
+#       natpolicy.dnat.object_style: "true"
+#       natpolicy.dnat.source_object: "false"
+#       natpolicy.dnat.destination_object: "false"
+#       natpolicy.dnat.service_object: "true"
+#       securitypolicy.object_style: "true"
+#       securitypolicy.source_object: "false"
+#       securitypolicy.destination_object: "false"
+#       securitypolicy.service_object: "true"
+      
+
+
+
+devices:
+  - file_path: "2025-05-30-08.47.23-132.252.148.65-NJ-GL4F-G16U5-FW.RP.M9010.txt"
+    mode: "SecPath"
+    ipv4_area:
+      - interface: "Route-Aggregation12.1051"
+        name: "QXDCN"
+        node_name: "NJ-GL4F-G16U5-FW.RP.M9010"
+        force: true
+    ipv4_stub:
+      - port_name: "Route-Aggregation12.1052"
+      - port_name: "Route-Aggregation12.1058"
+      - port_name: "Route-Aggregation12.1054"
+      - port_name: "Route-Aggregation12.1061"
+      - port_name: "Route-Aggregation12.1053"
+      - port_name: "Route-Aggregation12.1059"
+      - port_name: "Route-Aggregation12.1055"
+      - port_name: "Route-Aggregation12.1062"
+      - port_name: "Route-Aggregation12.1057"
+      - port_name: "Route-Aggregation12.1060"
+      - port_name: "Route-Aggregation12.1063"
+      - port_name: "Route-Aggregation12.1056"
+  - file_path: "2025-05-30-08.49.06-132.252.20.85-NJ-JiS-E16&17-FW-3.DMZ.F5000.txt"
+    mode: "SecPath"
+    ipv4_area:
+      - interface: "Reth5"
+        name: "163"
+        node_name: "NJ-JiS-E16&17-FW-3.DMZ.F5000"
+        force: true
+      - interface: "Reth4"
+        name: "QXDCN"
+        node_name: "NJ-JiS-E16&17-FW-3.DMZ.F5000"
+        force: true
+    ipv4_stub:
+      - port_name: "Reth3"
+  - file_path: "2025-05-30-08.49.40-132.239.180.12-CZ-LY-FW-1.BD.F5000.txt"
+    mode: "SecPath"
+    ipv4_area:
+      - interface: "Route-Aggregation14.100"
+        name: "QXDCN"
+        node_name: "CZ-LY-FW-1.BD.F5000"
+        force: true
+    ipv4_stub:
+      - port_name: "Route-Aggregation14.103"
+      - port_name: "Route-Aggregation14.101"
+      - port_name: "Route-Aggregation14.102"
+  - file_path: "2025-05-30-08.51.44-132.254.194.188-H3C-F5K-DMZ-仪征403.txt"
+    mode: "SecPath"
+    ipv4_area:
+      - interface: "Route-Aggregation2.1203"
+        name: "163"
+        node_name: "CTY-YZ-JS-YZ-MTDD-01D04F403-J01_12-02U23-H3C-F5000-NFW"
+        force: true
+    ipv4_stub:
+      - port_name: "Route-Aggregation2.1204"
+  - file_path: "2025-05-30-08.48.03-132.252.20.11-NJ-JiS-E24-FW-1.RP.Edu8000E.txt"
+    mode: "Huawei"
+    ipv4_area:
+      - interface: "Eth-Trunk2.10"
+        name: "QXDCN"
+        node_name: "NJ-JiS-E24-FW-1.RP.Edu8000E"
+        force: true
+    ipv4_stub:
+      - port_name: "Eth-Trunk2.12"
+      - port_name: "Eth-Trunk2.16"
+      - port_name: "Eth-Trunk2.19"
+      - port_name: "Eth-Trunk2.15"
+      - port_name: "Eth-Trunk2.20"
+      - port_name: "Eth-Trunk2.22"
+      - port_name: "Eth-Trunk2.11"
+      - port_name: "Eth-Trunk2.14"
+      - port_name: "Eth-Trunk2.17"
+      - port_name: "Eth-Trunk2.18"
+      - port_name: "Eth-Trunk2.13"
+      - port_name: "Eth-Trunk2.21"
+
+  - file_path: "2025-05-30-08.48.37-132.252.20.83-NJ-JiS-E19-FW-1.DMZ.DP1000.txt"
+    mode: "Dptech"
+    ipv4_area:
+      - interface: "bond11"
+        name: "DCN"
+        node_name: "NJ-JiS-E19-FW-1.DMZ.DP1000"
+        force: true
+    ipv4_stub:
+      - port_name: "tunnel_ssl0"
+      - port_name: "meth0_9"
+
+  - file_path: "2025-05-30-08.50.14-132.254.194.222-DP1000-容灾备份-仪征403.txt"
+    mode: "Dptech"
+    ipv4_area:
+      - interface: "vlan-if1208"
+        name: "Untrust"
+        node_name: "CTY-YZ-JS-YZ-MTDD-01D04F403-A13-06U19-DP-FW1000-NFW"
+        force: true
+    ipv4_stub:
+      - port_name: "vlan-if1209"
+
+  - file_path: "2025-05-30-08.50.44-132.254.194.147-DP1000-虚机资源池-仪征403.txt"
+    mode: "Dptech"
+    ipv4_area:
+      - interface: "vlan-if4001"
+        name: "Untrust"
+        node_name: "CTY-YZ-JS-YZ-MTDD-01D04F403-J02_06-07U16-DP-FW1000-NFW"
+        force: true
+    ipv4_stub:
+      - port_name: "vlan-if4002"
+
+  - file_path: "2025-05-30-08.51.12-132.254.160.136-C8U31-FW-1.DCN.Edu1000E-仪征303.txt"
+    mode: "Huawei"
+    ipv4_area:
+      - interface: "Eth-Trunk21.101"
+        name: "QXDCN"
+        node_name: "YZ-YiZ-C8U31-FW-1.DCN.Edu1000E"
+        force: true
+    ipv4_stub:
+      - port_name: "Eth-Trunk21.102"
+      - port_name: "Eth-Trunk21.104"
+      - port_name: "Eth-Trunk21.103"
+      - port_name: "Eth-Trunk21.105"
+
+
+
+  # - host: "192.168.100.2"
+  #   username: "admin"
+  #   password: "!@AsiaLink@2020"
+  #   port: 22
+  #   mode: "Dptech"
+  #   telnet: false
+  #   ipv4_stub:
+  #     - port_name: "bond12"
+  #   ipv4_area:
+  #     - interface: "bond11"
+  #       name: "DCN"
+  #   snat:
+  #     - from: DMZ
+  #       to: DCN
+  #       pool: interface
+
+  # - host: "172.32.1.225"
+  #   username: "admin"
+  #   password: "!@AsiaLink@2020"
+  #   port: 22
+  #   mode: "SecPath"
+  #   telnet: false
+  #   ipv4_area:
+  #     - interface: "Reth5"
+  #       name: "163"
+  #   ipv4_stub:
+  #     - port_name: "Reth3"
+  #     - port_name: "Reth4"
+  #   snat:
+  #     - from: DMZ
+  #       to: 163
+  #       pool: 58.217.205.1-58.217.205.4
+  #     - from: DMZ
+  #       to: ZhuanXian
+  #       pool: 192.168.0.1-192.168.0.1
+  #     - from: ZhuanXian
+  #       to: DMZ
+  #       pool: 192.168.1.245-192.168.1.254
+  #     - from: 163
+  #       to: DMZ
+  #       pool: 192.168.1.245-192.168.1.254
+
+  # - host: "172.32.1.7"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.2"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.10"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.11"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.12"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.25"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.26"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "IOS"
+  #   telnet: false
+  # - host: "172.32.1.8"
+  #   username: "admin"
+  #   password: "admin@123"
+  #   authPass: "admin@123"
+  #   port: 22
+  #   mode: "FortiGate"
+  #   telnet: false
+  #   token: "r7Hnnfgym6NqNQmxGHmrxnnf0d1Qdb"
+
+
+nodemap:
+  name: "H3CNM"
+  force: false
+  task_id: 1
+config_file_path: "."
+policy:
+  # # source: "192.168.11.11/32"
+  # source: "192.168.35.104-192.168.35.107"
+  # # destination: "132.224.11.11/32"
+  # destination: "132.224.22.1/32"
+  # ticketNumber: HQWLTK20250327001
+  # subTicket: "1"
+  # service:
+  #   protocol: "tcp"
+  #   port: "80"
+
+# policy:
+  # source: "132.224.218.249/32"
+  # destination: "132.252.45.210/32"
+  # realIp: 192.168.30.10
+  # realPort: 443
+  # ticketNumber: HQWLTK20250327001
+  # subTicket: "1"
+  # service:
+  #   protocol: "tcp"
+  #   port: "443"
+  # area: DCN
+  # metadata:
+  #   system_name: BSS
+  #   app_name: TongyiAPP
+  #   server_name: WEBUB
+  #   IsUserDefineService: "true"
+
+
+# policy:
+  source: "132.252.43.0/25"
+  destination: "132.224.7.1/32"
+  ticketNumber: HQWLTK20250327001
+  subTicket: "1"
+  service:
+    protocol: "tcp"
+    port: "8443"
+  metadata:
+    system_name: BSS
+    app_name: TongyiAPP
+    server_name: WEBUB
+    IsUserDefineService: "true"
+    purpose: "MonitorAccess"
+    direction: "Inbound"

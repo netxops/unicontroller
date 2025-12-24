@@ -1,0 +1,28 @@
+name: telnetLldpTextFSM
+template: |
+  Value Required,Filldown outgoing ([\S ]+)
+  Value NEIGHBOR_INDEX (\d+)
+  Value Required peer_interface (\S+)
+  Value name (.+?)
+  Value MANAGEMENT_IP ([\d\.]+)
+  Value Required CHASSIS_ID ([0-9a-fA-F]{4}\.[0-9a-fA-F]{4}\.[0-9a-fA-F]{4})
+  Value SYSTEM_DESC (.+?)
+
+  Start
+    ^LLDP neighbor-information of port \[${outgoing}\]
+    ^\s+Neighbor index\s+:\s+${NEIGHBOR_INDEX}
+    ^\s+Chassis ID\s+:\s+${CHASSIS_ID}
+    ^\s+System name\s+:\s+${name}$$
+    ^\s+System description\s+:\s+${SYSTEM_DESC}$$
+    ^\s+Management address\s+:\s+${MANAGEMENT_IP}
+    ^\s+Port ID\s+:\s+${peer_interface}$$ -> Record
+
+inputField: telnetLldp#value
+rowFields:
+  - outgoing
+  - NEIGHBOR_INDEX
+  - peer_interface
+  - name
+  - MANAGEMENT_IP
+  - CHASSIS_ID
+  - SYSTEM_DESC

@@ -1,0 +1,57 @@
+{
+  "package": "agent",
+  "version": "{{.Version}}",
+  "description": "UniOps Agent for system management and monitoring",
+  "binary": {
+    "name": "agent",
+    "path": "agent"
+  },
+  "startup": {
+    "method": "systemd",
+    "service_name": "agent",
+    "args": [],
+    "environment": {
+      "LOG_LEVEL": "info"
+    }
+  },
+  "restart_on_config_change": true,
+  "config": {
+    "format": "yaml",
+    "main_file": "agent.yaml",
+    "directory": "/etc/agent",
+    "templates": [
+      {
+        "source": "agent.yaml.template",
+        "destination": "agent.yaml"
+      }
+    ]
+  },
+  "unit_file": {
+    "source": "agent.service.template",
+    "destination": "agent.service"
+  },
+  "dependencies": [],
+  "post_install_script": "",
+  "pre_uninstall_script": "",
+  "logging": {
+    "directory": "/var/log/agent"
+  },
+  "healthcheck": {
+    "http_path": "/health",
+    "interval": "30s",
+    "timeout": "5s"
+  },
+  "build_info": {
+    "time": "{{.BuildTime}}",
+    "git_commit": "{{.GitCommit}}"
+  },
+  "agent_code_required": true,
+  "agent_code_source": "platform",
+  "notes": {
+    "config_format": "YAML (not TOML)",
+    "agent_code": "Must be provided by operations platform during deployment",
+    "workspace": "Auto-selected based on user permissions if not specified",
+    "log_directory": "Auto-selected based on user permissions if not specified"
+  }
+}
+

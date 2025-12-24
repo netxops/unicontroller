@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>策略测试报告</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        h1 { color: #333; text-align: center; }
+        .summary { background: #fff; padding: 20px; border-radius: 5px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .passed { color: #28a745; font-weight: bold; }
+        .failed { color: #dc3545; font-weight: bold; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #4CAF50; color: white; position: sticky; top: 0; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f5f5f5; }
+        .error { color: #dc3545; font-size: 0.9em; }
+        .policy-cli { 
+            background-color: #f8f9fa; 
+            border: 1px solid #dee2e6; 
+            border-radius: 4px; 
+            padding: 10px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 0.85em; 
+            white-space: pre-wrap; 
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .matched-policy { 
+            margin-top: 10px; 
+            padding: 8px; 
+            background-color: #e7f3ff; 
+            border-left: 3px solid #2196F3; 
+        }
+        .matched-policy-name { font-weight: bold; color: #1976D2; }
+        .matched-policy-action { color: #666; font-size: 0.9em; }
+        .test-case-info { 
+            background-color: #fff3cd; 
+            padding: 8px; 
+            border-radius: 4px; 
+            margin: 5px 0; 
+        }
+        .scenario-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .scenario-contained { background-color: #d4edda; color: #155724; }
+        .scenario-exact { background-color: #cce5ff; color: #004085; }
+        .scenario-partial { background-color: #fff3cd; color: #856404; }
+        .scenario-new { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>策略自动化测试报告</h1>
+    <div class="summary">
+        <h2>汇总信息</h2>
+        <p>总测试用例数: <strong>18</strong></p>
+    </div>
+    <div class="summary">
+        <h2>按测试组统计</h2>
+        <table>
+            <tr>
+                <th>测试组</th>
+                <th>总数</th>
+            </tr>
+            <tr>
+                <td>group1</td>
+                <td>18</td>
+            </tr>
+        </table>
+    </div>
+    <div class="summary">
+        <h2>按场景统计</h2>
+        <table>
+            <tr>
+                <th>场景</th>
+                <th>总数</th>
+            </tr>
+            <tr>
+                <td>子集</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>精确匹配</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>策略复用</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>新建策略</td>
+                <td>6</td>
+            </tr>
+        </table>
+    </div>
+    <div class="summary">
+        <h2>详细测试结果</h2>
+        <table>
+            <tr>
+                <th>节点名称</th>
+                <th>测试组</th>
+                <th>场景</th>
+                <th>测试用例</th>
+                <th>测试数据</th>
+                <th>策略CLI</th>
+                <th>匹配策略数</th>
+                <th>匹配的策略详情</th>
+                <th>生成策略数</th>
+                <th>生成的策略详情</th>
+            </tr>
+            <tr>
+                <td>NJ-GL4F-G16U5-FW.RP.M9010</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">子集</span></td>
+                <td>#1</td>
+                <td>源: 132.252.138.127/32<br>目: 132.254.112.244/32<br>服务: tcp:8111</td>
+                <td><div class="policy-cli">rule 4391 name GL4F-policy4391<br>  description NETACC_20250529_614045<br>  action pass<br>  source-zone QXGUANKONG<br>  destination-zone QXDCN<br>  source-ip-host 132.252.138.127 <br>  destination-ip-host 132.254.112.244 <br>  service-port tcp destination eq 8111<br></div></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy">
+                        <div class="matched-policy-name">策略名称: GL4F-policy4391</div>
+                        <div class="matched-policy-action">动作: PERMIT</div>
+                        <div class="policy-cli" style="margin-top: 5px;"> rule 4391 name GL4F-policy4391<br>  description NETACC_20250529_614045<br>  action pass<br>  source-zone QXGUANKONG<br>  destination-zone QXDCN<br>  source-ip-host 132.252.138.127 <br>  destination-ip-host 132.254.112.244 <br>  service-port tcp destination eq 8111</div>
+                    </div></td>
+                <td>0</td>
+                <td><em>无生成策略</em></td>
+            </tr>
+            <tr>
+                <td>NJ-GL4F-G16U5-FW.RP.M9010</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">精确匹配</span></td>
+                <td>#2</td>
+                <td>源: 132.252.138.127/32<br>目: 132.254.112.244/32<br>服务: tcp:8111</td>
+                <td><div class="policy-cli">rule 4391 name GL4F-policy4391<br>  description NETACC_20250529_614045<br>  action pass<br>  source-zone QXGUANKONG<br>  destination-zone QXDCN<br>  source-ip-host 132.252.138.127 <br>  destination-ip-host 132.254.112.244 <br>  service-port tcp destination eq 8111<br></div></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy">
+                        <div class="matched-policy-name">策略名称: GL4F-policy4391</div>
+                        <div class="matched-policy-action">动作: PERMIT</div>
+                        <div class="policy-cli" style="margin-top: 5px;"> rule 4391 name GL4F-policy4391<br>  description NETACC_20250529_614045<br>  action pass<br>  source-zone QXGUANKONG<br>  destination-zone QXDCN<br>  source-ip-host 132.252.138.127 <br>  destination-ip-host 132.254.112.244 <br>  service-port tcp destination eq 8111</div>
+                    </div></td>
+                <td>0</td>
+                <td><em>无生成策略</em></td>
+            </tr>
+            <tr>
+                <td>NJ-GL4F-G16U5-FW.RP.M9010</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">策略复用</span></td>
+                <td>#3</td>
+                <td>源: 132.252.138.127/32<br>目: 132.254.112.244/32<br>服务: tcp:8822</td>
+                <td><div class="policy-cli">rule 4391 name GL4F-policy4391<br>  description NETACC_20250529_614045<br>  action pass<br>  source-zone QXGUANKONG<br>  destination-zone QXDCN<br>  source-ip-host 132.252.138.127 <br>  destination-ip-host 132.254.112.244 <br>  service-port tcp destination eq 8111<br></div></td>
+                <td>0</td>
+                <td><em>无匹配策略</em></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy" style="background-color: #d1ecf1; border-left-color: #0c5460;">
+                        <div class="matched-policy-name">策略名称: GL4F-policy4391</div>
+                        <div class="matched-policy-action">动作: IMPLICIT_DENY</div>
+                        <div class="policy-cli" style="margin-top: 5px;">security-policy ip<br> rule name GL4F-policy4391<br>  service-port tcp destination eq 8822</div>
+                    </div></td>
+            </tr>
+            <tr>
+                <td>NJ-GL4F-G16U5-FW.RP.M9010</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">新建策略</span></td>
+                <td>#4</td>
+                <td>源: 132.252.138.126/32,132.252.138.120-132.252.138.123,132.252.138.64/26<br>目: 132.254.112.244/32<br>服务: tcp:8822,10000-10005</td>
+                <td><div class="policy-cli">rule 4391 name GL4F-policy4391<br>  description NETACC_20250529_614045<br>  action pass<br>  source-zone QXGUANKONG<br>  destination-zone QXDCN<br>  source-ip-host 132.252.138.127 <br>  destination-ip-host 132.254.112.244 <br>  service-port tcp destination eq 8111<br></div></td>
+                <td>0</td>
+                <td><em>无匹配策略</em></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy" style="background-color: #d1ecf1; border-left-color: #0c5460;">
+                        <div class="matched-policy-name">策略名称: GL4F-policy4404</div>
+                        <div class="matched-policy-action">动作: IMPLICIT_DENY</div>
+                        <div class="policy-cli" style="margin-top: 5px;">security-policy ip<br> rule 4404 name GL4F-policy4404<br>  source-zone QXGUANKONG<br>  destination-zone QXDCN<br>  source-ip-subnet 132.252.138.64 255.255.255.192<br>  destination-ip-host 132.254.112.244<br>  service-port tcp destination eq 8822<br>  service-port tcp destination range 10000 10005<br>  action pass</div>
+                    </div></td>
+            </tr>
+            <tr>
+                <td>NJ-JiS-E24-FW-1.RP.Edu8000E</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">子集</span></td>
+                <td>#1</td>
+                <td>源: 132.254.22.245<br>目: 132.252.35.125<br>服务: tcp:9009</td>
+                <td><div class="policy-cli">rule name JiS_policy_2904<br>  description NETACC_20250527_611950<br>  source-zone QXDCN<br>  destination-zone QXMSS<br>  source-address range 132.254.22.245 132.254.22.246<br>  destination-address range 132.252.35.125 132.252.35.126<br>  service protocol tcp destination-port 9009 <br>  action permit<br></div></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy">
+                        <div class="matched-policy-name">策略名称: JiS_policy_2904</div>
+                        <div class="matched-policy-action">动作: PERMIT</div>
+                        <div class="policy-cli" style="margin-top: 5px;">rule name JiS_policy_2904<br>  description NETACC_20250527_611950<br>  source-zone QXDCN<br>  destination-zone QXMSS<br>  source-address range 132.254.22.245 132.254.22.246<br>  destination-address range 132.252.35.125 132.252.35.126<br>  service protocol tcp destination-port 9009 <br>  action permit</div>
+                    </div></td>
+                <td>0</td>
+                <td><em>无生成策略</em></td>
+            </tr>
+            <tr>
+                <td>NJ-JiS-E24-FW-1.RP.Edu8000E</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">精确匹配</span></td>
+                <td>#2</td>
+                <td>源: 132.254.22.245-132.254.22.246<br>目: 132.252.35.125-132.252.35.126<br>服务: tcp:9009</td>
+                <td><div class="policy-cli">rule name JiS_policy_2904<br>  description NETACC_20250527_611950<br>  source-zone QXDCN<br>  destination-zone QXMSS<br>  source-address range 132.254.22.245 132.254.22.246<br>  destination-address range 132.252.35.125 132.252.35.126<br>  service protocol tcp destination-port 9009 <br>  action permit<br></div></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy">
+                        <div class="matched-policy-name">策略名称: JiS_policy_2904</div>
+                        <div class="matched-policy-action">动作: PERMIT</div>
+                        <div class="policy-cli" style="margin-top: 5px;">rule name JiS_policy_2904<br>  description NETACC_20250527_611950<br>  source-zone QXDCN<br>  destination-zone QXMSS<br>  source-address range 132.254.22.245 132.254.22.246<br>  destination-address range 132.252.35.125 132.252.35.126<br>  service protocol tcp destination-port 9009 <br>  action permit</div>
+                    </div></td>
+                <td>0</td>
+                <td><em>无生成策略</em></td>
+            </tr>
+            <tr>
+                <td>NJ-JiS-E24-FW-1.RP.Edu8000E</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">策略复用</span></td>
+                <td>#3</td>
+                <td>源: 132.254.22.245-132.254.22.246<br>目: 132.252.35.125-132.252.35.126<br>服务: tcp:7788</td>
+                <td><div class="policy-cli">rule name JiS_policy_2904<br>  description NETACC_20250527_611950<br>  source-zone QXDCN<br>  destination-zone QXMSS<br>  source-address range 132.254.22.245 132.254.22.246<br>  destination-address range 132.252.35.125 132.252.35.126<br>  service protocol tcp destination-port 9009 <br>  action permit<br></div></td>
+                <td>0</td>
+                <td><em>无匹配策略</em></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy" style="background-color: #d1ecf1; border-left-color: #0c5460;">
+                        <div class="matched-policy-name">策略名称: JiS_policy_2904</div>
+                        <div class="matched-policy-action">动作: IMPLICIT_DENY</div>
+                        <div class="policy-cli" style="margin-top: 5px;">security-policy<br> rule name JiS_policy_2904<br>  service protocol tcp destination-port 7788<br><br>#</div>
+                    </div></td>
+            </tr>
+            <tr>
+                <td>NJ-JiS-E24-FW-1.RP.Edu8000E</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">新建策略</span></td>
+                <td>#4</td>
+                <td>源: 132.254.22.241<br>目: 132.252.35.125-132.252.35.126<br>服务: tcp:7799</td>
+                <td><div class="policy-cli">rule name JiS_policy_2904<br>  description NETACC_20250527_611950<br>  source-zone QXDCN<br>  destination-zone QXMSS<br>  source-address range 132.254.22.245 132.254.22.246<br>  destination-address range 132.252.35.125 132.252.35.126<br>  service protocol tcp destination-port 9009 <br>  action permit<br></div></td>
+                <td>0</td>
+                <td><em>无匹配策略</em></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy" style="background-color: #d1ecf1; border-left-color: #0c5460;">
+                        <div class="matched-policy-name">策略名称: JiS_policy_2918</div>
+                        <div class="matched-policy-action">动作: IMPLICIT_DENY</div>
+                        <div class="policy-cli" style="margin-top: 5px;">security-policy<br> rule name JiS_policy_2918<br>  source-zone QXDCN<br>  destination-zone QXMSS<br>  source-address 132.254.22.241 mask 255.255.255.255<br>  destination-address range 132.252.35.125 132.252.35.126<br>  service protocol tcp destination-port 7799<br>  action permit<br><br>#</div>
+                    </div></td>
+            </tr>
+            <tr>
+                <td>CZ-LY-FW-1.BD.F5000</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">子集</span></td>
+                <td>#1</td>
+                <td>源: 132.254.168.18-132.254.168.21<br>目: 132.224.1.246<br>服务: tcp:9001</td>
+                <td><div class="policy-cli">object-group ip address LY_policy_1249_src_addr01<br>description LY_policy_1249_source-address<br>0 network range 132.254.168.18 132.254.168.21<br>10 network range 132.254.168.23 132.254.168.30<br>20 network range 132.254.168.32 132.254.168.41<br><br>object-group ip address CZLiY_132.224.1.246<br>0 network host address 132.224.1.246<br><br>rule 1249 name LY_policy_1249<br>  description NETACC_20250528_612799<br>  action pass<br>  source-zone QXDCN<br>  destination-zone QXBD<br>  source-ip LY_policy_1249_src_addr01<br>  destination-ip CZLiY_132.224.1.246<br>  service TCP_9001<br></div></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy">
+                        <div class="matched-policy-name">策略名称: LY_policy_1249</div>
+                        <div class="matched-policy-action">动作: PERMIT</div>
+                        <div class="policy-cli" style="margin-top: 5px;"> rule 1249 name LY_policy_1249<br>  description NETACC_20250528_612799<br>  action pass<br>  source-zone QXDCN<br>  destination-zone QXBD<br>  source-ip LY_policy_1249_src_addr01<br>  destination-ip CZLiY_132.224.1.246<br>  service TCP_9001</div>
+                    </div></td>
+                <td>0</td>
+                <td><em>无生成策略</em></td>
+            </tr>
+            <tr>
+                <td>CZ-LY-FW-1.BD.F5000</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">精确匹配</span></td>
+                <td>#2</td>
+                <td>源: 132.254.168.18-132.254.168.21,132.254.168.23-132.254.168.30,132.254.168.32-132.254.168.41<br>目: 132.224.1.246<br>服务: tcp:9001</td>
+                <td><div class="policy-cli">object-group ip address LY_policy_1249_src_addr01<br>description LY_policy_1249_source-address<br>0 network range 132.254.168.18 132.254.168.21<br>10 network range 132.254.168.23 132.254.168.30<br>20 network range 132.254.168.32 132.254.168.41<br><br>object-group ip address CZLiY_132.224.1.246<br>0 network host address 132.224.1.246<br><br>rule 1249 name LY_policy_1249<br>  description NETACC_20250528_612799<br>  action pass<br>  source-zone QXDCN<br>  destination-zone QXBD<br>  source-ip LY_policy_1249_src_addr01<br>  destination-ip CZLiY_132.224.1.246<br>  service TCP_9001<br></div></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy">
+                        <div class="matched-policy-name">策略名称: LY_policy_1249</div>
+                        <div class="matched-policy-action">动作: PERMIT</div>
+                        <div class="policy-cli" style="margin-top: 5px;"> rule 1249 name LY_policy_1249<br>  description NETACC_20250528_612799<br>  action pass<br>  source-zone QXDCN<br>  destination-zone QXBD<br>  source-ip LY_policy_1249_src_addr01<br>  destination-ip CZLiY_132.224.1.246<br>  service TCP_9001</div>
+                    </div></td>
+                <td>0</td>
+                <td><em>无生成策略</em></td>
+            </tr>
+            <tr>
+                <td>CZ-LY-FW-1.BD.F5000</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">策略复用</span></td>
+                <td>#3</td>
+                <td>源: 132.254.168.14-132.254.168.16,132.254.168.43-132.254.168.45<br>目: 132.224.1.246<br>服务: tcp:9001</td>
+                <td><div class="policy-cli">object-group ip address LY_policy_1249_src_addr01<br>description LY_policy_1249_source-address<br>0 network range 132.254.168.18 132.254.168.21<br>10 network range 132.254.168.23 132.254.168.30<br>20 network range 132.254.168.32 132.254.168.41<br><br>object-group ip address CZLiY_132.224.1.246<br>0 network host address 132.224.1.246<br><br>rule 1249 name LY_policy_1249<br>  description NETACC_20250528_612799<br>  action pass<br>  source-zone QXDCN<br>  destination-zone QXBD<br>  source-ip LY_policy_1249_src_addr01<br>  destination-ip CZLiY_132.224.1.246<br>  service TCP_9001<br></div></td>
+                <td>0</td>
+                <td><em>无匹配策略</em></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy" style="background-color: #d1ecf1; border-left-color: #0c5460;">
+                        <div class="matched-policy-name">策略名称: Generated Policy</div>
+                        <div class="matched-policy-action">动作: IMPLICIT_DENY</div>
+                        <div class="policy-cli" style="margin-top: 5px;">object-group ip address LY_policy_1249_src_addr01<br> network range 132.254.168.14 132.254.168.16<br> network range 132.254.168.43 132.254.168.45</div>
+                    </div></td>
+            </tr>
+            <tr>
+                <td>CZ-LY-FW-1.BD.F5000</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">新建策略</span></td>
+                <td>#4</td>
+                <td>源: 132.254.168.1,132.254.168.23-132.254.168.27,132.254.168.36/30<br>目: 132.224.1.55<br>服务: tcp:7711,10050-10055</td>
+                <td><div class="policy-cli">object-group ip address LY_policy_1249_src_addr01<br>description LY_policy_1249_source-address<br>0 network range 132.254.168.18 132.254.168.21<br>10 network range 132.254.168.23 132.254.168.30<br>20 network range 132.254.168.32 132.254.168.41<br><br>object-group ip address CZLiY_132.224.1.246<br>0 network host address 132.224.1.246<br><br>rule 1249 name LY_policy_1249<br>  description NETACC_20250528_612799<br>  action pass<br>  source-zone QXDCN<br>  destination-zone QXBD<br>  source-ip LY_policy_1249_src_addr01<br>  destination-ip CZLiY_132.224.1.246<br>  service TCP_9001<br></div></td>
+                <td>0</td>
+                <td><em>无匹配策略</em></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy" style="background-color: #d1ecf1; border-left-color: #0c5460;">
+                        <div class="matched-policy-name">策略名称: Generated Policy</div>
+                        <div class="matched-policy-action">动作: IMPLICIT_DENY</div>
+                        <div class="policy-cli" style="margin-top: 5px;">object-group ip address LY_policy_1252_src_addr01<br> network host address 132.254.168.1<br> network range 132.254.168.23 132.254.168.27<br> network subnet 132.254.168.36 255.255.255.252<br>#<br>object-group ip address QXBD_132.224.1.55<br> network host address 132.224.1.55<br>object-group service TCP_7711<br> service tcp destination eq 7711<br><br>#<br>object-group service TCP_10050_10055<br> service tcp destination range 10050 10055<br>security-policy ip<br> rule 1252 name LY_policy_1252<br>  source-zone QXDCN<br>  destination-zone QXBD<br>  source-ip LY_policy_1252_src_addr01<br>  destination-ip QXBD_132.224.1.55<br>  service TCP_7711<br>  service TCP_10050_10055<br>  action pass</div>
+                    </div></td>
+            </tr>
+            <tr>
+                <td>CZ-LY-FW-1.BD.F5000</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">新建策略</span></td>
+                <td>#5</td>
+                <td>源: 132.254.168.1-132.254.168.27,132.254.168.36/30<br>目: 132.224.1.250<br>服务: tcp:7711,10050-10055</td>
+                <td><div class="policy-cli">object-group ip address LY_policy_1249_src_addr01<br>description LY_policy_1249_source-address<br>0 network range 132.254.168.18 132.254.168.21<br>10 network range 132.254.168.23 132.254.168.30<br>20 network range 132.254.168.32 132.254.168.41<br><br>object-group ip address CZLiY_132.224.1.246<br>0 network host address 132.224.1.246<br><br>rule 1249 name LY_policy_1249<br>  description NETACC_20250528_612799<br>  action pass<br>  source-zone QXDCN<br>  destination-zone QXBD<br>  source-ip LY_policy_1249_src_addr01<br>  destination-ip CZLiY_132.224.1.246<br>  service TCP_9001<br></div></td>
+                <td>0</td>
+                <td><em>无匹配策略</em></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy" style="background-color: #d1ecf1; border-left-color: #0c5460;">
+                        <div class="matched-policy-name">策略名称: Generated Policy</div>
+                        <div class="matched-policy-action">动作: IMPLICIT_DENY</div>
+                        <div class="policy-cli" style="margin-top: 5px;">object-group ip address LY_policy_1253_src_addr01<br> network range 132.254.168.1 132.254.168.27<br> network subnet 132.254.168.36 255.255.255.252<br>#<br>object-group ip address QXBD_132.224.1.250<br> network host address 132.224.1.250<br>security-policy ip<br> rule 1253 name LY_policy_1253<br>  source-zone QXDCN<br>  destination-zone QXBD<br>  source-ip LY_policy_1253_src_addr01<br>  destination-ip QXBD_132.224.1.250<br>  service TCP_7711<br>  service TCP_10050_10055<br>  action pass</div>
+                    </div></td>
+            </tr>
+            <tr>
+                <td>NJ-JiS-E19-FW-1.DMZ.DP1000</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">子集</span></td>
+                <td>#1</td>
+                <td>源: 192.168.32.18-192.168.32.19,192.168.32.109<br>目: 132.252.24.30<br>服务: tcp:9001</td>
+                <td><div class="policy-cli">service-object TCP_9001 protocol tcp src-port 0 to 65535 dst-port 9001 to 9001<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.18<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.19<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.109<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN src-address address-group DMZ_XXB_AddressGroup01<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.30<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.31<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN service service-object TCP_9001<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN action permit<br></div></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy">
+                        <div class="matched-policy-name">策略名称: DMZ_XXB_policy12</div>
+                        <div class="matched-policy-action">动作: PERMIT</div>
+                        <div class="policy-cli" style="margin-top: 5px;">security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN src-address address-group DMZ_XXB_AddressGroup01<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.30<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.31<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN service service-object TCP_9001<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN action permit</div>
+                    </div></td>
+                <td>0</td>
+                <td><em>无生成策略</em></td>
+            </tr>
+            <tr>
+                <td>NJ-JiS-E19-FW-1.DMZ.DP1000</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">精确匹配</span></td>
+                <td>#2</td>
+                <td>源: 192.168.32.18-192.168.32.19,192.168.32.109<br>目: 132.252.24.30-132.252.24.31<br>服务: tcp:9001</td>
+                <td><div class="policy-cli">service-object TCP_9001 protocol tcp src-port 0 to 65535 dst-port 9001 to 9001<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.18<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.19<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.109<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN src-address address-group DMZ_XXB_AddressGroup01<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.30<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.31<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN service service-object TCP_9001<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN action permit<br></div></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy">
+                        <div class="matched-policy-name">策略名称: DMZ_XXB_policy12</div>
+                        <div class="matched-policy-action">动作: PERMIT</div>
+                        <div class="policy-cli" style="margin-top: 5px;">security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN src-address address-group DMZ_XXB_AddressGroup01<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.30<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.31<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN service service-object TCP_9001<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN action permit</div>
+                    </div></td>
+                <td>0</td>
+                <td><em>无生成策略</em></td>
+            </tr>
+            <tr>
+                <td>NJ-JiS-E19-FW-1.DMZ.DP1000</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">策略复用</span></td>
+                <td>#3</td>
+                <td>源: 192.168.32.18-192.168.32.19,192.168.32.109<br>目: 132.252.24.30-132.252.24.35<br>服务: tcp:9001</td>
+                <td><div class="policy-cli">service-object TCP_9001 protocol tcp src-port 0 to 65535 dst-port 9001 to 9001<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.18<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.19<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.109<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN src-address address-group DMZ_XXB_AddressGroup01<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.30<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.31<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN service service-object TCP_9001<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN action permit<br></div></td>
+                <td>0</td>
+                <td><em>无匹配策略</em></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy" style="background-color: #d1ecf1; border-left-color: #0c5460;">
+                        <div class="matched-policy-name">策略名称: DMZ_XXB_policy12</div>
+                        <div class="matched-policy-action">动作: IMPLICIT_DENY</div>
+                        <div class="policy-cli" style="margin-top: 5px;">address-object DCN_132.252.24.32/30 132.252.24.32/30<br><br>!<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.32/30<br><br>!</div>
+                    </div></td>
+            </tr>
+            <tr>
+                <td>NJ-JiS-E19-FW-1.DMZ.DP1000</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">新建策略</span></td>
+                <td>#4</td>
+                <td>源: 192.168.32.118-192.168.32.119,192.168.32.209<br>目: 132.252.24.30-132.252.24.31<br>服务: tcp:9001,10000-10005</td>
+                <td><div class="policy-cli">service-object TCP_9001 protocol tcp src-port 0 to 65535 dst-port 9001 to 9001<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.18<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.19<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.109<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN src-address address-group DMZ_XXB_AddressGroup01<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.30<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.31<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN service service-object TCP_9001<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN action permit<br></div></td>
+                <td>0</td>
+                <td><em>无匹配策略</em></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy" style="background-color: #d1ecf1; border-left-color: #0c5460;">
+                        <div class="matched-policy-name">策略名称: DMZ_XXB_policy46</div>
+                        <div class="matched-policy-action">动作: IMPLICIT_DENY</div>
+                        <div class="policy-cli" style="margin-top: 5px;">address-object 192.168.32.118/31 192.168.32.118/31<br><br>!<br>address-object 192.168.32.209 192.168.32.209/32<br><br>!<br>address-group DMZ_XXB_policy46_src_addr01 address-object 192.168.32.118/31<br>address-group DMZ_XXB_policy46_src_addr01 address-object 192.168.32.209<br>!<br>address-object DCN_132.252.24.30/31 132.252.24.30/31<br><br>!<br>security-policy DMZ_XXB_policy46 src-zone DMZ dst-zone DCN src-address address-object DMZ_XXB_policy46_src_addr01<br>security-policy DMZ_XXB_policy46 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.30/31<br>security-policy DMZ_XXB_policy46 src-zone DMZ dst-zone DCN service user-define-service TCP dst-port 9001<br>security-policy DMZ_XXB_policy46 src-zone DMZ dst-zone DCN service user-define-service TCP dst-port 10000 to 10005<br>security-policy DMZ_XXB_policy46 src-zone DMZ dst-zone DCN action permit<br>security-policy DMZ_XXB_policy46 src-zone DMZ dst-zone DCN description NETACC_20250113_17<br><br>!</div>
+                    </div></td>
+            </tr>
+            <tr>
+                <td>NJ-JiS-E19-FW-1.DMZ.DP1000</td>
+                <td>group1</td>
+                <td><span class="scenario-badge ">新建策略</span></td>
+                <td>#5</td>
+                <td>源: 132.252.24.30-132.252.24.31<br>目: 192.168.32.118-192.168.32.119,192.168.32.209<br>服务: tcp:3000,3100-3105</td>
+                <td><div class="policy-cli">service-object TCP_9001 protocol tcp src-port 0 to 65535 dst-port 9001 to 9001<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.18<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.19<br>address-group DMZ_XXB_AddressGroup01 address-object DMZ_192.168.32.109<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN src-address address-group DMZ_XXB_AddressGroup01<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.30<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN dst-address address-object DCN_132.252.24.31<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN service service-object TCP_9001<br>security-policy DMZ_XXB_policy12 src-zone DMZ dst-zone DCN action permit<br></div></td>
+                <td>0</td>
+                <td><em>无匹配策略</em></td>
+                <td>1</td>
+                <td>
+                    <div class="matched-policy" style="background-color: #d1ecf1; border-left-color: #0c5460;">
+                        <div class="matched-policy-name">策略名称: DMZ_BBC_policy47</div>
+                        <div class="matched-policy-action">动作: IMPLICIT_DENY</div>
+                        <div class="policy-cli" style="margin-top: 5px;">security-policy DMZ_BBC_policy47 src-zone DCN dst-zone DMZ src-address address-object DCN_132.252.24.30/31<br>security-policy DMZ_BBC_policy47 src-zone DCN dst-zone DMZ dst-address address-object 192.168.32.118/31<br>security-policy DMZ_BBC_policy47 src-zone DCN dst-zone DMZ dst-address address-object 192.168.32.209<br>security-policy DMZ_BBC_policy47 src-zone DCN dst-zone DMZ service user-define-service TCP dst-port 3000<br>security-policy DMZ_BBC_policy47 src-zone DCN dst-zone DMZ service user-define-service TCP dst-port 3100 to 3105<br>security-policy DMZ_BBC_policy47 src-zone DCN dst-zone DMZ action permit<br>security-policy DMZ_BBC_policy47 src-zone DCN dst-zone DMZ description NETACC_20250113_17<br><br>!</div>
+                    </div></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

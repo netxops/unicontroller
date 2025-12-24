@@ -1,0 +1,32 @@
+========== 节点路由表: CZ-LY-FW-1.BD.F5000 ==========
+生成时间: 2025-12-02 14:35:28
+
+
+---------- VRF: default (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+132.224.42.0/23      132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.1.0/24       132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.2.0/24       132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.4.0/24       132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.5.0/24       132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.6.0/24       132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.7.0/24       132.224.0.45         Route-Aggregation14.102 false      false     
+132.224.40.0/24      132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.41.0/24      132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.201.0/24     132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.207.0/24     132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.3.128/25     132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.3.0/26       132.224.0.49         Route-Aggregation14.103 false      false     
+132.224.0.64/29      132.224.0.41         Route-Aggregation14.101 false      false     
+132.224.0.52/30      132.224.0.45         Route-Aggregation14.102 false      false     
+132.224.0.56/30      132.224.0.45         Route-Aggregation14.102 false      false     
+0.0.0.0/0            132.224.0.37         Route-Aggregation14.100 false      true      
+
+默认网关:
+  NextHop: 132.224.0.37, Interface: Route-Aggregation14.100, Connected: false
+
+---------- VRF: VPN_LY_Management (IPv4) ----------
+NETWORK              NEXT_HOP             INTERFACE       CONNECTED  DEFAULT_GW
+--------------------------------------------------------------------------------
+132.224.0.0/11       132.239.180.1        Vlan-interface1901 false      false     

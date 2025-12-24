@@ -1,0 +1,20 @@
+template: |
+  Value INTERFACE (\S+)
+  Value PHY (\S+)
+  Value PROTOCOL (\S+)
+  Value INUTI (\S+%)
+  Value OUTUTI (\S+%)
+  Value INERRORS (\d+)
+  Value OUTERRORS (\d+)
+  
+  Start
+    ^${INTERFACE}\s+${PHY}\s+${PROTOCOL}\s+${INUTI}\s+${OUTUTI}\s+${INERRORS}\s+${OUTERRORS} -> Record
+inputField: interfaceBrief
+rowFields:
+  - INTERFACE
+  - PHY
+  - PROTOCOL
+  - INUTI
+  - OUTUTI
+  - INERRORS
+  - OUTERRORS

@@ -1,0 +1,604 @@
+{
+    "code": 0,
+    "message": "成功",
+    "data": {
+        "chapters": [
+            "对象",
+            "服务"
+        ],
+        "apiname": "getNetservs",
+        "title": "获取预定义服务或自定义服务或服务组列表",
+        "outputParams": [
+            {
+                "description": "错误码",
+                "relationshipKey": "code",
+                "name": "code",
+                "type": "int",
+                "docrequired": "否"
+            },
+            {
+                "description": "错误信息",
+                "relationshipKey": "message",
+                "name": "message",
+                "type": "string",
+                "docrequired": "否"
+            },
+            {
+                "description": "分页数据",
+                "relationshipKey": "data",
+                "name": "data",
+                "type": "object",
+                "docrequired": "是"
+            },
+            {
+                "description": "总共多少项目",
+                "relationshipKey": "data.totalItems",
+                "name": "totalItems",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "总共多少页",
+                "relationshipKey": "data.totalPages",
+                "name": "totalPages",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "当前页码，从 1 开始",
+                "relationshipKey": "data.pageNumber",
+                "name": "pageNumber",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "每页多大",
+                "relationshipKey": "data.pageSize",
+                "name": "pageSize",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "当前条目偏移，从 0 开始",
+                "relationshipKey": "data.itemsOffset",
+                "name": "itemsOffset",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "数据列表长度",
+                "relationshipKey": "data.itemLength",
+                "name": "itemLength",
+                "type": "int32",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "内部偏移",
+                "relationshipKey": "data.privateOffset",
+                "name": "privateOffset",
+                "type": "uint64",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "有效数据列表",
+                "relationshipKey": "data.items",
+                "name": "items",
+                "type": "object[]",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "唯一资源id",
+                "relationshipKey": "data.items.uuid",
+                "name": "uuid",
+                "type": "string",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "服务名称",
+                "relationshipKey": "data.items.name",
+                "name": "name",
+                "type": "string",
+                "docrequired": "是",
+                "extra": {
+                    "maxLength": 95,
+                    "minLength": 1,
+                    "pattern desc": "名称不能包含`~!#$%^&*+\\|{};:\"',/<>? 特殊字符"
+                }
+            },
+            {
+                "description": "autoid",
+                "relationshipKey": "data.items.id",
+                "name": "id",
+                "type": "uint16",
+                "docrequired": "--",
+                "extra": []
+            },
+            {
+                "description": "描述字段",
+                "relationshipKey": "data.items.description",
+                "name": "description",
+                "type": "string",
+                "docrequired": "否",
+                "extra": {
+                    "maxLength": 95,
+                    "minLength": 0,
+                    "pattern desc": "描述字段不能包含`~!#$%^&*+\\|{};:\"'/<>? 特殊字符"
+                }
+            },
+            {
+                "description": "预定义服务或自定义服务或服务组",
+                "relationshipKey": "data.items.servType",
+                "name": "servType",
+                "type": "string",
+                "docrequired": "是",
+                "extra": {
+                    "enums": [
+                        {
+                            "description": "预定义服务",
+                            "value": "PREDEF_SERV"
+                        },
+                        {
+                            "description": "自定义服务",
+                            "value": "USRDEF_SERV"
+                        },
+                        {
+                            "description": "服务组",
+                            "value": "SERV_GRP"
+                        }
+                    ]
+                }
+            },
+            {
+                "description": "tcp条目列表，服务类型为预定义服务或自定义服务时使用",
+                "relationshipKey": "data.items.tcpEntrys",
+                "name": "tcpEntrys",
+                "type": "object[]",
+                "docrequired": "按条件选择",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "源端口信息",
+                "relationshipKey": "data.items.tcpEntrys.srcPorts",
+                "name": "srcPorts",
+                "type": "object[]",
+                "docrequired": "否",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "网络端口起始值",
+                "relationshipKey": "data.items.tcpEntrys.srcPorts.start",
+                "name": "start",
+                "type": "int32",
+                "docrequired": "是",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 65535
+                }
+            },
+            {
+                "description": "网络端口结束值",
+                "relationshipKey": "data.items.tcpEntrys.srcPorts.end",
+                "name": "end",
+                "type": "int32",
+                "docrequired": "否",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 65535
+                }
+            },
+            {
+                "description": "目的端口信息",
+                "relationshipKey": "data.items.tcpEntrys.dstPorts",
+                "name": "dstPorts",
+                "type": "object[]",
+                "docrequired": "是",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "起始端口",
+                "relationshipKey": "data.items.tcpEntrys.dstPorts.start",
+                "name": "start",
+                "type": "int32",
+                "docrequired": "是",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 65535
+                }
+            },
+            {
+                "description": "结束端口",
+                "relationshipKey": "data.items.tcpEntrys.dstPorts.end",
+                "name": "end",
+                "type": "int32",
+                "docrequired": "否",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 65535
+                }
+            },
+            {
+                "description": "udp条目列表，服务类型为预定义服务或自定义服务时使用",
+                "relationshipKey": "data.items.udpEntrys",
+                "name": "udpEntrys",
+                "type": "object[]",
+                "docrequired": "按条件选择",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "源端口信息",
+                "relationshipKey": "data.items.udpEntrys.srcPorts",
+                "name": "srcPorts",
+                "type": "object[]",
+                "docrequired": "否",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "网络端口起始值",
+                "relationshipKey": "data.items.udpEntrys.srcPorts.start",
+                "name": "start",
+                "type": "int32",
+                "docrequired": "是",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 65535
+                }
+            },
+            {
+                "description": "网络端口结束值",
+                "relationshipKey": "data.items.udpEntrys.srcPorts.end",
+                "name": "end",
+                "type": "int32",
+                "docrequired": "否",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 65535
+                }
+            },
+            {
+                "description": "目的端口信息",
+                "relationshipKey": "data.items.udpEntrys.dstPorts",
+                "name": "dstPorts",
+                "type": "object[]",
+                "docrequired": "是",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "起始端口",
+                "relationshipKey": "data.items.udpEntrys.dstPorts.start",
+                "name": "start",
+                "type": "int32",
+                "docrequired": "是",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 65535
+                }
+            },
+            {
+                "description": "结束端口",
+                "relationshipKey": "data.items.udpEntrys.dstPorts.end",
+                "name": "end",
+                "type": "int32",
+                "docrequired": "否",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 65535
+                }
+            },
+            {
+                "description": "icmp条目列表，服务类型为预定义服务或自定义服务时使用",
+                "relationshipKey": "data.items.icmpEntrys",
+                "name": "icmpEntrys",
+                "type": "object[]",
+                "docrequired": "按条件选择",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "类型，255表示全部",
+                "relationshipKey": "data.items.icmpEntrys.type",
+                "name": "type",
+                "type": "uint8",
+                "docrequired": "是",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 255
+                }
+            },
+            {
+                "description": "代码，255表示全部",
+                "relationshipKey": "data.items.icmpEntrys.code",
+                "name": "code",
+                "type": "uint8",
+                "docrequired": "是",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 255
+                }
+            },
+            {
+                "description": "icmpv6条目列表，服务类型为预定义服务或自定义服务时使用",
+                "relationshipKey": "data.items.icmpv6Entrys",
+                "name": "icmpv6Entrys",
+                "type": "object[]",
+                "docrequired": "按条件选择",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "类型，255表示全部",
+                "relationshipKey": "data.items.icmpv6Entrys.type",
+                "name": "type",
+                "type": "uint8",
+                "docrequired": "是",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 255
+                }
+            },
+            {
+                "description": "代码，255表示全部",
+                "relationshipKey": "data.items.icmpv6Entrys.code",
+                "name": "code",
+                "type": "uint8",
+                "docrequired": "是",
+                "extra": {
+                    "minimum": 0,
+                    "maximum": 255
+                }
+            },
+            {
+                "description": "其他协议号列表,其中256表示除tcp,udp,icmp,icmpv6之外的所有其他协议号，服务类型为预定义服务或自定义服务时使用",
+                "relationshipKey": "data.items.other",
+                "name": "other",
+                "type": "uint16[]",
+                "docrequired": "按条件选择",
+                "extra": {
+                    "maxItems": "参考硬件规格"
+                }
+            },
+            {
+                "description": "服务组勾选的服务，服务类型为服务组时使用",
+                "relationshipKey": "data.items.servsInfo",
+                "name": "servsInfo",
+                "type": "string[]",
+                "docrequired": "按条件选择",
+                "extra": []
+            },
+            {
+                "description": "标识是否被引用",
+                "relationshipKey": "data.items.hasref",
+                "name": "hasref",
+                "type": "bool",
+                "docrequired": "--",
+                "extra": []
+            }
+        ],
+        "inputSamples": {
+            "request": "GET https://192.168.1.1/api/v1/namespaces/public/services?servType=USRDEF_SERV&_start=0&_length=100",
+            "description": "获取服务信息列表，查询条件：服务类型为自定义服务，起始位置为0，最多展示100条"
+        },
+        "description": "通过此接口，可以获取预定义服务或自定义服务或服务组列表，根据uri参数servType指定，servType的可选值为PREDEF_SERV、USRDEF_SERV、SERV_GRP",
+        "inputParams": {
+            "headers": [],
+            "uri": [
+                {
+                    "description": "服务名字前缀过滤",
+                    "relationshipKey": "__nameprefix",
+                    "name": "__nameprefix",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "maxLength": 95,
+                        "minLength": 1
+                    }
+                },
+                {
+                    "description": "指定排序字段",
+                    "relationshipKey": "_sortby",
+                    "name": "_sortby",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "maxLength": 100
+                    }
+                },
+                {
+                    "description": "模糊搜索关键字",
+                    "relationshipKey": "_search",
+                    "name": "_search",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "maxLength": 95
+                    }
+                },
+                {
+                    "description": "指定排序方式（正序/倒序）",
+                    "relationshipKey": "_order",
+                    "name": "_order",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "default": "asc",
+                        "enums": [
+                            {
+                                "description": "按升序排列",
+                                "value": "asc"
+                            },
+                            {
+                                "description": "按降序排列",
+                                "value": "desc"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "description": "起始位置，从 0 开始",
+                    "relationshipKey": "_start",
+                    "name": "_start",
+                    "type": "int32",
+                    "docrequired": "否",
+                    "extra": {
+                        "minimum": 0,
+                        "maximum": 2000000,
+                        "default": 0
+                    }
+                },
+                {
+                    "description": "请求服务列表的模块名",
+                    "relationshipKey": "queryListModule",
+                    "name": "queryListModule",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "enums": [
+                            {
+                                "description": "对象-WEB应用防护",
+                                "value": "OBJ_WAF"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "description": "过滤服务类别",
+                    "relationshipKey": "servType",
+                    "name": "servType",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "enums": [
+                            {
+                                "description": "预定义服务",
+                                "value": "PREDEF_SERV"
+                            },
+                            {
+                                "description": "自定义服务",
+                                "value": "USRDEF_SERV"
+                            },
+                            {
+                                "description": "服务",
+                                "value": "SERV"
+                            },
+                            {
+                                "description": "服务组",
+                                "value": "SERV_GRP"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "description": "选择字段，字段用逗号分隔",
+                    "relationshipKey": "_select",
+                    "name": "_select",
+                    "type": "string",
+                    "docrequired": "否",
+                    "extra": {
+                        "maxLength": 1000
+                    }
+                },
+                {
+                    "description": "获取最大长度，限制最大值，如果数据不够可能返回小于 length",
+                    "relationshipKey": "_length",
+                    "name": "_length",
+                    "type": "int32",
+                    "docrequired": "否",
+                    "extra": {
+                        "minimum": 1,
+                        "maximum": 200,
+                        "default": 100
+                    }
+                }
+            ],
+            "cookies": [
+                {
+                    "description": "认证令牌",
+                    "relationshipKey": "token",
+                    "name": "token",
+                    "type": "string",
+                    "docrequired": "是",
+                    "extra": "{\"maxLength\":64}"
+                },
+                {
+                    "description": "认证会话",
+                    "relationshipKey": "SESSID",
+                    "name": "SESSID",
+                    "type": "string",
+                    "docrequired": "是",
+                    "extra": "{\"maxLength\":256}"
+                }
+            ]
+        },
+        "outputSamples": {
+            "correct": {
+                "message": "成功",
+                "data": {
+                    "itemsOffset": 0,
+                    "itemLength": 1,
+                    "pageSize": 100,
+                    "items": [
+                        {
+                            "description": "",
+                            "name": "test",
+                            "tcpEntrys": [
+                                {
+                                    "srcPorts": [
+                                        {
+                                            "start": 0,
+                                            "end": 65535
+                                        }
+                                    ],
+                                    "dstPorts": [
+                                        {
+                                            "start": 22
+                                        }
+                                    ]
+                                }
+                            ],
+                            "hasref": false,
+                            "servType": "USRDEF_SERV",
+                            "uuid": "2496D4F5411D42E782E3DC2076CC62EC"
+                        }
+                    ],
+                    "totalPages": 1,
+                    "pageNumber": 1,
+                    "totalItems": 1
+                },
+                "code": 0
+            },
+            "incorrect": {
+                "message": "无效参数",
+                "data": "",
+                "code": 22
+            }
+        },
+        "position": "5.5.1",
+        "api": {
+            "url": "https://{host}/api/v1/namespaces/@namespace/services",
+            "method": "GET"
+        },
+        "chapter": "服务"
+    }
+}

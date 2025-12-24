@@ -1,0 +1,36 @@
+dispatches:
+  - name: SSHShellError
+    regex:
+      - "ssh: handshake failed"
+      - "ssh: unable to authenticate"
+    action: ssh_shell_error
+  - name: TelnetShellError
+    regex:
+      - "telnet: connection refused"
+      - "telnet: unable to connect"
+    action: telnet_shell_error
+  - name: SendPassword
+    regex:
+      - "(?i)password:"
+      - "(?i)enter password:"
+    action: send_password
+  - name: UnknownHost
+    regex:
+      - "(?i)are you sure you want to continue connecting"
+      - "(?i)the authenticity of host .* can't be established"
+    action: unknown_host
+  - name: SendUsername
+    regex:
+      - "(?i)login:"
+      - "(?i)username:"
+    action: send_username
+  - name: InitCompleted
+    regex:
+      - ^(<|\[)[\S ]+(?:>|\])$
+      - \$ $
+    action: init_completed
+  - name: Authorize
+    regex:
+      - "(?i)enter configuration mode"
+      - "(?i)enable password:"
+    action: authorize
