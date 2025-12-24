@@ -1,0 +1,55 @@
+# 简化的 Makefile - 仅编译指定的插件
+# 插件列表: input.snmp, input.tail, output.loki, output.prometheus_client, processors.enum, processors.printer
+
+# 获取版本信息
+tag := $(shell git describe --exact-match --tags 2>/dev/null)
+commit := $(shell git rev-parse --short=8 HEAD)
+branch := $(shell git rev-parse --abbrev-ref HEAD)
+
+# 设置构建标签 - custom 标签是必需的
+BUILDTAGS := custom,inputs.snmp,inputs.tail,outputs.loki,outputs.prometheus_client,processors.enum,processors.printer
+
+# 链接器标志
+INTERNAL_PKG := github.com/influxdata/telegraf/internal
+LDFLAGS := -X $(INTERNAL_PKG).Commit=$(commit) -X $(INTERNAL_PKG).Branch=$(branch)
+ifneq ($(tag),)
+	LDFLAGS += -X $(INTERNAL_PKG).Version=$(tag:v%=%)
+else
+	LDFLAGS += -X $(INTERNAL_PKG).Version=dev-$(commit)
+endif
+
+.PHONY: all build telegraf deps clean help
+
+all: build
+
+help:
+	@echo '使用方法:'
+	@echo '  make build    - 编译 telegraf 二进制文件（包含指定的插件）'
+	@echo '  make deps     - 下载依赖'
+	@echo '  make clean    - 清理编译产物'
+	@echo ''
+	@echo '包含的插件:'
+	@echo '  - inputs.snmp'
+	@echo '  - inputs.tail'
+	@echo '  - outputs.loki'
+	@echo '  - outputs.prometheus_client'
+	@echo '  - processors.enum'
+	@echo '  - processors.printer'
+
+deps:
+	@echo "下载依赖..."
+	go mod download
+
+build:
+	@echo "正在编译 Telegraf，包含以下插件:"
+	@echo "  $(BUILDTAGS)"
+	CGO_ENABLED=0 go build -tags "$(BUILDTAGS)" -ldflags "$(LDFLAGS)" ./cmd/telegraf
+	@echo "编译完成！二进制文件: ./telegraf"
+
+telegraf: build
+
+clean:
+	@echo "清理编译产物..."
+	rm -f telegraf telegraf.exe
+	@echo "清理完成"
+
